@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Job Offers - Orange</title>
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
+    <link rel="stylesheet" href="fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+    <link rel="stylesheet" href="styles/Navbar-Centered-Links-icons.css">
+    <link rel="stylesheet" href="styles/vanilla-zoom.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+    <script src="scripts/vanilla-zoom.js"></script>
+    <script src="scripts/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="scripts/script.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md py-3">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="index.html"><img
+                    src="images/orange_logo2.png" width="81" height="38"></a><button data-bs-toggle="collapse"
+                class="navbar-toggler" data-bs-target="#navcol-3"><span class="visually-hidden">Toggle
+                    navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-3">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html"
+                            style="margin: 0px;margin-left: 30px;margin-right: 30px;">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="job-offers.html"
+                            style="margin-left: 30px;margin-right: 30px;">Job Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="resumes.html"
+                            style="margin: 0px;margin-left: 30px;margin-right: 30px;">Resumes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about-us.html"
+                            style="margin-right: 30px;margin-left: 30px;">About us</a></li>
+                </ul><a class="btn btn-primary" role="button"
+                    style="background: rgb(255,130,3);--bs-primary: rgb(255,130,3);--bs-primary-rgb: 255,130,3;border-color: rgb(255,130,3);"
+                    href="login.html">Sign in</a>
+            </div>
+        </div>
+    </nav>
+    <main class="page catalog-page">
+        <section class="clean-block clean-catalog dark">
+            <div class="container" style="padding-top: 30px;">
+                <div class="d-flex d-xl-flex justify-content-lg-center" style="margin-bottom: 10px;text-align: left;position: relative;transform: perspective(0px);">
+                    <input id="search-bar" type="search" style="border-radius: 5px;border: 1px solid rgb(232,232,232);max-width: 500px;width: 500px;margin-right: 10px;" placeholder="Enter what you&#39;re looking for..." />
+                    <button id="search-button" class="btn btn-primary" type="button" style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Search</button>
+                </div>
+                <div style="height:20px;margin-bottom: 8px;">
+                    <h6 id="search-results" class="float-start d-xl-flex justify-content-xl-start align-items-xl-center"
+                        style="height: 100%;">Search results: 5</h6>
+                    <div class="d-inline-flex float-end" style="height: 100%;">
+                        <h6 class="d-flex float-start d-sm-flex d-xl-flex justify-content-start align-items-center align-items-sm-center justify-content-xl-center align-items-xl-center"
+                            style="height: 100%;">Sort by:</h6>
+                        <div class="dropdown float-end" style="height: 30px;"><button id="sort-value"
+                                class="btn btn-primary dropdown-toggle d-flex d-sm-flex d-xl-flex align-items-center align-items-sm-center align-items-xl-center"
+                                aria-expanded="false" data-bs-toggle="dropdown" type="button"
+                                style="background: rgba(13,110,253,0);color: rgb(0,0,0);height: 20px;border-style: none;font-weight: bold;">Salary</button>
+                            <div id="sorts" class="dropdown-menu">
+                                <!--
+                                <button type="button" class="dropdown-item">First Item</button>
+                                <button type="button" class="dropdown-item">Second Item</button>
+                                <button type="button" class="dropdown-item">Third Item</button>
+                                -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="d-none d-md-block">
+                                <div id="main-filters" class="filters">
+                                    <!--
+                                    <div class="filter-item">
+                                        <h3>Duration</h3>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-1" checked=""><label class="form-check-label" for="formCheck-1">6 months</label></div>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-2"><label class="form-check-label" for="formCheck-2">12 months</label></div>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-3"><label class="form-check-label" for="formCheck-3">36 months</label></div>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-4"><label class="form-check-label" for="formCheck-4">&gt; 36 months</label></div>
+                                    </div>
+                                    <div class="filter-item">
+                                        <h3>Area</h3>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-5" checked=""><label class="form-check-label" for="formCheck-5">Consultancy</label></div>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-6"><label class="form-check-label" for="formCheck-6">Finance</label></div>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-7"><label class="form-check-label" for="formCheck-7">Audit</label></div>
+                                    </div>
+                                    <div class="filter-item">
+                                        <h3>Work type</h3>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-8" checked=""><label class="form-check-label" for="formCheck-8">Full-Time</label></div>
+                                        <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-9"><label class="form-check-label" for="formCheck-9">Part-Time</label></div>
+                                    </div>
+                                    -->
+                                </div>
+                            </div>
+                            <div class="d-md-none"><a class="btn btn-link d-md-none filter-collapse"
+                                    data-bs-toggle="collapse" aria-expanded="false" aria-controls="filters"
+                                    href="#filters" role="button">Filters<i
+                                        class="icon-arrow-down filter-caret"></i></a>
+                                <div id="filters" class="collapse">
+                                    <div id="collapsed-filters" class="filters">
+                                        <!--
+                                        <div class="filter-item">
+                                            <h3>Duration</h3>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-1" checked=""><label class="form-check-label" for="formCheck-1">6 months</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-2"><label class="form-check-label" for="formCheck-2">12 months</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-3"><label class="form-check-label" for="formCheck-3">36 months</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-4"><label class="form-check-label" for="formCheck-4">&gt; 36 months</label></div>
+                                        </div>
+                                        <div class="filter-item">
+                                            <h3>Area</h3>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-5" checked=""><label class="form-check-label" for="formCheck-5">Consultancy</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-6"><label class="form-check-label" for="formCheck-6">Finance</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-7"><label class="form-check-label" for="formCheck-7">Audit</label></div>
+                                        </div>
+                                        <div class="filter-item">
+                                            <h3>Work type</h3>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-8" checked=""><label class="form-check-label" for="formCheck-8">Full-Time</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-9"><label class="form-check-label" for="formCheck-9">Part-Time</label></div>
+                                        </div>
+                                        -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="jobs" class="col-md-9">
+                            <div class="text-center d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center" style="margin-bottom: 30px;margin-top: 30px;">
+                                <img class="img-fluid d-xl-flex justify-content-xl-center align-items-xl-start" src="images/sadorange.png" width="257" height="286" />
+                            </div>
+                            <div class="text-center d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center">
+                                <h2 class="text-info" style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;font-weight: bold;">No results found</h2>
+                            </div>
+                            <!--
+                            <div class="card" style="margin-bottom: 10px;">
+                                <div class="card-body">
+                                    <div style="margin-bottom: 8px;height: 20px;">
+                                        <h6 class="text-muted float-end mb-2">5 days ago</h6>
+                                        <h6 class="text-muted float-start mb-2">Ernst &amp; Young</h6>
+                                    </div>
+                                    <h5 class="d-xl-flex justify-content-xl-start card-title" style="width: 100%;font-weight: bold;">Programmer</h5>
+                                    <div class="d-flex" style="height: 30px;margin-bottom: 8px;">
+                                        <div><img src="images/salary.png" width="30" height="30"><small style="font-weight: bold;">€13.000/year</small></div>
+                                        <div style="margin-left: 10px;"><img src="images/duration.png" width="30" height="30"><small style="font-weight: bold;">6 months</small></div>
+                                        <div style="margin-left: 10px;"><img src="images/until.png" width="30" height="30"><small style="font-weight: bold;">Valid until 31-12-2022</small></div>
+                                    </div>
+                                    <p class="card-text">The ideal candidate is a JS programmer who is able to make effective decisions quickly.</p>
+                                    <div class="form-check d-xl-flex justify-content-xl-end">
+                                        <input id="formCheck-10" class="form-check-input" type="checkbox" />
+                                        <label class="form-check-label" for="formCheck-10" style="margin-left: 5px;">Compare</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" style="margin-bottom: 10px;">
+                                <div class="card-body">
+                                    <div style="margin-bottom: 8px;height: 20px;">
+                                        <h6 class="text-muted float-end mb-2">8 days ago</h6>
+                                        <h6 class="text-muted float-start mb-2">KPMG</h6>
+                                    </div>
+                                    <h5 class="d-xl-flex justify-content-xl-start card-title" style="width: 100%;font-weight: bold;">Team Leader</h5>
+                                    <div class="d-flex" style="height: 30px;margin-bottom: 8px;">
+                                        <div><img src="images/salary.png" width="30" height="30"><small style="font-weight: bold;">€11.000/year</small></div>
+                                        <div style="margin-left: 10px;"><img src="images/duration.png" width="30" height="30"><small style="font-weight: bold;">6 months</small></div>
+                                        <div style="margin-left: 10px;"><img src="images/until.png" width="30" height="30"><small style="font-weight: bold;">Valid until 25-04-2023</small></div>
+                                    </div>
+                                    <p class="card-text">Our client is looking for a 5+ years Team Leader experience, taking products from prototype to commercialization, with a solid emphasis on the test cycle.</p>
+                                    <div class="form-check d-xl-flex justify-content-xl-end">
+                                        <input id="formCheck-10" class="form-check-input" type="checkbox" />
+                                        <label class="form-check-label" for="formCheck-10" style="margin-left: 5px;">Compare</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div style="margin-bottom: 8px;height: 20px;">
+                                        <h6 class="text-muted float-end mb-2">13 days ago</h6>
+                                        <h6 class="text-muted float-start mb-2">Deloitte</h6>
+                                    </div>
+                                    <h5 class="d-xl-flex justify-content-xl-start card-title" style="width: 100%;font-weight: bold;">Developer</h5>
+                                    <div class="d-flex" style="height: 30px;margin-bottom: 8px;">
+                                        <div><img src="images/salary.png" width="30" height="30"><small style="font-weight: bold;">€9.500/year</small></div>
+                                        <div style="margin-left: 10px;"><img src="images/duration.png" width="30" height="30"><small style="font-weight: bold;">6 months</small></div>
+                                        <div style="margin-left: 10px;"><img src="images/until.png" width="30" height="30"><small style="font-weight: bold;">Valid until 01-07-2023</small></div>
+                                    </div>
+                                    <p class="card-text">We're looking for a Computer Science student with basic software skills.</p>
+                                    <div class="form-check d-xl-flex justify-content-xl-end">
+                                        <input id="formCheck-10" class="form-check-input" type="checkbox" />
+                                        <label class="form-check-label" for="formCheck-10" style="margin-left: 5px;">Compare</label>
+                                    </div>
+                                </div>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                style="left: 0;bottom: 0;z-index: 999;position: fixed;background: #ffffff;width: 100%;box-shadow: 0px 0px 4px 0px;">
+                <div class="container" style="padding: -2px;">
+                    <div class="d-flex">
+                        <p id="num-selected-jobs" class="text-nowrap d-flex d-sm-flex d-xl-flex align-items-sm-center justify-content-xl-start align-items-xl-center"
+                            style="width: 15%;margin-bottom: 0;height: 38px;font-weight: bold;">0 Selected Jobs</p>
+                        <div style="width: 100%;">
+                            <input id="compare-arrow" type="image" src="images/arrow_up.png" class="float-end"
+                                style="width:30px; height:30px; margin-top: 5px;" data-bs-toggle="collapse"
+                                aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"></a>
+                            <div id="collapse-1" class="collapse" style="width: 95%">
+                                <div class="d-flex justify-content-xl-center align-items-xl-center" style="width: 100%">
+                                    <div id="compare-jobs" class="row text-center" style="margin-left: 0px;margin-right: 0px;">
+                                        <!-- <div class="col">
+                                            <div class="py-4">
+                                                <h5>Programmer, Deloitte</h5>
+                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="py-4">
+                                                <h5>Programmer, Deloitte</h5>
+                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="py-4">
+                                                <h5>Programmer, Deloitte</h5>
+                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="py-4">
+                                                <h5>Programmer, Deloitte</h5>
+                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="py-4">
+                                                <h5>Programmer, Deloitte</h5>
+                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="py-4">
+                                                <h5>Programmer, Deloitte</h5>
+                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                    <button id="compare-button" class="btn btn-primary align-items-xl-center" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#modal-1"
+                                        style="height: 38px;background: rgb(255,130,3);border-color: rgb(255,130,3);">Compare</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Job Comparation</h4><button class="btn-close" type="button"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table id="compare-table" class="table">
+                                    <!-- <thead>
+                                        <tr>
+                                            <th><br /></th>
+                                            <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
+                                            <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
+                                            <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-nowrap" style="font-weight: bold">Salary</td>
+                                            <td>Cell 1</td>
+                                            <td>Cell 2</td>
+                                            <td>Cell 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-nowrap" style="font-weight: bold">Duration</td>
+                                            <td>Cell 1</td>
+                                            <td>Cell 2</td>
+                                            <td>Cell 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-nowrap" style="font-weight: bold">Area</td>
+                                            <td>Cell 1</td>
+                                            <td>Cell 2</td>
+                                            <td>Cell 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-nowrap" style="font-weight: bold">Work Type</td>
+                                            <td>Cell 1</td>
+                                            <td>Cell 2</td>
+                                            <td>Cell 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-nowrap" style="font-weight: bold">Valid Until</td>
+                                            <td>Cell 1</td>
+                                            <td>Cell 2</td>
+                                            <td>Cell 1</td>
+                                        </tr>
+                                    </tbody> -->
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
