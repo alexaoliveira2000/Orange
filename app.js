@@ -11,6 +11,5 @@ require("./routes/usersRoutes")(app)
 
 app.listen(app.get("port"),
     () => {
-        console.log(`\n  Server Listing on ${app.get("port")}`)
+        console.log(`\n  Server Listening on ${app.get("port")}`)
     });
-

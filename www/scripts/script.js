@@ -1,6 +1,6 @@
 //"use strict"
 
-const MAX_COMPARE = 4
+const MAX_COMPARE = 3;
 
 var jobs;
 

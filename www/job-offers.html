@@ -209,110 +209,95 @@
                                 aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"></a>
                             <div id="collapse-1" class="collapse" style="width: 95%">
                                 <div class="d-flex justify-content-xl-center align-items-xl-center" style="width: 100%">
-                                    <div id="compare-jobs" class="row text-center" style="margin-left: 0px;margin-right: 0px;">
-                                        <!-- <div class="col">
-                                            <div class="py-4">
-                                                <h5>Programmer, Deloitte</h5>
-                                                <p style="margin-bottom: 0px;">€13.000/year</p>
+                                    <div class="row" style="width: 100%;">
+                                        <div class="col-md-8" style="width: calc(100% - 150px);">
+                                            <div id="compare-jobs" class="row g-0 row-cols-1 row-cols-md-2 row-cols-xl-3 d-flex photos" data-bss-baguettebox style="width: 100%;">
+                                                <!-- <div class="col item">
+                                                    <div class="py-4">
+                                                        <h5>Programmer, Deloitte</h5>
+                                                        <p style="margin-bottom: 0px;">€13.000/year</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col item">
+                                                    <div class="py-4">
+                                                        <h5>Programmer, Deloitte</h5>
+                                                        <p style="margin-bottom: 0px;">€13.000/year</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col item">
+                                                    <div class="py-4">
+                                                        <h5>Programmer, Deloitte</h5>
+                                                        <p style="margin-bottom: 0px;">€13.000/year</p>
+                                                    </div>
+                                                </div> -->
                                             </div>
                                         </div>
-                                        <div class="col">
-                                            <div class="py-4">
-                                                <h5>Programmer, Deloitte</h5>
-                                                <p style="margin-bottom: 0px;">€13.000/year</p>
-                                            </div>
+                                        <div class="col-md-4 d-flex d-sm-flex d-md-flex d-lg-flex d-xxl-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center justify-content-md-center align-items-md-center justify-content-lg-center align-items-lg-center justify-content-xxl-center align-items-xxl-center" style="width: 150px;">
+                                            <button id="compare-button" class="btn btn-primary d-xl-flex align-items-xl-center" type="button" data-bs-toggle="modal" data-bs-target="#modal-1" style="height: 38px;background: rgb(255,130,3);border-color: rgb(255,130,3);">Compare</button>
                                         </div>
-                                        <div class="col">
-                                            <div class="py-4">
-                                                <h5>Programmer, Deloitte</h5>
-                                                <p style="margin-bottom: 0px;">€13.000/year</p>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="py-4">
-                                                <h5>Programmer, Deloitte</h5>
-                                                <p style="margin-bottom: 0px;">€13.000/year</p>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="py-4">
-                                                <h5>Programmer, Deloitte</h5>
-                                                <p style="margin-bottom: 0px;">€13.000/year</p>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="py-4">
-                                                <h5>Programmer, Deloitte</h5>
-                                                <p style="margin-bottom: 0px;">€13.000/year</p>
-                                            </div>
-                                        </div> -->
                                     </div>
-                                    <button id="compare-button" class="btn btn-primary align-items-xl-center" type="button"
-                                        data-bs-toggle="modal" data-bs-target="#modal-1"
-                                        style="height: 38px;background: rgb(255,130,3);border-color: rgb(255,130,3);">Compare</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Job Comparation</h4><button class="btn-close" type="button"
-                                data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="table-responsive">
-                                <table id="compare-table" class="table">
-                                    <!-- <thead>
-                                        <tr>
-                                            <th><br /></th>
-                                            <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
-                                            <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
-                                            <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-nowrap" style="font-weight: bold">Salary</td>
-                                            <td>Cell 1</td>
-                                            <td>Cell 2</td>
-                                            <td>Cell 1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap" style="font-weight: bold">Duration</td>
-                                            <td>Cell 1</td>
-                                            <td>Cell 2</td>
-                                            <td>Cell 1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap" style="font-weight: bold">Area</td>
-                                            <td>Cell 1</td>
-                                            <td>Cell 2</td>
-                                            <td>Cell 1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap" style="font-weight: bold">Work Type</td>
-                                            <td>Cell 1</td>
-                                            <td>Cell 2</td>
-                                            <td>Cell 1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-nowrap" style="font-weight: bold">Valid Until</td>
-                                            <td>Cell 1</td>
-                                            <td>Cell 2</td>
-                                            <td>Cell 1</td>
-                                        </tr>
-                                    </tbody> -->
-                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Job Comparation</h4><button class="btn-close" type="button"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table id="compare-table" class="table">
+                                <!-- <thead>
+                                    <tr>
+                                        <th><br /></th>
+                                        <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
+                                        <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
+                                        <th><br /><strong>Developer, Deloitte</strong><br /><br /></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-nowrap" style="font-weight: bold">Salary</td>
+                                        <td>Cell 1</td>
+                                        <td>Cell 2</td>
+                                        <td>Cell 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap" style="font-weight: bold">Duration</td>
+                                        <td>Cell 1</td>
+                                        <td>Cell 2</td>
+                                        <td>Cell 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap" style="font-weight: bold">Area</td>
+                                        <td>Cell 1</td>
+                                        <td>Cell 2</td>
+                                        <td>Cell 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap" style="font-weight: bold">Work Type</td>
+                                        <td>Cell 1</td>
+                                        <td>Cell 2</td>
+                                        <td>Cell 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap" style="font-weight: bold">Valid Until</td>
+                                        <td>Cell 1</td>
+                                        <td>Cell 2</td>
+                                        <td>Cell 1</td>
+                                    </tr>
+                                </tbody> -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 
