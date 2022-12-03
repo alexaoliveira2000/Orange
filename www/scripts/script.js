@@ -452,18 +452,14 @@ var updateComparationBar = function (comparationTable) {
 
     for (let i = 0; i < MAX_COMPARE; i++) {
         let columnDiv = document.createElement("div");
-        columnDiv.className = "col";
-        columnDiv.style.width = "33%";
+        columnDiv.className = "col item";
         let infoDiv = document.createElement("div");
         infoDiv.className = "py-4";
         if (comparationJobs[i]) {
-            infoDiv.style.marginLeft = "30px";
-            infoDiv.style.marginRight = "30px";
             let title = document.createElement("h6");
             let salary = document.createElement("p");
-            title.className = "text-nowrap";
             salary.style.marginBottom = "0px";
-            title.innerHTML = `${comparationJobs[i].title},<br />${comparationJobs[i].company}`
+            title.innerHTML = `${comparationJobs[i].title}, ${comparationJobs[i].company}`
             salary.innerHTML = `€${comparationJobs[i].salary}/year`
 
             infoDiv.appendChild(title);
