@@ -1,4 +1,4 @@
-//"use strict"
+"use strict"
 
 const MAX_COMPARE = 3;
 
@@ -73,8 +73,8 @@ var createSearchBar = function (searchItems) {
                 filteredJobs.splice(filteredJobs.length, 0, ...foundJobs);
             });
             // remove duplicates
-            selectedJobs = selectedJobs.filter((element, index) => {
-                return selectedJobs.indexOf(element) === index;
+            filteredJobs = filteredJobs.filter((element, index) => {
+                return filteredJobs.indexOf(element) === index;
             });
             jobs.forEach(function (job) {
                 let tempJob = filteredJobs.filter(obj => obj._id === job._id);
@@ -113,14 +113,14 @@ var createSorts = function (sorts) {
 
     var onSortChange = function (sort) {
         let sortValue = document.getElementById("sort-value");
-        sortValue.innerHTML = sort.name;
+        sortValue.textContent = sort.name;
         sortJobs(sort);
         updateJobCards();
     }
 
     // change dropdown name
     let sortValue = document.getElementById("sort-value");
-    sortValue.innerHTML = sorts[0].name;
+    sortValue.textContent = sorts[0].name;
     // create dropdown items (buttons)
     let sortsDropdown = document.getElementById("sorts");
     sorts.forEach(function (sort) {
@@ -128,7 +128,7 @@ var createSorts = function (sorts) {
         button.type = "button";
         button.className = "dropdown-item";
         button.style.zIndex = "999;"
-        button.innerHTML = sort.name;
+        button.textContent = sort.name;
         sortsDropdown.appendChild(button);
         button.addEventListener("click", function () {
             onSortChange(sort);
@@ -161,7 +161,7 @@ var createFilters = function (filters, filterId) {
             let checkedItems = [...new Set(Array.from(filterItems).filter(item => item.checked))];
             checkedItems.forEach(function (item) {
                 let value = document.querySelector(`[for^="${item.id}"]`);
-                let filteredJobs = tempJobs.filter(job => job[filter.property] === value.innerHTML);
+                let filteredJobs = tempJobs.filter(job => job[filter.property] === value.textContent);
                 selectedJobs.splice(selectedJobs.length, 0, ...filteredJobs);
             });
         });
@@ -188,7 +188,7 @@ var createFilters = function (filters, filterId) {
         let filterItemDiv = document.createElement("div");
         filterItemDiv.className = "filter-item";
         let filterName = document.createElement("h3");
-        filterName.innerHTML = filter.name;
+        filterName.textContent = filter.name;
         filterItemDiv.appendChild(filterName);
         values.forEach(function (value, index) {
             let id = `${filterId}-${filter.property}-${index}`;
@@ -201,7 +201,7 @@ var createFilters = function (filters, filterId) {
             let filterLabel = document.createElement("label");
             filterLabel.className = "form-check-label";
             filterLabel.htmlFor = id;
-            filterLabel.innerHTML = value;
+            filterLabel.textContent = value;
             filterInputDiv.appendChild(filterInput);
             filterInputDiv.appendChild(filterLabel);
             filterItemDiv.appendChild(filterInputDiv);
@@ -221,11 +221,11 @@ var updateJobCards = function () {
     }
 
     clearElementChildren("jobs");
-    selectedJobs = jobs.filter(job => job.show);
+    let selectedJobs = jobs.filter(job => job.show);
 
     // change "search results" info
     let searchResults = document.getElementById("search-results");
-    searchResults.innerHTML = `Search results: ${selectedJobs.length}`;
+    searchResults.textContent = `Search results: ${selectedJobs.length}`;
 
     let comparationJobsNumber = jobs.filter(job => job.compare).length;
 
@@ -249,17 +249,17 @@ var updateJobCards = function () {
         cardHeadDiv.style.height = "20px";
         creationDate.className = "text-muted float-end mb-2";
         companyName.className = "text-muted float-start mb-2";
-        creationDate.innerHTML = `${calculateDays(job.creation_date)} days ago`;
-        companyName.innerHTML = `${job.company}`;
+        creationDate.textContent = `${calculateDays(job.creation_date)} days ago`;
+        companyName.textContent = `${job.company}`;
         cardHeadDiv.appendChild(creationDate);
         cardHeadDiv.appendChild(companyName);
 
         // Job title
         let title = document.createElement("h5");
-        title.className = "d-xl-flex justify-content-xl-start card-title";
+        title.className = "d-flex justify-content-start card-title";
         title.style.width = "100%";
         title.style.fontWeight = "bold";
-        title.innerHTML = `${job.title}`;
+        title.textContent = `${job.title}`;
 
         let infoDiv = document.createElement("div");
         infoDiv.className = "d-flex";
@@ -275,7 +275,7 @@ var updateJobCards = function () {
         salaryImage.height = 30;
         salaryImage.src = "images/salary.png";
         salaryInfo.style.fontWeight = "bold";
-        salaryInfo.innerHTML = `€${job.salary}/year`
+        salaryInfo.textContent = `€${job.salary}/year`
         salaryDiv.appendChild(salaryImage);
         salaryDiv.appendChild(salaryInfo);
 
@@ -288,7 +288,7 @@ var updateJobCards = function () {
         durationImage.height = 30;
         durationImage.src = "images/duration.png";
         durationInfo.style.fontWeight = "bold";
-        durationInfo.innerHTML = job.duration;
+        durationInfo.textContent = job.duration;
         durationDiv.style.marginLeft = "10px";
         durationDiv.appendChild(durationImage);
         durationDiv.appendChild(durationInfo);
@@ -302,7 +302,7 @@ var updateJobCards = function () {
         validUntilImage.height = 30;
         validUntilImage.src = "images/until.png";
         validUntilInfo.style.fontWeight = "bold";
-        validUntilInfo.innerHTML = `Valid until ${formatDate(job.until_date)}`
+        validUntilInfo.textContent = `Valid until ${formatDate(job.until_date)}`
         validUntilDiv.style.marginLeft = "10px";
         validUntilDiv.appendChild(validUntilImage);
         validUntilDiv.appendChild(validUntilInfo);
@@ -312,13 +312,13 @@ var updateJobCards = function () {
         infoDiv.appendChild(validUntilDiv);
 
         // Description
-        description = document.createElement("p");
+        let description = document.createElement("p");
         description.className = "card-text";
-        description.innerHTML = job.description;
+        description.textContent = job.description;
 
         // Compare checkbox
         let compareDiv = document.createElement("div");
-        compareDiv.className = "form-check d-xl-flex justify-content-end";
+        compareDiv.className = "form-check d-flex justify-content-end";
         let compareInput = document.createElement("input");
         compareInput.id = `compare-checkbox-${index + 1}`;
         compareInput.className = "form-check-input";
@@ -331,7 +331,7 @@ var updateJobCards = function () {
         compareLabel.className = "form-check-label";
         compareLabel.htmlFor = `compare-checkbox-${index + 1}`;
         compareLabel.style.marginLeft = "5px";
-        compareLabel.innerHTML = "Compare";
+        compareLabel.textContent = "Compare";
         compareDiv.appendChild(compareInput);
         compareDiv.appendChild(compareLabel);
         compareInput.addEventListener("click", function () {
@@ -351,21 +351,19 @@ var updateJobCards = function () {
 
     if (selectedJobs.length === 0) {
         let imageDiv = document.createElement("div");
-        imageDiv.className = "text-center d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center";
-        imageDiv.style.marginBottom = "30px";
-        imageDiv.style.marginTop = "30px";
+        imageDiv.id = "no-results";
+        imageDiv.className = "text-center d-flex justify-content-center align-items-center";
         let image = document.createElement("img");
+        image.id = "no-results-image";
         image.src = "images/sadorange.png";
-        image.style.width = "257px";
-        image.style.height = "286px";
         imageDiv.appendChild(image);
 
         let textDiv = document.createElement("div");
-        textDiv.className = "text-center d-flex d-xl-flex justify-content-center align-items-center justify-content-xl-center";
+        textDiv.className = "text-center d-flex justify-content-center align-items-center";
         let text = document.createElement("h2");
+        text.id = "no-results-text";
         text.className = "text-info";
-        text.style = "--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;font-weight: bold;";
-        text.innerHTML = "No results found";
+        text.textContent = "No results found";
         textDiv.appendChild(text);
 
         jobsDiv.appendChild(imageDiv);
@@ -385,12 +383,29 @@ var updateComparationBar = function (comparationTable) {
         let head = document.createElement("thead");
         let headerRow = document.createElement("tr");
         let emptyHeader = document.createElement("th");
-        emptyHeader.innerHTML = "<th><br /></th>";
+        //emptyHeader.textContent = "<th><br /></th>";
+        let thHeader = document.createElement("th");
+        thHeader.appendChild(document.createElement("br"));
+        emptyHeader.appendChild(thHeader);
+
+
         headerRow.appendChild(emptyHeader);
         comparationJobs.forEach(function (job) {
             let header = document.createElement("th");
             header.className = "text-nowrap";
-            header.innerHTML = `<br /><strong>${job.title},<br />${job.company}</strong><br /><br />`;
+            //header.textContent = `<br /><strong>${job.title},<br />${job.company}</strong><br /><br />`;
+
+            header.appendChild(document.createElement("br"));
+            let strongHeader = document.createElement("strong");
+            strongHeader.textContent = `${job.title},`;
+            header.appendChild(strongHeader);
+            header.appendChild(document.createElement("br"));
+            strongHeader = document.createElement("strong");
+            strongHeader.textContent = `${job.company}`;
+            header.appendChild(strongHeader);
+            header.appendChild(document.createElement("br"));
+            header.appendChild(document.createElement("br"));
+
             headerRow.appendChild(header);
         });
         head.appendChild(headerRow);
@@ -402,20 +417,20 @@ var updateComparationBar = function (comparationTable) {
             let compareText = document.createElement("td");
             compareText.className = "text-nowrap";
             compareText.style.fontWeight = "bold";
-            compareText.innerHTML = comparation.name;
+            compareText.textContent = comparation.name;
             row.appendChild(compareText);
             comparationJobs.forEach(function (job) {
                 let value = document.createElement("td");
                 value.className = "text-nowrap";
                 switch (comparation.name) {
                     case "Valid Until":
-                        value.innerHTML = formatDate(job[comparation.property]);
+                        value.textContent = formatDate(job[comparation.property]);
                         break;
                     case "Salary":
-                        value.innerHTML = `€${job[comparation.property]}/year`;
+                        value.textContent = `€${job[comparation.property]}/year`;
                         break;
                     default:
-                        value.innerHTML = job[comparation.property];
+                        value.textContent = job[comparation.property];
                 }
                 row.appendChild(value);
             });
@@ -442,7 +457,7 @@ var updateComparationBar = function (comparationTable) {
     }
 
     let numSelectedJobs = document.getElementById("num-selected-jobs");
-    numSelectedJobs.innerHTML = `${comparationJobs.length} Selected Jobs`
+    numSelectedJobs.textContent = `${comparationJobs.length} Selected Jobs`
 
     if (comparationJobs.length < 2) {
         compareButton.disabled = true;
@@ -459,8 +474,8 @@ var updateComparationBar = function (comparationTable) {
             let title = document.createElement("h6");
             let salary = document.createElement("p");
             salary.style.marginBottom = "0px";
-            title.innerHTML = `${comparationJobs[i].title}, ${comparationJobs[i].company}`
-            salary.innerHTML = `€${comparationJobs[i].salary}/year`
+            title.textContent = `${comparationJobs[i].title}, ${comparationJobs[i].company}`
+            salary.textContent = `€${comparationJobs[i].salary}/year`
 
             infoDiv.appendChild(title);
             infoDiv.appendChild(salary);
@@ -468,9 +483,13 @@ var updateComparationBar = function (comparationTable) {
         } else {
             let availableSpotText = document.createElement("small");
             availableSpotText.style.fontSize = "16px";
-            availableSpotText.innerHTML = "Choose 1 <br /> more job";
-
+            availableSpotText.textContent = "Choose 1";
             infoDiv.appendChild(availableSpotText);
+            infoDiv.appendChild(document.createElement("br"));
+            let availableSpotText2  = document.createElement("small");
+            availableSpotText2.style.fontSize = "16px";
+            availableSpotText2.textContent = "more job";
+            infoDiv.appendChild(availableSpotText2);
             columnDiv.appendChild(infoDiv);
         }
         compareJobs.appendChild(columnDiv);
@@ -482,7 +501,7 @@ var clearElementChildren = function (elementId, elementType) {
     let element = document.getElementById(elementId);
     let node = element.firstChild;
     while (node) {
-        tempNode = node.nextSibling;
+        let tempNode = node.nextSibling;
         if (!elementType || node.tagName === elementType) {
             element.removeChild(node);
         }
