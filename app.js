@@ -14,9 +14,10 @@ app.use(session({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"www")));
-app.use('/api/', require("./routes/usersRoutes"));
 app.use('/', require("./routes/authRoutes"));
-//app.use("/","/www/");
+app.use('/api/', require("./routes/apiRoutes"));
+app.use('/api/users/', require("./routes/usersRoutes"));
+app.use('/api/jobOffers/', require("./routes/jobOffersRoutes"));
 
 app.listen(app.get("port"),
     () => {
