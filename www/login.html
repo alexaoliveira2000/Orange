@@ -36,12 +36,12 @@
                     <h2 class="text-info" style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;">Good to see you
                         again</h2>
                 </div>
-                <form style="border-color: rgb(255,130,3);">
+                <form id="loginForm" name="loginForm" action="/auth" method="POST" style="border-color: rgb(255,130,3);">
                     <div class="mb-3"><label class="form-label" for="email">Email</label>
-                        <input class="form-control item" type="email" id="email">
+                        <input class="form-control item" type="email" id="email" name="email" required>
                     </div>
                     <div class="mb-3"><label class="form-label" for="password">Password</label>
-                        <input class="form-control" type="password" id="password">
+                        <input class="form-control" type="password" id="password" name="password" required>
                     </div>
                     <div class="mb-3">
                         <div class="form-check"><input class="form-check-input" type="checkbox" id="checkbox">
