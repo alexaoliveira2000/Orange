@@ -59,7 +59,6 @@ class User {
     // criar um utilizador
     static createUser(jsonData, callBack) {
         const userData = JSON.parse(jsonData);
-        const bcrypt = require('bcrypt');
         const passwordHash = bcrypt.hashSync(userData.pwd, 10);
         const params = [userData.first_name, userData.last_name, userData.username, passwordHash];
         const sql = "insert into system_users (first_name, last_name, username, pwd) values (?, ?, ?, ?)";
