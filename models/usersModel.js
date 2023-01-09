@@ -1,25 +1,22 @@
+let connection = require("../config/connection")
+
 class User {
 
-    // conectar à DB
-    getDbCon() {
-        const mysql = require('mysql');
-        const mysqlCon = mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "123456",
-            database: "orange"
-        });
-        mysqlCon.connect(function (err) {
-            if (err) {
-                console.log(err.message);
-            }
-        });
-        return mysqlCon;
+    constructor(obj) {
+        this.id = obj.id;
+        this.type = obj.type;
+        this.description = obj.description;
+        this.email = obj.email;
+        this.password = obj.password;
     }
 
-    // fazer uma query recebida como argumento
+    isAdmin() {
+        return this.type === 'admin';
+    }
+
+    // devolver uma query recebida como argumento (em json)
     queryDb(sql, params, callBack) {
-        const mysqlCon = this.getDbCon();
+        const mysqlCon = connection.connect();
         mysqlCon.query(sql, params, function (err, result) {
             if (err) {
                 callBack(err, null);
@@ -30,21 +27,37 @@ class User {
         mysqlCon.end();
     }
 
-    // devolver todos os utilizadores
-    getUsers(callBack) {
+    // devolver todos os Users (passar de json para User[])
+    static getUsers(callBack) {
         const sql = "SELECT * FROM users";
-        this.queryDb(sql, [], callBack);
+        this.queryDb(sql, [], function(err, users) {
+            if (err) {
+                callBack(err, null);
+            } else if (users.length === 0) {
+                callBack(new Error(`No data found on table "users"`), null);
+            } else {
+                callBack(null, users.map(user => new User(user)));
+            }
+        });
     }
 
-    // devolver um utilizador
-    getUser(id, callBack) {
+    // devolver um User (passar de json para User)
+    static getUser(id, callBack) {
         const params = [id];
         const sql = "SELECT * FROM users WHERE user_id = ?";
-        this.queryDb(sql, params, callBack);
+        this.queryDb(sql, params, function(err, user) {
+            if (err) {
+                callBack(err, null);
+            } else if (!user) {
+                callBack(new Error(`User with id "${id}" not found`), null);
+            } else {
+                callBack(null, new User(user));
+            }
+        });
     }
 
     // criar um utilizador
-    createUser(jsonData, callBack) {
+    static createUser(jsonData, callBack) {
         const userData = JSON.parse(jsonData);
         const bcrypt = require('bcrypt');
         const passwordHash = bcrypt.hashSync(userData.pwd, 10);
@@ -53,21 +66,11 @@ class User {
         this.queryDb(sql, params, callBack);
     }
 
-    // criar um utilizador
-    createUser(jsonData, callBack) {
-        const userData = JSON.parse(jsonData);
+    // validar email e pass do formulário
+    static verifyUser(email, password, callBack) {
         const bcrypt = require('bcrypt');
-        const passwordHash = bcrypt.hashSync(userData.pwd, 10);
-        const params = [userData.first_name, userData.last_name, userData.username, passwordHash];
-        const sql = "insert into system_users (first_name, last_name, username, pwd) values (?, ?, ?, ?)";
-        this.queryDb(sql, params, callBack);
-    }
-
-    // verificar user e pass dos formulários
-    verifyUser(username, password, callBack) {
-        const bcrypt = require('bcrypt');
-        const sql = "select * from system_users where username = ?";
-        const params = [username];
+        const sql = "SELECT * FROM users WHERE email = ?";
+        const params = [email];
         this.queryDb(sql, params, function (err, result) {
             if (err) {
                 callBack(err, false);
@@ -77,8 +80,8 @@ class User {
                 } else {
                     var hashedPassword = result[0].pwd;
                     var response = bcrypt.compareSync(password, hashedPassword);
-                    if (response == false) {
-                        callBack(new Error("Password verification failed."), null);
+                    if (!response) {
+                        callBack(new Error("Invalid password."), null);
                     } else {
                         callBack(null, result);
                     }
