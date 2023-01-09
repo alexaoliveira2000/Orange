@@ -1,25 +1,72 @@
+const connection = require("../config/connection")
+
 class JobOffer {
 
-    constructor(headhunter, title, salary, duration, untilDate, creationDate, workType, area, description) {
-        this._id = JobOffer.incrementId();
-        this.headhunter = headhunter;
-        this.title = title;
-        this.salary = salary;
-        this.duration = duration;
-        this.untilDate = untilDate;
-        this.creationDate = creationDate;
-        this.workType = workType;
-        this.area = area;
-        this.description = description;
+    constructor(obj) {
+        this.id = obj.offer_id;
+        this.headhunterId = obj.headhunter_id;
+        this.area = obj.area;
+        this.duration = obj.duration;
+        this.expirationDate = obj.expiration_date;
+        this.totalValue = obj.total_value;
     }
 
-    static incrementId() {
-        if (!this.latestId) {
-            this.latestId = 1;
-        } else {
-            this.latestId++;
-        }
-        return this.latestId;
+    // devolver uma query recebida como argumento (em json)
+    static queryDb(sql, params, callBack) {
+        const mysqlCon = connection();
+        mysqlCon.query(sql, params, function (err, result) {
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, result);
+            }
+        });
+        mysqlCon.end();
     }
 
+    // devolver todos os JobOffers (passar de json para JobOffer[])
+    static getJobOffers(callBack) {
+        const sql = "SELECT * FROM job_offers";
+        this.queryDb(sql, [], function(err, result) {
+            if (err) {
+                callBack(err, null);
+            } else if (result.length === 0) {
+                callBack(new Error(`No data found on table "job_offers"`), null);
+            } else {
+                callBack(null, result.map(jobOffer => new JobOffer(jobOffer)));
+            }
+        });
+    }
+
+    // devolver um JobOffer (passar de json para JobOffer)
+    static getJobOffer(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM job_offers WHERE offer_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            let jobOffer = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, jobOffer ? new JobOffer(jobOffer) : null);
+            }
+        });
+    }
+
+    // criar um JobOffer
+    static createJobOffer(jsonData, callBack) {
+        const jobOfferData = JSON.parse(jsonData);
+        const params = [jobOfferData.headhunterId, jobOfferData.area, jobOfferData.duration, 
+            jobOfferData.expirationDate, jobOfferData.totalValue];
+        const sql = "insert into job_offers (headhunter_id, area, duration, expiration_date, total_value) values (?, ?, ?, ?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // eliminar um JobOffer
+    static deleteJobOffer(id, callBack) {
+        const params = [id];
+        const sql = "delete from job_offers where offer_id = ? limit 1;";
+        this.queryDb(sql, params, callBack);
+    }
 }
+
+module.exports = JobOffer;
