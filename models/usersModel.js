@@ -1,13 +1,14 @@
-let connection = require("../config/connection")
+const connection = require("../config/connection")
+const bcrypt = require("bcrypt")
 
 class User {
 
     constructor(obj) {
-        this.id = obj.id;
-        this.type = obj.type;
-        this.description = obj.description;
+        this.id = obj.user_id;
+        this.type = obj.user_type;
+        this.description = obj.user_description;
         this.email = obj.email;
-        this.password = obj.password;
+        this.password = obj.pass;
     }
 
     isAdmin() {
@@ -15,8 +16,8 @@ class User {
     }
 
     // devolver uma query recebida como argumento (em json)
-    queryDb(sql, params, callBack) {
-        const mysqlCon = connection.connect();
+    static queryDb(sql, params, callBack) {
+        const mysqlCon = connection();
         mysqlCon.query(sql, params, function (err, result) {
             if (err) {
                 callBack(err, null);
@@ -30,13 +31,13 @@ class User {
     // devolver todos os Users (passar de json para User[])
     static getUsers(callBack) {
         const sql = "SELECT * FROM users";
-        this.queryDb(sql, [], function(err, users) {
+        User.queryDb(sql, [], function(err, result) {
             if (err) {
                 callBack(err, null);
-            } else if (users.length === 0) {
+            } else if (result.length === 0) {
                 callBack(new Error(`No data found on table "users"`), null);
             } else {
-                callBack(null, users.map(user => new User(user)));
+                callBack(null, result.map(user => new User(user)));
             }
         });
     }
@@ -45,13 +46,12 @@ class User {
     static getUser(id, callBack) {
         const params = [id];
         const sql = "SELECT * FROM users WHERE user_id = ?";
-        this.queryDb(sql, params, function(err, user) {
+        User.queryDb(sql, params, function(err, result) {
+            let user = result[0] || null;
             if (err) {
                 callBack(err, null);
-            } else if (!user) {
-                callBack(new Error(`User with id "${id}" not found`), null);
             } else {
-                callBack(null, new User(user));
+                callBack(null, user ? new User(user) : null);
             }
         });
     }
@@ -67,7 +67,7 @@ class User {
     }
 
     // validar email e pass do formulário
-    static verifyUser(email, password, callBack) {
+    static verifyUser(email, pass, callBack) {
         const bcrypt = require('bcrypt');
         const sql = "SELECT * FROM users WHERE email = ?";
         const params = [email];
@@ -76,14 +76,14 @@ class User {
                 callBack(err, false);
             } else {
                 if (result.length == 0) {
-                    callBack(new Error("Invalid username."), null);
+                    callBack(null, false);
                 } else {
                     var hashedPassword = result[0].pwd;
-                    var response = bcrypt.compareSync(password, hashedPassword);
+                    var response = bcrypt.compareSync(pass, hashedPassword);
                     if (!response) {
-                        callBack(new Error("Invalid password."), null);
+                        callBack(null, false);
                     } else {
-                        callBack(null, result);
+                        callBack(null, true);
                     }
                 }
             }

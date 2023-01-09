@@ -81,26 +81,25 @@ router.get("/jobOffers", function (req, res) {
 });
 
 router.post("/auth", function (req, res) {
-    // Capture the input fields
-	let email = req.body.email;
-	let password = req.body.password;
-    if (!email || !password) {
+    let email = req.body.email;
+	let pass = req.body.password;
+    if (!email || !pass) {
         res.sendStatus(401);
     }
-    let user = new User();
-    let connection = user.getDbCon();
-    connection.query('SELECT * FROM users WHERE email = ? AND pass = ?', [email, password], function(error, results, fields) {
-        if (error) {
-            res.sendStatus(500);
-        } else if (results.length === 0) {
+    User.verifyUser(email, pass, function(err, isVerified) {
+        if (err) {
+            res.send(500);
+        } else if (!isVerified) {
             res.sendStatus(401);
         } else {
-            req.session.loggedin = true;
-			req.session.email = email;
-			res.status(200).send("Authenticated successfully");
+            req.session.authenticated = true;
+            req.session.user = {
+                email: email,
+                type: "job_seeker"
+            }
+			res.sendStatus(200);
         }
-    });
-    connection.end();
+    })
 });
 
 router.post("/register", function (req, res) {
@@ -153,33 +152,37 @@ router.post("/register", function (req, res) {
     next();
 }); */
 
-router.get("/:model", function (req, res) {
-    const model = req.params.model;
-    let user = new User();
-    user.getUsers(function(err, data) {
+router.get("/users", function (req, res) {
+    User.getUsers(function(err, users) {
         if (err) {
-            res.status(404).send(`Model "${model}" was not found`);
-        } else if (data.length === 0) {
-            res.status(404).send(`Model "${model}" has no data`);
+            res.status(404).send(err);
+        } else if (users.length === 0) {
+            res.status(404).send(`Model "users" has no data`);
         } else {
-            res.json({ [model]: data });
+            res.json({ users: users });
         }
     });
 });
 
-router.get("/:model/:id", function (req, res) {
-    const model = req.params.model;
+router.get("/users/:id", function (req, res) {
     const id = req.params.id;
-    let user = new User();
-    user.getUser(id, function(err, data) {
+    User.getUser(id, function(err, user) {
         if (err) {
-            res.status(404).send(`Model "${model}" was not found`);
-        } else if (data.length === 0) {
-            res.status(404).send(`Model "${model}" has no index ${id}`);
+            res.status(404).send(err);
+        } else if (!user) {
+            res.status(404).send(`User not found`);
         } else {
-            res.json({ [model]: data });
+            res.json({ user: user });
         }
     });
+});
+
+router.get("/check-authentication", function (req, res) {
+    if (req.session.authenticated) {
+        res.json(session);
+      } else {
+        res.send({authenticated : false});
+      }
 });
 
 module.exports = router;

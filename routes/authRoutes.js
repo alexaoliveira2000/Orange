@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const path = require("path");
+const fs = require("fs");
 
 // se não estiver logado, redirecionar para a página de login
 /* router.get('*', function(req, res, next) {
@@ -25,7 +27,28 @@ router.post('/auth', function (req, res) {
 });
 
 router.get('/', function (req, res) {
-    res.redirect("/www/index.html");
+    res.redirect("/index");
 });
+
+router.get('/:page', function (req, res) {
+    let page = req.params.page;
+    let isHtml =  page.includes("html") || !page.includes(".");
+    let filePath;
+    console.log(page)
+    
+    if (isHtml) {
+        page = page.split(".")[0];
+        filePath = path.join(__dirname, '../../www/', page, 'html');
+    } else {
+        filePath = path.join(__dirname, '../../www/', page);
+    }
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    }
+
+});
+
+
+
 
 module.exports = router;

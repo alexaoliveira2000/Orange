@@ -13,9 +13,9 @@ app.use(session({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname,"www")));
 app.use('/api/', require("./routes/usersRoutes"));
 app.use('/', require("./routes/authRoutes"));
-app.use(express.static(path.join(__dirname), { extensions: ['html'] }));
 //app.use("/","/www/");
 
 app.listen(app.get("port"),
