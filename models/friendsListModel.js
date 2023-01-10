@@ -9,6 +9,13 @@ class FriendList {
         this.pending = obj.pending;
     }
 
+    convertObject(obj) {
+        this.friends_list_id = obj.id;
+        this.job_seeker_id = obj.jobSeekerId;
+        this.friend_id = obj.friendId;
+        this.pending = obj.pending;
+    }
+
     // devolver uma query recebida como argumento (em json)
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -50,11 +57,34 @@ class FriendList {
         });
     }
 
+    // devolver a Friendlist de um utilizador (passar de json para FriendList)
+    static getFriendListUser(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM friends_lists WHERE job_seeker_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            let friendList = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, friendList ? new FriendList(friendList) : null);
+            }
+        });
+    }
+
     // criar uma FriendList
     static createFriendList(jsonData, callBack) {
         const friendListData = JSON.parse(jsonData);
         const params = [friendListData.jobSeekerId, friendListData.friendId, friendListData.pending];
         const sql = "insert into friends_lists (job_seeker_id, friend_id, pending) values (?, ?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um FriendList
+    static editFriendList(jsonData, callBack) {
+        const friendListData = JSON.parse(jsonData);
+        convertObject(friendListData);
+        const params = [friendListData, friendListData.friends_list_id];
+        const sql = "UPDATE friends_lists SET ? WHERE friends_list_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

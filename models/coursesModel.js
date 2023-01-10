@@ -10,6 +10,14 @@ class Course {
         this.averageGrade = obj.average_grade;
     }
 
+    convertObject(obj) {
+        this.course_id = obj.id;
+        this.course_name = obj.name;
+        this.school_name = obj.schoolName;
+        this.course_type = obj.type;
+        this.average_grade = obj.averageGrade;
+    }
+
     // devolver uma query recebida como argumento (em json)
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -51,7 +59,7 @@ class Course {
         });
     }
 
-    // criar um Curso
+    // criar um Course
     static createCourse(jsonData, callBack) {
         const courseData = JSON.parse(jsonData);
         const params = [courseData.name, courseData.schoolName, courseData.type, 
@@ -60,7 +68,16 @@ class Course {
         this.queryDb(sql, params, callBack);
     }
 
-    // eliminar um Curso
+    // editar um Course
+    static editCourse(jsonData, callBack) {
+        const courseData = JSON.parse(jsonData);
+        convertObject(courseData);
+        const params = [courseData, courseData.course_id];
+        const sql = "UPDATE courses SET ? WHERE course_id = ?";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // eliminar um Course
     static deleteCourse(id, callBack) {
         const params = [id];
         const sql = "delete from courses where course_id = ? limit 1;";

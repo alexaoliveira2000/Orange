@@ -11,6 +11,15 @@ class Workplace {
         this.functionDescription = obj.function_description;
     }
 
+    convertObject(obj) {
+        this.workplace_id = obj.id;
+        this.workplace_name = obj.name;
+        this.logo_url = obj.logoUrl;
+        this.start_date = obj.startDate;
+        this.end_date = obj.endDate;
+        this.function_description = obj.functionDescription;
+    }
+
     // devolver uma query recebida como argumento (em json)
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -58,6 +67,15 @@ class Workplace {
         const params = [workplaceData.name, workplaceData.logoUrl, workplaceData.startDate, 
             workplaceData.endDate, workplaceData.functionDescription];
         const sql = "insert into workplaces (workplace_name, logo_url, start_date, end_date, function_description) values (?, ?, ?, ?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um Workplace
+    static editWorkplace(jsonData, callBack) {
+        const workplaceData = JSON.parse(jsonData);
+        convertObject(workplaceData);
+        const params = [workplaceData, workplaceData.workplace_id];
+        const sql = "UPDATE workplaces SET ? WHERE workplace_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

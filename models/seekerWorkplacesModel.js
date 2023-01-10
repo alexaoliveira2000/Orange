@@ -8,6 +8,12 @@ class SeekerWorkplace {
         this.workplaceId = obj.workplace_id;
     }
 
+    convertObject(obj) {
+        this.seeker_workplace_id = obj.id;
+        this.job_seeker_id = obj.jobSeekerId;
+        this.workplace_id = obj.workplaceId;
+    }
+
     // devolver uma query recebida como argumento (em json)
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -49,11 +55,34 @@ class SeekerWorkplace {
         });
     }
 
+    // devolver os Workplaces de um utilizador (passar de json para SeekerWorkplace)
+    static getSeekerWorkplace(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM seeker_workplaces WHERE job_seeker_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            let seekerWorkplace = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, seekerWorkplace ? new SeekerWorkplace(seekerWorkplace) : null);
+            }
+        });
+    }
+
     // criar uma SeekerWorkplace
     static createSeekerWorkplace(jsonData, callBack) {
         const seekerWorkplaceData = JSON.parse(jsonData);
         const params = [seekerWorkplaceData.jobSeekerId, seekerWorkplaceData.workplaceId];
         const sql = "insert into seeker_workplaces (job_seeker_id, workplace_id) values (?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um SeekerWorkplace
+    static editSeekerWorkplace(jsonData, callBack) {
+        const seekerWorkplaceData = JSON.parse(jsonData);
+        convertObject(seekerWorkplaceData);
+        const params = [seekerWorkplaceData, seekerWorkplaceData.seeker_workplace_id];
+        const sql = "UPDATE seeker_workplaces SET ? WHERE seeker_workplace_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

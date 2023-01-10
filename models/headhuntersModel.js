@@ -8,6 +8,12 @@ class Headhunter {
         this.websiteUrl = obj.website_url;
     }
 
+    convertObject(obj) {
+        this.headhunter_id = obj.id;
+        this.logo_url = obj.logoUrl;
+        this.website_url = obj.websiteUrl;
+    }
+
     // devolver uma query recebida como argumento (em json)
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -54,6 +60,15 @@ class Headhunter {
         const headhunterData = JSON.parse(jsonData);
         const params = [headhunterData.logoUrl, headhunterData.websiteUrl];
         const sql = "insert into headhunters (logo_url, website_url) values (?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um Headhunter
+    static editHeadhunter(jsonData, callBack) {
+        const headhunterData = JSON.parse(jsonData);
+        convertObject(headhunterData);
+        const params = [headhunterData, headhunterData.headhunter_id];
+        const sql = "UPDATE headhunters SET ? WHERE headhunter_id = ?";
         this.queryDb(sql, params, callBack);
     }
 
