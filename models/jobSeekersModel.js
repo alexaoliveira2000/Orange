@@ -8,7 +8,13 @@ class JobSeeker {
         this.birthDate = obj.birth_date;
         this.location = obj.location;
         this.isVisibleToCompanies = obj.visible_to_companies;
-        this.friendListId = obj.friends_list_id;
+    }
+
+    convertObject(obj) {
+        this.job_seeker_id = obj.id;
+        this.gender = obj.logoUrl;
+        this.birth_date = obj.websiteUrl;
+        this.visible_to_companies = obj.isVisibleToCompanies;
     }
 
     // devolver uma query recebida como argumento (em json)
@@ -62,6 +68,24 @@ class JobSeeker {
             data.visible === 'true'
         ];
         const sql = "insert into job_seekers (job_seeker_id, gender, birth_date, location, visible_to_companies) values (?, ?, ?, ?, ?)";
+    static createJobSeeker(userId, data, callBack) {
+        const params = [
+            userId,
+            data.gender,
+            data.birth_date,
+            data.location,
+            Boolean(data.visible)
+        ];
+        const sql = "insert into job_seeker (job_seeker_id, gender, birth_date, location, visible_to_companies) values (?, ?, ?, ?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um JobSeeker
+    static editJobSeeker(jsonData, callBack) {
+        const jobSeekerData = JSON.parse(jsonData);
+        convertObject(jobSeekerData);
+        const params = [jobSeekerData, jobSeekerData.job_seeker_id];
+        const sql = "UPDATE job_seekers SET ? WHERE job_seeker_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

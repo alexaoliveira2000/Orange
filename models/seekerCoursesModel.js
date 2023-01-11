@@ -8,6 +8,12 @@ class SeekerCourse {
         this.courseId = obj.course_id;
     }
 
+    convertObject(obj) {
+        this.seeker_course_id = obj.id;
+        this.job_seeker_id = obj.jobSeekerId;
+        this.course_id = obj.courseId;
+    }
+
     // devolver uma query recebida como argumento (em json)
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -49,11 +55,34 @@ class SeekerCourse {
         });
     }
 
+    // devolver os cursos de um utilizador (passar de json para SeekerCourse)
+    static getSeekerCourseUser(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM seeker_courses WHERE job_seeker_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            let seekerCourse = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, seekerCourse ? new SeekerCourse(seekerCourse) : null);
+            }
+        });
+    }
+
     // criar uma SeekerCourse
     static createSeekerCourse(jsonData, callBack) {
         const seekerCourseData = JSON.parse(jsonData);
         const params = [seekerCourseData.jobSeekerId, seekerCourseData.courseId];
         const sql = "insert into seeker_courses (job_seeker_id, course_id) values (?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um SeekerCourse
+    static editSeekerCourse(jsonData, callBack) {
+        const seekerCourseData = JSON.parse(jsonData);
+        convertObject(seekerCourseData);
+        const params = [seekerCourseData, seekerCourseData.seeker_course_id];
+        const sql = "UPDATE seeker_courses SET ? WHERE seeker_course_id = ?";
         this.queryDb(sql, params, callBack);
     }
 
