@@ -7,7 +7,6 @@ class JobSeeker {
         this.gender = obj.gender;
         this.birthDate = obj.birth_date;
         this.isVisibleToCompanies = obj.visible_to_companies;
-        this.friendListId = obj.friends_list_id;
     }
 
     convertObject(obj) {
@@ -15,7 +14,6 @@ class JobSeeker {
         this.gender = obj.logoUrl;
         this.birth_date = obj.websiteUrl;
         this.visible_to_companies = obj.isVisibleToCompanies;
-        this.friends_list_id = obj.friendListId;
     }
 
     // devolver uma query recebida como argumento (em json)
