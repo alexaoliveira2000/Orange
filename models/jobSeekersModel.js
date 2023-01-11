@@ -6,6 +6,7 @@ class JobSeeker {
         this.id = obj.job_seeker_id;
         this.gender = obj.gender;
         this.birthDate = obj.birth_date;
+        this.location = obj.location;
         this.isVisibleToCompanies = obj.visible_to_companies;
         this.friendListId = obj.friends_list_id;
     }
@@ -52,10 +53,15 @@ class JobSeeker {
     }
 
     // criar um JobSeeker
-    static createJobSeeker(jsonData, callBack) {
-        const jobSeekerData = JSON.parse(jsonData);
-        const params = [jobSeekerData.gender, jobSeekerData.birthDate, jobSeekerData.isVisibleToCompanies, jobSeekerData.friendListId];
-        const sql = "insert into job_seekers (gender, birth_date, visible_to_companies, friends_list_id) values (?, ?, ?, ?)";
+    static createJobSeeker(userId, data, callBack) {
+        const params = [
+            userId,
+            data.gender,
+            data.birth_date,
+            data.location,
+            data.visible === 'true'
+        ];
+        const sql = "insert into job_seekers (job_seeker_id, gender, birth_date, location, visible_to_companies) values (?, ?, ?, ?, ?)";
         this.queryDb(sql, params, callBack);
     }
 

@@ -23,7 +23,7 @@ class Headhunter {
 
     // devolver todos os Headhunters (passar de json para Headhunter[])
     static getHeadhunters(callBack) {
-        const sql = "SELECT * FROM headhunters";
+        const sql = "SELECT * FROM headhunter";
         this.queryDb(sql, [], function(err, result) {
             if (err) {
                 callBack(err, null);
@@ -50,10 +50,23 @@ class Headhunter {
     }
 
     // criar um Headhunter
-    static createHeadhunter(jsonData, callBack) {
-        const headhunterData = JSON.parse(jsonData);
-        const params = [headhunterData.logoUrl, headhunterData.websiteUrl];
-        const sql = "insert into headhunters (logo_url, website_url) values (?, ?)";
+    static createHeadhunter(userId, data, callBack) {
+        const params = [
+            userId,
+            data.website,
+            data.logo,
+        ];
+        const sql = "insert into headhunters (headhunter_id, website_url, website_logo) values (?, ?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // editar um Headhunter
+    static editHeadhunter(headhunter, callBack) {
+        const params = [
+            headhunter.logoUrl, 
+            headhunter.websiteUrl, 
+            headhunter.id];
+        const sql = "UPDATE headhunters SET website_url = ?, website_logo = ?, validated = ? WHERE headhunter_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

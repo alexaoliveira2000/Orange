@@ -21,13 +21,12 @@
             <div class="collapse navbar-collapse" id="navcol-3">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="job-offers">Job Offers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="resumes">Resumes</a></li>
                     <li class="nav-item"><a class="nav-link" href="about-us">About us</a></li>
                 </ul><a id="orange-button" class="btn btn-primary" role="button" href="login">Sign in</a>
             </div>
         </div>
     </nav>
+
     <main class="page registration-page">
         <section class="clean-block clean-form dark" style="background: url(&quot;images/Moon.svg&quot;);">
             <div class="container">
@@ -38,22 +37,82 @@
                     <h2 class="text-info d-flex justify-content-center"
                         style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;">Sign Up</h2>
                 </div>
-                <form style="border-color: rgb(255,130,3);">
+
+                <form id="signupForm" name="signupForm" action="/register" method="POST"
+                    style="border-color: rgb(255,130,3);">
+
                     <div class="d-xl-flex justify-content-xl-center" style="margin-bottom: 10px;">
-                        <button id="button-jobseeker" class="btn btn-primary" style="margin-right: 30px;"
-                            href="#">Job seeker</button>
-                        <button id="button-headhunter" class="btn btn-primary" style="margin-left: 30px;"
-                            href="#">Headhunter</button>
+                        <div style="margin-right: 30px;">
+                            <input id="job_seeker" class="btn btn-primary" name="user_type" type="radio"
+                                value="job_seeker" checked />
+                            <label for="job_seeker">Job Seeker</label>
+                        </div>
+                        <div style="margin-left: 30px;">
+                            <input id="headhunter" class="btn btn-primary" name="user_type" type="radio"
+                                value="headhunter" />
+                            <label for="headhunter">Headhunter</label>
+                        </div>
                     </div>
-                    <div class="mb-3"><label class="form-label" for="name">Name</label><input class="form-control item"
-                            type="text" id="name"></div>
-                    <div class="mb-3"><label class="form-label" for="email">Email</label><input
-                            class="form-control item" type="email" id="email"></div>
+
+                    <div class="mb-3"><label class="form-label" for="email">Email</label>
+                        <input class="form-control item" type="email" id="email" name="email" required>
+                        <small id="email_error" style="color: var(--bs-red); display: none;"></small>
+                    </div>
                     <div class="mb-3"><label class="form-label" for="password">Password</label><input
-                            class="form-control item" type="password" id="password-1"></div>
-                    <div class="mb-3"><label class="form-label" for="password">Confirm Password</label><input
-                            class="form-control item" type="password" id="password"></div>
-                    <button id="orange-button" class="btn btn-primary" type="submit">Continue</button>
+                            class="form-control item" type="password" id="password" name="password" autocomplete="new-password" required
+                            minlength="5"><small id="password_error" style="color: var(--bs-red); display: none;"></small></div>
+                    <div class="mb-3"><label class="form-label" for="confirm_password">Confirm Password</label><input
+                            class="form-control item" type="password" id="confirm_password" autocomplete="new-password" required minlength="5">
+                            <small id="confirm_password_error" style="color: var(--bs-red); display: none;"></small>
+                    </div>
+
+                    <div class="mb-3"><label class="form-label" for="name">Description</label>
+                        <textarea class="form-control item" type="text" id="description" name="description" maxlength="255"></textarea>
+                        <small id="description_error" style="color: var(--bs-red); display: none;"></small>
+                    </div>
+
+                    <hr style="margin-bottom: 15px; margin-top: 20px;"/>
+
+                    <div id="job_seeker_form" style="margin-bottom: 10px;">
+                        <div class="mb-3"><label class="form-label" for="seeker_name">Full Name</label>
+                            <input class="form-control item" type="text" id="seeker_name" name="seeker_name" required>
+                            <small id="seeker_name_error" style="color: var(--bs-red); display: none;"></small>
+                        </div>
+                        <div class="mb-3"><label class="form-label" for="birth_date">Birth Date</label>
+                            <input class="form-control item" type="date" id="birth_date" name="birth_date" required>
+                            <small id="birth_date_error" style="color: var(--bs-red); display: none;"></small>
+                        </div>
+                        <div class="mb-3"><label class="form-label" for="gender">Gender</label>
+                            <select id="gender" name="gender" class="form-select" required>
+                                <option value="M" selected>Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                        <div class="mb-3"><label class="form-label" for="location">Location</label>
+                            <input class="form-control item" type="text" id="location" name="location" required>
+                            <small id="location_error" style="color: var(--bs-red); display: none;"></small>
+                        </div>
+                        <div class="form-check"><input id="visible" name="visible" class="form-check-input"
+                                type="checkbox" value="true" checked /><label class="form-check-label"
+                                for="formCheck-1">I want companies to see me</label></div>
+                    </div>
+
+                    <div id="headhunter_form" style="margin-bottom: 10px; display:none;">
+                        <div class="mb-3"><label class="form-label" for="headhunter_name">Company Name</label>
+                            <input class="form-control item" type="text" id="headhunter_name" name="headhunter_name">
+                            <small id="headhunter_name_error" style="color: var(--bs-red); display: none;"></small>
+                        </div>
+                        <div class="mb-3"><label class="form-label" for="name">Company Logo (URL)</label>
+                            <input class="form-control item" type="url" id="logo" name="logo">
+                            <small id="logo_error" style="color: var(--bs-red); display: none;"></small>
+                        </div>
+                        <div class="mb-3"><label class="form-label" for="name">Company Website (URL)</label>
+                            <input class="form-control item" type="url" id="website" name="website">
+                            <small id="website_error" style="color: var(--bs-red); display: none;"></small>
+                        </div>
+                    </div>
+
+                    <button id="orange-button" class="btn btn-primary" type="submit">Register</button>
                 </form>
             </div>
         </section>

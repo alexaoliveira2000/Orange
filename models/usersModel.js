@@ -5,6 +5,7 @@ class User {
 
     constructor(obj) {
         this.id = obj.user_id;
+        this.name = obj.user_name;
         this.type = obj.user_type;
         this.description = obj.user_description;
         this.email = obj.email;
@@ -56,12 +57,31 @@ class User {
         });
     }
 
+    // devolver um User através do email
+    static getUserByEmail(email, callBack) {
+        const params = [email];
+        const sql = "SELECT * FROM users WHERE email = ?";
+        User.queryDb(sql, params, function(err, result) {
+            let user = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, user ? new User(user) : null);
+            }
+        });
+    }
+
     // criar um utilizador
-    static createUser(jsonData, callBack) {
-        const userData = JSON.parse(jsonData);
-        const passwordHash = bcrypt.hashSync(userData.pwd, 10);
-        const params = [userData.first_name, userData.last_name, userData.username, passwordHash];
-        const sql = "insert into system_users (first_name, last_name, username, pwd) values (?, ?, ?, ?)";
+    static createUser(data, callBack) {
+        const passwordHash = bcrypt.hashSync(data.password, 10);
+        const params = [
+            data.name,
+            data.user_type,
+            data.description,
+            data.email,
+            passwordHash,
+        ];
+        const sql = "insert into users (user_name, user_type, user_description, email, pass) values (?, ?, ?, ?, ?)";
         this.queryDb(sql, params, callBack);
     }
 
@@ -70,19 +90,19 @@ class User {
         const bcrypt = require('bcrypt');
         const sql = "SELECT * FROM users WHERE email = ?";
         const params = [email];
-        this.queryDb(sql, params, function (err, result) {
+        this.queryDb(sql, params, function (err, user) {
             if (err) {
                 callBack(err, false);
             } else {
-                if (result.length == 0) {
-                    callBack(null, false);
+                if (user.length == 0) {
+                    callBack(null, null);
                 } else {
-                    var hashedPassword = result[0].pwd;
+                    var hashedPassword = user[0].pass;
                     var response = bcrypt.compareSync(pass, hashedPassword);
                     if (!response) {
-                        callBack(null, false);
+                        callBack(null, null);
                     } else {
-                        callBack(null, true);
+                        callBack(null, new User(user[0]));
                     }
                 }
             }

@@ -8,27 +8,36 @@ router.post("/auth", function (req, res) {
     if (!email || !pass) {
         res.sendStatus(401);
     }
-    User.verifyUser(email, pass, function (err, isVerified) {
+    User.verifyUser(email, pass, function (err, user) {
         if (err) {
             res.sendStatus(500);
-        } else if (!isVerified) {
+        } else if (!user) {
             res.sendStatus(401);
         } else {
             req.session.authenticated = true;
-            req.session.user = {
-                email: email,
-                type: "job_seeker"
-            }
+            req.session.user = user;
             res.sendStatus(200);
         }
     })
 });
 
+router.post("/logout", function (req, res) {
+    if (!req.session.authenticated) {
+        res.sendStatus(400).json("There is no user authenticated");
+    } else {
+        req.session.authenticated = false;
+        req.session.user = null;
+        res.sendStatus(200);
+    }
+});
+
 router.get("/check-authentication", function (req, res) {
     if (req.session.authenticated) {
-        res.json(session);
+        res.json(req.session);
+        return;
     } else {
         res.send({ authenticated: false });
+        return;
     }
 });
 

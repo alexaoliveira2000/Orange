@@ -81,10 +81,9 @@
     margin-right: 30px;
 }
 
-#orange-button, #button-jobseeker, #button-headhunter {
+#orange-button {
+    color: rgb(255, 255, 255);
     background: rgb(255, 130, 3);
-    --bs-primary: rgb(255, 130, 3);
-    --bs-primary-rgb: 255, 130, 3;
     border-color: rgb(255, 130, 3);
 }
 
@@ -102,3 +101,21 @@
     background: rgba(255, 130, 3, 0);
     border: 1px none black;
 }
+
+input[type='radio']{
+    display: none;
+  }
+  
+  input[type='radio'] + label {
+    color: rgb(255, 130, 3);
+    background: rgb(255, 255, 255);
+    border-color: rgb(255, 130, 3);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid;
+  }
+  
+  input[type='radio']:checked + label {
+    color: rgb(255, 255, 255);
+    background: rgb(255, 130, 3);
+  }

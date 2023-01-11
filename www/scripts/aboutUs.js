@@ -12,7 +12,6 @@ let checkAuthentication = function () {
 let init = function (session) {
     console.log(session.authenticated)
     buildNavBar(session);
-    buildLogoutEvent(session);
 }
 
 let buildNavBar = function (session) {
@@ -56,9 +55,7 @@ let buildNavBar = function (session) {
         friendsItem.href = "friends";
         friendsItem.textContent = "Friends";
         logoutItem.className = "dropdown-item";
-        logoutItem.href = "#";
-        logoutItem.dataset.bsToggle = "modal";
-        logoutItem.dataset.bsTarget = "#modal-1";
+        logoutItem.href = "signout";
         logoutItem.textContent = "Sign out";
         dividerDiv.className = "dropdown-divider";
 
@@ -93,22 +90,6 @@ let buildNavBar = function (session) {
         jobOffersButton.style.display = "block";
         resumesButton.style.display = "block";
         actionDiv.appendChild(buildDropdownButton());
-    }
-}
-
-var buildLogoutEvent = function (session) {
-    if (session.authenticated) {
-        let logoutConfirmation = document.getElementById("logout");
-        logoutConfirmation.addEventListener("click", function () {
-            const url = `http://${window.location.host}/api/logout`
-            axios.post(url)
-                .then(response => {
-                    window.location.href = `http://${window.location.host}/login?userLogout`;
-                })
-                .catch(error => {
-                    window.location.href = `http://${window.location.host}/`
-                });
-        });
     }
 }
 

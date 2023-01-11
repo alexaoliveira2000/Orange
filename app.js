@@ -13,6 +13,7 @@ app.use(session({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.get("/:page.html", (req, res) => res.redirect(req.params.page));
 app.use(express.static(path.join(__dirname,"www")));
 app.use('/', require("./routes/authRoutes"));
 app.use('/api/', require("./routes/apiRoutes"));
