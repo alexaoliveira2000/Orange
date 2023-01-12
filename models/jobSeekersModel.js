@@ -71,7 +71,9 @@ class JobSeeker extends User {
     // devolver um JobSeeker (passar de json para JobSeeker)
     static getJobSeeker(id, callBack) {
         const params = [id];
-        const sql = "select * from job_seekers where job_seeker_id = ?";
+        const sql = `select users.*, job_seekers.* from job_seekers 
+                    join users on users.user_id = job_seekers.job_seeker_id 
+                    where job_seeker_id = ?;`;
         this.queryDb(sql, params, function(err, result) {
             let jobSeeker = result[0] || null;
             if (err) {
