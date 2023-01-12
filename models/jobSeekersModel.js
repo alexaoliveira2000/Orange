@@ -68,8 +68,9 @@ class JobSeeker {
             data.visible === 'true'
         ];
         const sql = "insert into job_seekers (job_seeker_id, gender, birth_date, location, visible_to_companies) values (?, ?, ?, ?, ?)";
+        this.queryDb(sql, params, callBack);
     }
-    
+
     // editar um JobSeeker
     static editJobSeeker(jsonData, callBack) {
         const jobSeekerData = JSON.parse(jsonData);

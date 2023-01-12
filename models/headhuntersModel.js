@@ -6,12 +6,7 @@ class Headhunter {
         this.id = obj.headhunter_id;
         this.logoUrl = obj.logo_url;
         this.websiteUrl = obj.website_url;
-    }
-
-    convertObject(obj) {
-        this.headhunter_id = obj.id;
-        this.logo_url = obj.logoUrl;
-        this.website_url = obj.websiteUrl;
+        this.validated = obj.validated === 1;
     }
 
     // devolver uma query recebida como argumento (em json)
@@ -62,7 +57,7 @@ class Headhunter {
             data.website,
             data.logo,
         ];
-        const sql = "insert into headhunters (headhunter_id, website_url, website_logo) values (?, ?, ?)";
+        const sql = "insert into headhunters (headhunter_id, website_url, website_logo, validated) values (?, ?, ?, 0)";
         this.queryDb(sql, params, callBack);
     }
 
@@ -91,6 +86,7 @@ class Headhunter {
         const sql = "delete from headhunters where headhunter_id = ? limit 1;";
         this.queryDb(sql, params, callBack);
     }
+
 }
 
 module.exports = Headhunter;

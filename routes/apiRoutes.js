@@ -13,12 +13,14 @@ router.post("/auth", function (req, res) {
             res.sendStatus(500);
         } else if (!user) {
             res.sendStatus(401);
+        } else if (user.type === "headhunter" && !user.validated) {
+            res.sendStatus(412);
         } else {
             req.session.authenticated = true;
             req.session.user = user;
             res.sendStatus(200);
         }
-    })
+    });
 });
 
 router.post("/logout", function (req, res) {

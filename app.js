@@ -19,6 +19,7 @@ app.use('/', require("./routes/authRoutes"));
 app.use('/api/', require("./routes/apiRoutes"));
 app.use('/api/users/', require("./routes/usersRoutes"));
 app.use('/api/jobOffers/', require("./routes/jobOffersRoutes"));
+app.use((req, res) => res.sendFile(path.join(__dirname, '/www/', "notfound.html")));
 
 app.listen(app.get("port"),
     () => {

@@ -25,6 +25,10 @@ var checkUserCreated = function () {
         let loginMessage = document.getElementById("login_message");
         loginMessage.style.display = "block";
         loginMessage.textContent = "You signed out!";
+    } else if (urlParams.has("waitingValidation")) {
+        let loginMessage = document.getElementById("login_message");
+        loginMessage.style.display = "block";
+        loginMessage.textContent = "Headhunter was not accepted!";
     }
 }
 
@@ -67,6 +71,8 @@ var formSubmitValidation = function () {
                 if (error.response.status === 401) {
                     showError("email_error", "Invalid email or password");
                     showError("password_error", "Invalid email or password");
+                } else if (error.response.status === 412) {
+                    window.location.href = `http://${window.location.host}/login?waitingValidation`
                 }
             });
     });

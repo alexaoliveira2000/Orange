@@ -44,7 +44,7 @@ router.get('/', function (req, res) {
     res.redirect("/index");
 });
 
-router.get('/:page', function (req, res) {
+router.get('/:page', function (req, res, next) {
     let page = req.params.page;
     let isHtml = page.includes("html") || !page.includes(".");
     let filePath;
@@ -61,8 +61,7 @@ router.get('/:page', function (req, res) {
             res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
         }
     } else {
-        //res.sendStatus(404);
-        res.sendFile(path.join(__dirname, '../www/', "notfound.html"));
+        next();
     }
 });
 
