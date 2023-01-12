@@ -49,7 +49,14 @@ let buildNavBar = function (session) {
         span.className = "d-none d-lg-inline me-2 text-gray-600 small";
         span.textContent = session.user.name;
         dropdownDiv.className = "dropdown-menu shadow dropdown-menu-end animated--grow-in";
+        profileItem.id = "profileButton";
         profileItem.className = "dropdown-item";
+        /*profileItem.onclick = function() {
+            let params = new URLSearchParams();
+                params.append("key", session.user.key);
+            
+            window.location.href = "/profile?" + params.toString();
+        }*/
         profileItem.href = "profile";
         profileItem.textContent = "Profile";
         friendsItem.className = "dropdown-item";

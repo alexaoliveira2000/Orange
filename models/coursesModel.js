@@ -4,6 +4,7 @@ class Course {
 
     constructor(obj) {
         this.id = obj.course_id;
+        this.jobSeekerId = obj.job_seeker_id;
         this.name = obj.course_name;
         this.schoolName = obj.school_name;
         this.type = obj.course_type;
@@ -55,6 +56,21 @@ class Course {
                 callBack(err, null);
             } else {
                 callBack(null, course ? new Course(course) : null);
+            }
+        });
+    }
+
+    // devolver os Courses de um utilizador (passar de json para Course[])
+    static getCoursesUser(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM courses where job_seeker_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            if (err) {
+                callBack(err, null);
+            } else if (result.length === 0) {
+                callBack(new Error(`The user has no Courses associated to him`), null);
+            } else {
+                callBack(null, result.map(course => new Course(course)));
             }
         });
     }

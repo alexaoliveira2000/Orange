@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="/fonts/fontawesome-all.min.css">
+    <script src="scripts/profile.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="scripts/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script src="scripts/theme.js"></script>
@@ -29,22 +31,22 @@
                 </div>
             </div>
         </nav>
-        <div style="background:rgb(246, 246, 246);">
+        <div style="background:rgb(246, 246, 246); height: 100%;">
             <div class="container" style="padding: 1%;color: var(--bs-black);">
                 <div class="row" style="margin: 5%;margin-top: 0%;margin-bottom: 0%;">
                     <div class="col d-flex justify-content-center">
-                        <div class="border rounded d-flex" style="background: var(--bs-white);padding: 6px;width: 900px;">
+                        <div class="border rounded d-flex" style="background: #ffffff;padding: 6px;width: 900px;">
                             <div class="col d-flex align-items-center" style="background: #ffffff;padding: 3%;">
                                 <section style="width:100%;">
-                                    <h1 class="d-flex justify-content-start" style="font-size: 30px; color: rgb(255,130,3);border-color: rgb(0,0,0);text-align: center;">Bernardo Botelho</h1>
+                                    <h1 id="username" class="d-flex justify-content-start" style="font-size: 30px; color: rgb(255,130,3);border-color: rgb(0,0,0);text-align: center;"></h1>
                                     <section>
-                                        <p style="color:rgb(0,0,0);font-family:Montserrat, sans-serif;width:100%;">Descricao do utilizador e posta aqui tipo tudo o que ele quiser falar sobre ele mesmo tipo mesmo tudo fica a escolha dele</p>
+                                        <p id="userDescription" style="color:rgb(0,0,0);font-family:Montserrat, sans-serif;width:100%;"></p>
                                     </section>
                                     <section class="d-inline-flex align-items-center align-content-center justify-content-lg-center" style="margin-bottom: 1%;width: 115px;"><i class="fas fa-birthday-cake" style="font-size: 22px;color: #8f8f8f;"></i>
-                                        <p style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0;padding-top: 3px;margin-left: 8px;">25/10/2000</p>
+                                        <p id="userBirthDay" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0;padding-top: 3px;margin-left: 8px;"></p>
                                     </section>
                                     <section class="d-inline-flex justify-content-center align-items-center align-content-center justify-content-lg-center" style="margin-bottom: 1%;width: 115px;margin-left: 10px;"><i class="fas fa-user" style="font-size: 22px;color: #8f8f8f;"></i>
-                                        <p style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;padding-top: 3px;margin-left: 8px;">Masculino</p>
+                                        <p id="userGender" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;padding-top: 3px;margin-left: 8px;"></p>
                                     </section>
                                 </section>
                             </div>
@@ -53,11 +55,11 @@
                 </div>
                 <div class="row" style="margin:5%;margin-top:0%;margin-bottom:0%;">
                     <div class="col d-flex justify-content-center">
-                        <section class="d-block border rounded" style="background:var(--bs-body-bg);width:900px;padding:20px;border-color:rgba(0,0,0,0);border-top-left-radius:100px;border-top-right-radius:100px;border-bottom-right-radius:100px;border-bottom-left-radius:100px;display:flex;margin-top:2%;margin-bottom:2%;">
+                        <section id="coursesList" class="d-block border rounded" style="background:var(--bs-body-bg);width:900px;padding:20px;border-color:rgba(0,0,0,0);border-top-left-radius:100px;border-top-right-radius:100px;border-bottom-right-radius:100px;border-bottom-left-radius:100px;display:flex;margin-top:2%;margin-bottom:2%;">
                             <section class="d-flex align-items-center" style="height:40px;width:100%;margin-bottom:1%;">
                                 <h1 class="text-center d-flex justify-content-start align-items-center" style="color: rgb(255,130,3);font-size: 27px;height: 100%;width: 50%;margin: 0px;">Courses</h1><i class="fas fa-plus d-flex justify-content-end align-items-center" style="width:50%;font-size:27px;color:rgb(143,143,143);text-align:center;height:100%;"></i>
                             </section>
-                            <div class="card" style="margin-bottom:1.5%;">
+                            <!-- <div class="card" style="margin-bottom:1.5%;">
                                 <div class="card-body">
                                     <section class="d-flex">
                                         <h4 class="d-flex justify-content-start align-items-center" style="width:50%;height:30px;">Title</h4><i class="fas fa-edit d-flex justify-content-end align-items-center" style="width:50%;height:30px;font-size:24px;color:rgb(143,143,143);"></i>
@@ -86,17 +88,17 @@
                                     <p class="card-text">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
                                     <section class="d-flex justify-content-end"><button class="btn btn-primary" type="button" style="color:rgb(255, 255, 255);background:rgb(255,130,3);border-style:none;">Confirm</button></section>
                                 </div>
-                            </div>
+                            </div> -->
                         </section>
                     </div>
                 </div>
                 <div class="row" style="margin:5%;margin-top:0%;margin-bottom:0%;">
                     <div class="col d-flex justify-content-center">
-                        <section class="d-block border rounded" style="background:var(--bs-body-bg);width:900px;padding:20px;border-color:rgba(0,0,0,0);border-top-left-radius:100px;border-top-right-radius:100px;border-bottom-right-radius:100px;border-bottom-left-radius:100px;display:flex;margin-top:2%;margin-bottom:2%;">
+                        <section id="workplacesList" class="d-block border rounded" style="background:var(--bs-body-bg);width:900px;padding:20px;border-color:rgba(0,0,0,0);border-top-left-radius:100px;border-top-right-radius:100px;border-bottom-right-radius:100px;border-bottom-left-radius:100px;display:flex;margin-top:2%;margin-bottom:2%;">
                             <section class="d-flex align-items-center" style="height:40px;width:100%;margin-bottom:1%;">
                                 <h1 class="text-center d-flex justify-content-start align-items-center" style="color: rgb(255,130,3);font-size: 27px;height: 100%;width: 50%;margin: 0px;">Workplaces</h1><i class="fas fa-plus d-flex justify-content-end align-items-center" style="width:50%;font-size:27px;color:rgb(143,143,143);text-align:center;height:100%;"></i>
                             </section>
-                            <div class="card" style="margin-bottom:1.5%;">
+                            <!-- <div class="card" style="margin-bottom:1.5%;">
                                 <div class="card-body">
                                     <section class="d-flex">
                                         <h4 class="d-flex justify-content-start align-items-center" style="width:50%;height:30px;">Title</h4><i class="fas fa-edit d-flex justify-content-end align-items-center" style="width:50%;height:30px;font-size:24px;color:rgb(143,143,143);"></i>
@@ -125,7 +127,7 @@
                                     <p class="card-text">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
                                     <section class="d-flex justify-content-end"><button class="btn btn-primary" type="button" style="color:rgb(255, 255, 255);background:rgb(255,130,3);border-style:none;">Confirm</button></section>
                                 </div>
-                            </div>
+                            </div>  -->
                         </section>
                     </div>
                 </div>

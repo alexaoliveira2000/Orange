@@ -73,6 +73,20 @@ class User {
         });
     }
 
+    // devolver um User atraves da user_key
+    static getUserByKey(key, callBack) {
+        const params = [key];
+        const sql = "SELECT * FROM users WHERE user_key = ?";
+        User.queryDb(sql, params, function(err, result) {
+            let user = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, user ? new User(user) : null);
+            }
+        });
+    }
+
     // criar um utilizador
     static createUser(data, callBack) {
         console.log(data);
