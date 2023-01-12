@@ -68,18 +68,8 @@ class JobSeeker {
             data.visible === 'true'
         ];
         const sql = "insert into job_seekers (job_seeker_id, gender, birth_date, location, visible_to_companies) values (?, ?, ?, ?, ?)";
-    static createJobSeeker(userId, data, callBack) {
-        const params = [
-            userId,
-            data.gender,
-            data.birth_date,
-            data.location,
-            Boolean(data.visible)
-        ];
-        const sql = "insert into job_seeker (job_seeker_id, gender, birth_date, location, visible_to_companies) values (?, ?, ?, ?, ?)";
-        this.queryDb(sql, params, callBack);
     }
-
+    
     // editar um JobSeeker
     static editJobSeeker(jsonData, callBack) {
         const jobSeekerData = JSON.parse(jsonData);
