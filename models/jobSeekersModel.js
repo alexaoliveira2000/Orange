@@ -1,20 +1,17 @@
 const connection = require("../config/connection")
+const User = require("../models/usersModel");
 
-class JobSeeker {
+class JobSeeker extends User {
 
     constructor(obj) {
-        this.id = obj.job_seeker_id;
+        super(obj);
+        this.job_seeker_id = obj.job_seeker_id;
         this.gender = obj.gender;
         this.birthDate = obj.birth_date;
         this.location = obj.location;
         this.isVisibleToCompanies = obj.visible_to_companies;
-    }
-
-    convertObject(obj) {
-        this.job_seeker_id = obj.id;
-        this.gender = obj.logoUrl;
-        this.birth_date = obj.websiteUrl;
-        this.visible_to_companies = obj.isVisibleToCompanies;
+        if (obj.courses_count) this.coursesCount = obj.courses_count;
+        if (obj.workplaces_count) this.workplacesCount = obj.workplaces_count;
     }
 
     // devolver uma query recebida como argumento (em json)
@@ -32,14 +29,41 @@ class JobSeeker {
 
     // devolver todos os JobSeekers (passar de json para JobSeeker[])
     static getJobSeekers(callBack) {
-        const sql = "SELECT * FROM job_seekers";
+        const sql = "select users.*, job_seekers.* from job_seekers left join users on users.user_id = job_seekers.job_seeker_id;";
         this.queryDb(sql, [], function(err, result) {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
-                callBack(new Error(`No data found on table "job_seekers"`), null);
+                callBack(null, null);
             } else {
                 callBack(null, result.map(jobSeeker => new JobSeeker(jobSeeker)));
+            }
+        });
+    }
+
+    // devolver todos os resumes (com as contagens dos workplaces e courses)
+    static getResumes(callBack) {
+        const sql = `select users.*, job_seekers.*, courses.courses_count, workplaces.workplaces_count
+                    from job_seekers
+                    join users on users.user_id = job_seekers.job_seeker_id
+                    join (	select job_seekers.job_seeker_id as "user_id", count(courses.course_id) as "courses_count"
+                            from job_seekers
+                            join courses on courses.job_seeker_id = job_seekers.job_seeker_id
+                            group by job_seekers.job_seeker_id ) courses
+                    on courses.user_id = job_seekers.job_seeker_id
+                    join (	select job_seekers.job_seeker_id as "user_id", count(workplaces.workplace_id) as "workplaces_count"
+                            from job_seekers
+                            join workplaces on workplaces.job_seeker_id = job_seekers.job_seeker_id
+                            group by job_seekers.job_seeker_id ) workplaces 
+                    on workplaces.user_id = job_seekers.job_seeker_id
+                    group by job_seekers.job_seeker_id;`;
+        JobSeeker.queryDb(sql, [], function (err, result) {
+            if (err) {
+                callBack(err, null);
+            } else if (result.length === 0) {
+                callBack(new Error(`No data found on table "users"`), null);
+            } else {
+                callBack(null, result.map(user => new JobSeeker(user)));
             }
         });
     }
@@ -47,7 +71,7 @@ class JobSeeker {
     // devolver um JobSeeker (passar de json para JobSeeker)
     static getJobSeeker(id, callBack) {
         const params = [id];
-        const sql = "SELECT * FROM job_seekers WHERE job_seeker_id = ?";
+        const sql = "select * from job_seekers where job_seeker_id = ?";
         this.queryDb(sql, params, function(err, result) {
             let jobSeeker = result[0] || null;
             if (err) {

@@ -7,12 +7,14 @@
     <title>Resumes - Orange</title>
     <link rel="stylesheet" href="styles/bootstrap.min.css">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="fonts/fontawesome-all.min.css">
+    <!-- <link rel="stylesheet" href="styles/resumesStyles.css"> -->
     <script src="scripts/bootstrap.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="scripts/resumes.js"></script>
 </head>
 
-<body style="background: url('images/Moon.svg'), #ffffff;">
+<body>
     <nav class="navbar navbar-light navbar-expand-md py-3">
         <div class="container"><a class="navbar-brand d-flex align-items-center" href="index"><img
                     src="images/orange_logo2.png" width="81" height="38"></a><button data-bs-toggle="collapse"
@@ -21,7 +23,8 @@
             <div class="collapse navbar-collapse" id="navcol-3">
                 <ul class="navbar-nav mx-auto">
                     <li id="home" class="nav-item"><a class="nav-link" href="index">Home</a></li>
-                    <li id="job-offers" class="nav-item" style="display: none;"><a class="nav-link" href="job-offers">Job Offers</a></li>
+                    <li id="job-offers" class="nav-item" style="display: none;"><a class="nav-link"
+                            href="job-offers">Job Offers</a></li>
                     <li id="resumes" class="nav-item"><a class="nav-link active" href="resumes">Resumes</a></li>
                     <li id="about-us" class="nav-item"><a class="nav-link" href="about-us">About us</a></li>
                 </ul>
@@ -46,7 +49,7 @@
             </div>
         </div>
     </nav>
-    <div class="text-center d-flex justify-content-center align-items-center"
+    <!-- <div class="text-center d-flex justify-content-center align-items-center"
         style="margin-bottom: 30px;margin-top: 30px;">
         <img class="img-fluid d-flex justify-content-center align-items-start" src="images/construction.png"
             width="257" height="286">
@@ -54,22 +57,91 @@
     <div class="text-center d-flex justify-content-center align-items-center">
         <h2 class="text-info" style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;font-weight: bold;">Very sadly,
             we are under construction</h2>
-    </div>
-    
-    <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to sign out?</h4>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div> -->
+
+    <main class="page catalog-page">
+        <section class="clean-block clean-catalog dark">
+            <div class="container" style="padding-top: 30px;">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="d-none d-md-block">
+                                <div id="main-filters" class="filters">
+                                </div>
+                            </div>
+                            <div class="d-md-none"><a class="btn btn-link d-md-none filter-collapse"
+                                    data-bs-toggle="collapse" aria-expanded="false" aria-controls="filters"
+                                    href="#filters" role="button">Filters<i
+                                        class="icon-arrow-down filter-caret"></i></a>
+                                <div id="filters" class="collapse">
+                                    <!-- <input class="form-range" type="range" min="18" max="65" step="1" value="40" /> -->
+                                    <div id="collapsed-filters" class="filters">
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-9 col-xl-9">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="resumeCards" class="row">
+
+                                            <!-- <div class="col-lg-4 col-xlg-3 col-md-5" style="margin-bottom: 20px">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h4 class="text-center card-title m-t-10"><a
+                                                                style="color: rgb(255, 130, 3)" href="#">John Doe</a>
+                                                        </h4>
+                                                        <div class="row text-center justify-content-md-center"
+                                                            style="margin-top: 20px">
+                                                            <div class="col-4">
+                                                                <i class="fas fa-briefcase"></i>
+                                                                <small class="font-medium">254</small>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <i class="fas fa-medal"></i>
+                                                                <small class="font-medium">54</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <small class="text-muted">Email address</small>
+                                                        <h6>boiaobotelho@gmail.com</h6>
+                                                        <small class="text-muted p-t-30 db">Age</small>
+                                                        <h6>24</h6>
+                                                        <small class="text-muted p-t-30 db">Location</small>
+                                                        <h6>Lisboa</h6>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" type="button" data-bs-dismiss="modal" style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
-                    <button id="logout" class="btn btn-primary" type="button" style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+            </div>
+        </section>
+        <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to sign out?</h4>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                            style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
+                        <button id="logout" class="btn btn-primary" type="button"
+                            style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 </body>
 
 </html>

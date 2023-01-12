@@ -34,7 +34,7 @@ class User {
     // devolver todos os Users (passar de json para User[])
     static getUsers(callBack) {
         const sql = "SELECT * FROM users";
-        User.queryDb(sql, [], function(err, result) {
+        User.queryDb(sql, [], function (err, result) {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
@@ -49,7 +49,7 @@ class User {
     static getUser(id, callBack) {
         const params = [id];
         const sql = "SELECT * FROM users WHERE user_id = ?";
-        User.queryDb(sql, params, function(err, result) {
+        User.queryDb(sql, params, function (err, result) {
             let user = result[0] || null;
             if (err) {
                 callBack(err, null);
@@ -63,7 +63,7 @@ class User {
     static getUserByEmail(email, callBack) {
         const params = [email];
         const sql = "SELECT * FROM users WHERE email = ?";
-        User.queryDb(sql, params, function(err, result) {
+        User.queryDb(sql, params, function (err, result) {
             let user = result[0] || null;
             if (err) {
                 callBack(err, null);
@@ -75,7 +75,6 @@ class User {
 
     // criar um utilizador
     static createUser(data, callBack) {
-        console.log(data);
         const passwordHash = bcrypt.hashSync(data.password, 10);
         const params = [
             data.name,
@@ -83,7 +82,7 @@ class User {
             data.description,
             data.email,
             passwordHash,
-            randomString({length: 30})
+            randomString({ length: 30 })
         ];
         const sql = "insert into users (user_name, user_type, user_description, email, pass, user_key) values (?, ?, ?, ?, ?, ?)";
         this.queryDb(sql, params, callBack);
