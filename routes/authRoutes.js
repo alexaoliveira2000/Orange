@@ -44,6 +44,38 @@ router.get('/', function (req, res) {
     res.redirect("/index");
 });
 
+router.get("/profile", function (req, res) {
+    if(!req.session.authenticated) {
+        res.sendStatus(401);
+    }
+
+    res.redirect(`profile/${req.session.user.key}`);
+})
+
+router.get("/profile/:key", function (req, res) {
+    if(!req.session.authenticated) {
+        res.sendStatus(401);
+    }
+
+    let page = req.params.key;
+    let isHtml = page.includes("html") || !page.includes(".");
+    let filePath;
+
+    if (!isHtml) {
+        filePath = path.join(__dirname, '../www/', "../" + page);
+    }
+
+    console.log(filePath);
+
+    if (isHtml && hasPermission(req.session, path.basename(path.join(__dirname, '../www/', "profile.html")))) {
+        res.sendFile(path.join(__dirname, '../www/', "profile.html"));
+    } else if (!isHtml && hasPermission(req.session, path.basename(filePath))) {
+        res.sendFile(filePath);
+    } else {
+        res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
+    }
+})
+
 router.get('/:page', function (req, res, next) {
     let page = req.params.page;
     let isHtml = page.includes("html") || !page.includes(".");

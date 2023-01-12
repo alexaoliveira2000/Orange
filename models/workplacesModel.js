@@ -4,6 +4,7 @@ class Workplace {
 
     constructor(obj) {
         this.id = obj.workplace_id;
+        this.jobSeekerId = obj.job_seeker_id;
         this.name = obj.workplace_name;
         this.logoUrl = obj.logo_url;
         this.startDate = obj.start_date;
@@ -57,6 +58,21 @@ class Workplace {
                 callBack(err, null);
             } else {
                 callBack(null, workplace ? new Workplace(workplace) : null);
+            }
+        });
+    }
+
+    // devolver os Workplaces de um utilizador (passar de json para Workplace[])
+    static getWorkplacesUser(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM workplaces where job_seeker_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            if (err) {
+                callBack(err, null);
+            } else if (result.length === 0) {
+                callBack(new Error(`The user has no Workplaces associated to him`), null);
+            } else {
+                callBack(null, result.map(workplace => new Workplace(workplace)));
             }
         });
     }
