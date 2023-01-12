@@ -1,5 +1,6 @@
 const connection = require("../config/connection")
 const bcrypt = require("bcrypt")
+const randomString = require('random-string');
 
 class User {
 
@@ -10,6 +11,7 @@ class User {
         this.description = obj.user_description;
         this.email = obj.email;
         this.password = obj.pass;
+        this.key = obj.user_key;
     }
 
     isAdmin() {
@@ -73,6 +75,7 @@ class User {
 
     // criar um utilizador
     static createUser(data, callBack) {
+        console.log(data);
         const passwordHash = bcrypt.hashSync(data.password, 10);
         const params = [
             data.name,
@@ -80,8 +83,9 @@ class User {
             data.description,
             data.email,
             passwordHash,
+            randomString({length: 30})
         ];
-        const sql = "insert into users (user_name, user_type, user_description, email, pass) values (?, ?, ?, ?, ?)";
+        const sql = "insert into users (user_name, user_type, user_description, email, pass, user_key) values (?, ?, ?, ?, ?, ?)";
         this.queryDb(sql, params, callBack);
     }
 
