@@ -48,33 +48,53 @@ router.get("/profile", function (req, res) {
     if(!req.session.authenticated) {
         res.sendStatus(401);
     }
-
     res.redirect(`profile/${req.session.user.key}`);
 })
 
-router.get("/profile/:key", function (req, res) {
+router.get("/profile/:key", function (req, res, next) {
+    console.log("mandou:" + req.params.key)
     if(!req.session.authenticated) {
         res.sendStatus(401);
     }
-
-    let page = req.params.key;
-    let isHtml = page.includes("html") || !page.includes(".");
-    let filePath;
-
-    if (!isHtml) {
-        filePath = path.join(__dirname, '../www/', "../" + page);
-    }
-
-    console.log(filePath);
-
-    if (isHtml && hasPermission(req.session, path.basename(path.join(__dirname, '../www/', "profile.html")))) {
-        res.sendFile(path.join(__dirname, '../www/', "profile.html"));
-    } else if (!isHtml && hasPermission(req.session, path.basename(filePath))) {
+    let isKey = !req.params.key.includes(".");
+    let filePath = isKey ? path.join(__dirname, '../www/', "profile.html") : null;
+    if (isKey && hasPermission(req.session, path.basename(filePath))) {
         res.sendFile(filePath);
+    } else if (!isKey) {
+        res.sendFile(path.join(__dirname, '../www/', "notfound.html"));
     } else {
         res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
     }
+    return;
 })
+
+/* router.get("/profile/*", function (req, res, next) {
+    let file = req.url.substring(1);
+    file = file.substring(file.indexOf('/') + 1);
+    let filePath = path.join(__dirname, '../www/', file);
+    console.log("url: " + filePath)
+    console.log(file);
+    try {
+        const stat = fs.statSync(filePath);
+        if (stat.isFile()) {
+            if (fs.existsSync(filePath)) {
+                if (hasPermission(req.session, path.basename(filePath))) {
+                    res.sendFile(filePath);
+                    return;
+                  } else {
+                    res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
+                    return;
+                  }
+            } else {
+                next();
+            }
+        } else {
+          res.status(404).send('Não é um arquivo');
+        }
+      } catch (err) {
+        res.status(404).send('Arquivo não encontrado');
+      }
+}); */
 
 router.get('/:page', function (req, res, next) {
     let page = req.params.page;
