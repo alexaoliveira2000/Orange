@@ -20,10 +20,11 @@ router.get("/:userKey", function (req, res) {
     if(!req.session.authenticated) {
         res.sendStatus(401);
     }
-
+    
     if (userKey) {
         User.getUserByKey(userKey, (err, user) => {
             if(user) {
+                console.log("User: " + user);
                 data.user = user;
                 JobSeeker.getJobSeeker(user.id, (err, jobSeeker) => {
                     data.user = Object.assign({}, user, jobSeeker);
