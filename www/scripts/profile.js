@@ -168,7 +168,14 @@ let buildLists = function(list, data, isCourse) {
         mainDiv.style = "margin-bottom:1.5%;"
 
         titleNoData.className = "text-center";
-        titleNoData.style = "font-size: 30px;";
+        titleNoData.style = "font-size: 20px; margin:10px;";
+        titleNoData.textContent = "Não foram encontrados dados";
+
+        if(isCourse) {
+            titleNoData.textContent = "The user has no associated courses";
+        } else {
+            titleNoData.textContent = "The user has no associated workplaces";
+        }
 
         mainDiv.appendChild(titleNoData);
         list.appendChild(mainDiv);
@@ -229,6 +236,25 @@ let buildLists = function(list, data, isCourse) {
         }
 
     }
+
+}
+
+let buildModalStructure = function() {
+    let mainDiv = document.createElement("div"),
+        dialogDiv = document.createElement("div"),
+        contentDiv = document.createElement("div"),
+        headerSection = document.createElement("section"),
+        titleHeader = document.createElement("h5"),
+        closeButton = document.createElement("button"),
+        spanButon = document.createElement("span"),
+        bodyDiv = document.createElement("div"),
+        footerDiv = document.createElement("div"),
+        buttonClose = document.createElement("button"),
+        buttonSave = document.createElement("button");
+
+}
+
+let buildModalForm = function() {
 
 }
 
