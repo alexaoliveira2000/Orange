@@ -46,12 +46,12 @@ class JobSeeker extends User {
         const sql = `select users.*, job_seekers.*, courses.courses_count, workplaces.workplaces_count
                     from job_seekers
                     join users on users.user_id = job_seekers.job_seeker_id
-                    join (	select job_seekers.job_seeker_id as "user_id", count(courses.course_id) as "courses_count"
+                    left join (	select job_seekers.job_seeker_id as "user_id", count(courses.course_id) as "courses_count"
                             from job_seekers
                             join courses on courses.job_seeker_id = job_seekers.job_seeker_id
                             group by job_seekers.job_seeker_id ) courses
                     on courses.user_id = job_seekers.job_seeker_id
-                    join (	select job_seekers.job_seeker_id as "user_id", count(workplaces.workplace_id) as "workplaces_count"
+                    left join (	select job_seekers.job_seeker_id as "user_id", count(workplaces.workplace_id) as "workplaces_count"
                             from job_seekers
                             join workplaces on workplaces.job_seeker_id = job_seekers.job_seeker_id
                             group by job_seekers.job_seeker_id ) workplaces 

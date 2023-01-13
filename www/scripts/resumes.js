@@ -32,7 +32,11 @@ let init = function (session) {
             const filters = [
                 { property: "location", name: "Location" }
             ]
+            createApplyButton("main-filters");
+            createAgeFilter("main-filters");
             createCheckboxFilter({ property: "location", name: "Location" }, "main-filters");
+            createApplyButton("collapsed-filters");
+            createAgeFilter("collapsed-filters");
             createCheckboxFilter("location", "collapsed-filters");
             buildResumeCards(resumes);
         })
@@ -41,10 +45,122 @@ let init = function (session) {
         });
 }
 
+var createApplyButton = function (filterId) {
+
+    var buildQueryString = function() {
+        let minAge = document.getElementById("min-age");
+        let maxAge = document.getElementById("max-age");
+
+        let isFirst = true;
+
+        let query = "?";
+
+        if (minAge.value) {
+            query += "min-age=" + minAge.value;
+            isFirst = false;
+        } 
+        if (maxAge.value) {
+            if (!isFirst) query += "&"
+            else isFirst = false;
+            query += "max-age=" + maxAge.value;
+        } /* else if () {
+            if (!isFirst) query += "&"
+            else isFirst = false;
+
+        } */
+        return query;
+    }
+
+    let filtersDiv = document.getElementById(filterId);
+
+    let filterItemDiv = document.createElement("div");
+    filterItemDiv.className = "filter-item";
+
+    let button = document.createElement("button");
+    button.className = "btn btn-primary";
+    button.type = "button";
+    button.disabled = true;
+    button.id = "search-button"
+    button.textContent = "Apply";
+
+    filterItemDiv.appendChild(button);
+    filtersDiv.appendChild(filterItemDiv);
+
+    button.addEventListener("click", function() {
+        console.log(buildQueryString())
+    });
+
+
+}
+
+var createAgeFilter = function (filterId, minValue, maxValue) {
+    let filtersDiv = document.getElementById(filterId);
+
+    let filterItemDiv = document.createElement("div");
+    filterItemDiv.className = "filter-item";
+    let filterName = document.createElement("h3");
+    filterName.textContent = "Age";
+    
+    let div = document.createElement("div");
+    let inputMin = document.createElement("input");
+    let strong = document.createElement("strong");
+    let inputMax = document.createElement("input");
+
+    div.className = "d-flex";
+    inputMin.type = "number";
+    inputMin.style.width = "60px";
+    inputMin.placeholder = "Min";
+    inputMin.id = "min-age";
+    inputMin.min = "18";
+    inputMin.max = "65";
+    strong.className = "d-xl-flex align-items-xl-center";
+    strong.textContent = "-";
+    strong.style.marginLeft = "5px";
+    strong.style.marginRight = "5px";
+    inputMax.type = "number";
+    inputMax.style.width = "60px";
+    inputMax.placeholder = "Max";
+    inputMax.id = "max-age";
+    inputMax.min = "18";
+    inputMax.max = "65";
+
+    if (minValue) {
+        inputMin.value = minValue;
+    }
+    if (maxValue) {
+        inputMax.value = maxValue;
+    }
+
+    let applyButton = document.getElementById("search-button");
+    inputMin.addEventListener("input", function() {
+        if (inputMin.value > inputMax.value) {
+            applyButton.disabled = true;
+        } else {
+            applyButton.disabled = false;
+        }
+    });
+    inputMax.addEventListener("input", function() {
+        if (inputMin.value > inputMax.value) {
+            applyButton.disabled = true;
+        } else {
+            applyButton.disabled = false;
+        }
+    });
+
+
+    div.appendChild(inputMin);
+    div.appendChild(strong);
+    div.appendChild(inputMax);
+    filterItemDiv.appendChild(filterName);
+    filterItemDiv.appendChild(div);
+
+    filtersDiv.appendChild(filterItemDiv);
+}
+
 // FILTERS (MAIN & COLLAPSED)
 var createCheckboxFilter = function (filter, filterId) {
     let values = [...new Set(resumes.map((resume) => resume[filter.property]))];
-    values.sort(filter.name === "Duration" ? durationSort : undefined);
+    values.sort();
     let filtersDiv = document.getElementById(filterId);
     let filterItemDiv = document.createElement("div");
     filterItemDiv.className = "filter-item";
