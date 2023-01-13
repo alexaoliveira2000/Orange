@@ -5,13 +5,14 @@ class JobSeeker extends User {
 
     constructor(obj) {
         super(obj);
+        console.log(obj)
         this.job_seeker_id = obj.job_seeker_id;
         this.gender = obj.gender;
         this.birthDate = obj.birth_date;
         this.location = obj.location;
         this.isVisibleToCompanies = obj.visible_to_companies;
-        if (obj.courses_count) this.coursesCount = obj.courses_count;
-        if (obj.workplaces_count) this.workplacesCount = obj.workplaces_count;
+        this.coursesCount = obj.courses_count || 0;
+        this.workplacesCount = obj.workplaces_count || 0;
     }
 
     // devolver uma query recebida como argumento (em json)
@@ -46,14 +47,14 @@ class JobSeeker extends User {
         const sql = `select users.*, job_seekers.*, courses.courses_count, workplaces.workplaces_count
                     from job_seekers
                     join users on users.user_id = job_seekers.job_seeker_id
-                    left join (	select job_seekers.job_seeker_id as "user_id", count(courses.course_id) as "courses_count"
+                    join (	select job_seekers.job_seeker_id as "user_id", count(courses.course_id) as "courses_count"
                             from job_seekers
-                            join courses on courses.job_seeker_id = job_seekers.job_seeker_id
+                            left join courses on courses.job_seeker_id = job_seekers.job_seeker_id
                             group by job_seekers.job_seeker_id ) courses
                     on courses.user_id = job_seekers.job_seeker_id
-                    left join (	select job_seekers.job_seeker_id as "user_id", count(workplaces.workplace_id) as "workplaces_count"
+                    join (	select job_seekers.job_seeker_id as "user_id", count(workplaces.workplace_id) as "workplaces_count"
                             from job_seekers
-                            join workplaces on workplaces.job_seeker_id = job_seekers.job_seeker_id
+                            left join workplaces on workplaces.job_seeker_id = job_seekers.job_seeker_id
                             group by job_seekers.job_seeker_id ) workplaces 
                     on workplaces.user_id = job_seekers.job_seeker_id
                     group by job_seekers.job_seeker_id;`;

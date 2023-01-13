@@ -25,6 +25,7 @@ router.get("/:userKey", function (req, res) {
         User.getUserByKey(userKey, (err, user) => {
             if(user) {
                 console.log("User: " + user);
+                console.log("username: " + user.name)
                 data.user = user;
                 JobSeeker.getJobSeeker(user.id, (err, jobSeeker) => {
                     data.user = Object.assign({}, user, jobSeeker);
