@@ -70,7 +70,8 @@ class Workplace {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
-                callBack(new Error(`The user has no Workplaces associated to him`), null);
+                //callBack(new Error(`The user has no Workplaces associated to him`), null);
+                callBack(null, []);
             } else {
                 callBack(null, result.map(workplace => new Workplace(workplace)));
             }

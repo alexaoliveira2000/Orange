@@ -68,7 +68,8 @@ class Course {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
-                callBack(new Error(`The user has no Courses associated to him`), null);
+                //callBack(new Error(`The user has no Courses associated to him`), null);
+                callBack(null, []);
             } else {
                 callBack(null, result.map(course => new Course(course)));
             }
