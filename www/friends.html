@@ -54,10 +54,21 @@
         <main class="page catalog-page">
             <section class="clean-block clean-catalog dark">
                 <div class="container">
-                    <div class="text-end">
+                    <div style="margin-bottom: 10px; padding-top: 10px;">
+                        <button id="friend-requests" class="btn btn-primary" style="background-color: #72bb53; border: none" type="button" disabled>Friend Requests</button>
+                        <div class="d-inline-flex float-end">
+                            <button id="add-friends" class="btn btn-primary" type="button">Add Friends</button>
+                        </div>
+                    </div>
+
+
+
+                    <!-- <div class="text-end">
                         <button id="add-friends" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px;"
                             type="button">Add Friends</button>
-                    </div>
+                    </div> -->
+
+
                     <!-- <div class="block-heading">
                         <div data-reflow-type="product-search">
                             <div class="reflow-product-search">
@@ -106,14 +117,14 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" style="color: rgb(255,130,3);">Friend Request</h4>
+                            <h4 class="modal-title" style="color: rgb(255,130,3);">Add a friend</h4>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-left">
                             <div class="active-cyan-4 mb-4">
                                 <input id="search-email" class="form-control" type="email"
                                     placeholder="example@gmail.com" aria-label="Search">
-                                <small id="request_error" style="color: var(--bs-red); display: none;"></small>
+                                <small id="request_info" style="display: none;"></small>
                             </div>
                             <button id="request" class="btn btn-primary" type="button">Request</button>
                         </div>
@@ -134,6 +145,20 @@
                                 style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
                             <button id="remove" class="btn btn-primary" type="button"
                                 style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-4" class="modal fade" role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" style="color: rgb(255,130,3);">Friend Requests</h4>
+                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-left">
+                            <div id="requests-table" class="block-content" style="padding: 10px;"></div>
                         </div>
                     </div>
                 </div>

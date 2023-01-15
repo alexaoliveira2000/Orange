@@ -60,7 +60,10 @@
 #apply-button-main-filters,
 #apply-button-collapsed-filters,
 #accept-headhunter,
-#add-friends {
+#accept-friend,
+#add-friends,
+#request,
+#delete-headhunter {
     background: rgb(255, 130, 3);
     border-color: rgb(255, 130, 3);
     background: rgb(255, 130, 3);
@@ -69,6 +72,7 @@
 }
 
 #reject-headhunter,
+#reject-friend,
 #remove-friend {
     color: rgb(255, 130, 3);
     background: rgb(255, 255, 255);

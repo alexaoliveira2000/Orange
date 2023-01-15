@@ -38,7 +38,7 @@ class User {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
-                callBack(new Error(`No data found on table "users"`), null);
+                callBack(null, null);
             } else {
                 callBack(null, result.map(user => new User(user)));
             }

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles/style.css">
     <script src="scripts/bootstrap.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="scripts/pendingHeadhunters.js"></script>
+    <script src="scripts/headhunters.js"></script>
 </head>
 
 <body>
@@ -52,7 +52,7 @@
         <main class="page catalog-page">
             <section class="clean-block clean-catalog dark">
                 <div class="container" style="padding-top: 30px;">
-                    <div id="pending-table" class="content" style="padding: 10px;">
+                    <div id="headhunters-table" class="content" style="padding: 10px;">
                         <!-- <h4><br />It seems there are no pending headhunter requests...<br /><br /></h4> -->
                         <!-- <div class="table-responsive">
                             <table class="table">
@@ -83,12 +83,12 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to reject?</h4>
+                        <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to delete?</h4>
                         <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-light" type="button" data-bs-dismiss="modal" style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
-                        <button id="reject" class="btn btn-primary" type="button" style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                        <button id="delete-headhunter" class="btn btn-primary" type="button" style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
                     </div>
                 </div>
             </div>

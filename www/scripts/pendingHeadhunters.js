@@ -26,21 +26,27 @@ let init = function (session) {
 }
 
 var buildPendingHeadhuntersTable = function (headhunters) {
-
     var buildRow = function (headhunter) {
         let tr = document.createElement("tr");
         let headhunterName = document.createElement("td");
+        let headhunterPicture = document.createElement("picture");
+        let headhunterImage = document.createElement("img");
+        let headhunterLogo = document.createElement("td");
         let headhunterEmail = document.createElement("td");
         let headhunterWebsite = document.createElement("td");
-        let headhunterLogo = document.createElement("td");
+        let websiteLink = document.createElement("a");
         let headhunterActions = document.createElement("td");
         let acceptButton = document.createElement("button");
         let rejectButton = document.createElement("button");
 
         headhunterName.textContent = headhunter.name;
+        headhunterImage.src = headhunter.logoUrl;
+        headhunterImage.style.height = "50px";
+        headhunterImage.style.width = "50px";
         headhunterEmail.textContent = headhunter.email;
-        headhunterWebsite.textContent = headhunter.websiteUrl;
-        headhunterLogo.textContent = headhunter.logoUrl;
+        websiteLink.textContent = headhunter.websiteUrl;
+        websiteLink.href = headhunter.websiteUrl;
+        websiteLink.style.color = "black";
         headhunterActions.className = "text-end";
         acceptButton.className = "btn btn-primary";
         rejectButton.className = "btn btn-primary";
@@ -51,7 +57,7 @@ var buildPendingHeadhuntersTable = function (headhunters) {
 
         acceptButton.addEventListener("click", function () {
             const url = `http://${window.location.host}/api/users/accept-headhunter`;
-            axios.post(url, {key: headhunter.key})
+            axios.post(url, { key: headhunter.key })
                 .then(response => {
                     window.location.reload();
                 })
@@ -64,23 +70,38 @@ var buildPendingHeadhuntersTable = function (headhunters) {
         rejectButton.dataset.bsTarget = "#modal-2";
         let rejectConfirmation = document.getElementById("reject");
 
-        rejectConfirmation.addEventListener("click", function () {
+        rejectButton.onclick = function () {
+            rejectConfirmation.onclick = function () {
+                const url = `http://${window.location.host}/api/users/reject-headhunter`;
+                axios.post(url, { key: headhunter.key })
+                    .then(response => {
+                        window.location.reload();
+                    })
+                    .catch(error => {
+
+                    });
+            }
+        }
+        /* rejectConfirmation.addEventListener("click", function () {
             const url = `http://${window.location.host}/api/users/reject-headhunter`;
-            axios.post(url, {key: headhunter.key})
+            axios.post(url, { key: headhunter.key })
                 .then(response => {
                     window.location.reload();
                 })
                 .catch(error => {
 
                 });
-        });
+        }); */
 
+        headhunterPicture.appendChild(headhunterImage);
+        headhunterLogo.appendChild(headhunterPicture);
+        headhunterWebsite.appendChild(websiteLink);
         headhunterActions.appendChild(acceptButton);
         headhunterActions.appendChild(rejectButton);
+        tr.appendChild(headhunterLogo);
         tr.appendChild(headhunterName);
         tr.appendChild(headhunterEmail);
         tr.appendChild(headhunterWebsite);
-        tr.appendChild(headhunterLogo);
         tr.appendChild(headhunterActions);
 
         return tr;
@@ -88,39 +109,47 @@ var buildPendingHeadhuntersTable = function (headhunters) {
 
     let pendingTable = document.getElementById("pending-table");
 
-    let div = document.createElement("div");
-    let table = document.createElement("table");
-    let thead = document.createElement("thead");
-    let tr = document.createElement("tr");
-    let headhunterName = document.createElement("th");
-    let headhunterEmail = document.createElement("th");
-    let headhunterWebsite = document.createElement("th");
-    let headhunterLogo = document.createElement("th");
-    let headhunterActions = document.createElement("th");
+    if (headhunters.length !== 0) {
+        let div = document.createElement("div");
+        let table = document.createElement("table");
+        let thead = document.createElement("thead");
+        let tr = document.createElement("tr");
+        let headhunterName = document.createElement("th");
+        let headhunterEmail = document.createElement("th");
+        let headhunterWebsite = document.createElement("th");
+        let headhunterLogo = document.createElement("th");
+        let headhunterActions = document.createElement("th");
 
-    div.className = "table-responsive";
-    table.className = "table";
-    headhunterName.textContent = "Name";
-    headhunterEmail.textContent = "Email";
-    headhunterWebsite.textContent = "Website";
-    headhunterLogo.textContent = "Logo";
-    headhunterActions.textContent = "Actions";
-    headhunterActions.className = "text-end";
+        div.className = "table-responsive";
+        table.className = "table";
+        headhunterName.textContent = "Name";
+        headhunterEmail.textContent = "Email";
+        headhunterWebsite.textContent = "Website";
+        headhunterLogo.textContent = "Logo";
+        headhunterActions.textContent = "Actions";
+        headhunterActions.className = "text-end";
 
-    tr.appendChild(headhunterName);
-    tr.appendChild(headhunterEmail);
-    tr.appendChild(headhunterWebsite);
-    tr.appendChild(headhunterLogo);
-    tr.appendChild(headhunterActions);
-    thead.appendChild(tr);
-    table.appendChild(thead);
+        tr.appendChild(headhunterLogo);
+        tr.appendChild(headhunterName);
+        tr.appendChild(headhunterEmail);
+        tr.appendChild(headhunterWebsite);
+        tr.appendChild(headhunterActions);
+        thead.appendChild(tr);
+        table.appendChild(thead);
 
-    headhunters.forEach(headhunter => table.appendChild(buildRow(headhunter)));
+        headhunters.forEach(headhunter => table.appendChild(buildRow(headhunter)));
 
-    div.appendChild(table);
-    pendingTable.appendChild(div);
+        div.appendChild(table);
+        pendingTable.appendChild(div);
+    } else {
+        let text = document.createElement("h4");
+        text.textContent = "It seems there are no pending headhunter requests...";
+
+        pendingTable.appendChild(document.createElement("br"));
+        pendingTable.appendChild(text);
+        pendingTable.appendChild(document.createElement("br"));
+    }
 }
-
 
 var buildNavBar = function (session) {
 
@@ -145,6 +174,7 @@ var buildNavBar = function (session) {
         let dropdownDiv = document.createElement("div");
         let profileItem = document.createElement("a");
         let friendsItem = document.createElement("a");
+        let headhuntersItem = document.createElement("a");
         let pendingHeadhuntersItem = document.createElement("a");
         let dividerDiv = document.createElement("div");
         let logoutItem = document.createElement("a");
@@ -166,6 +196,9 @@ var buildNavBar = function (session) {
         friendsItem.className = "dropdown-item";
         friendsItem.href = "friends";
         friendsItem.textContent = "Friends";
+        headhuntersItem.className = "dropdown-item";
+        headhuntersItem.href = "headhunters";
+        headhuntersItem.textContent = "Headhunters";
         pendingHeadhuntersItem.className = "dropdown-item";
         pendingHeadhuntersItem.href = "pending-headhunters";
         pendingHeadhuntersItem.textContent = "Pending Headhunters";
@@ -178,6 +211,7 @@ var buildNavBar = function (session) {
 
         dropdownDiv.appendChild(profileItem);
         if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
+        if (session.user.type === "admin") dropdownDiv.appendChild(headhuntersItem);
         if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);
         dropdownDiv.appendChild(logoutItem);

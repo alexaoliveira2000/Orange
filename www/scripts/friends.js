@@ -13,7 +13,6 @@ let init = function (session) {
     console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
-    buildAddFriendRequest();
     friendRequestSubmit();
 
     let pathname = window.location.pathname;
@@ -23,7 +22,11 @@ let init = function (session) {
     axios.get(url)
         .then(response => {
             console.log(response.data.friends);
-            buildFriendsTable(response.data.friends);
+            let friends = response.data.friends.filter(friend => !friend.pending);
+            let pendingRequests = response.data.friends.filter(friend => friend.pending);
+            buildFriendsTable(friends);
+            buildPendingRequestsTable(pendingRequests);
+            buildModalRequests(pendingRequests);
         })
         .catch(error => {
 
@@ -32,7 +35,7 @@ let init = function (session) {
 
 var friendRequestSubmit = function () {
     var resetErrors = function (element) {
-        let elemErrorText = document.getElementById(element.id + "_error");
+        let elemErrorText = document.getElementById(element.id + "_info");
         if (elemErrorText) {
             elemErrorText.style.display = "none";
         }
@@ -41,6 +44,13 @@ var friendRequestSubmit = function () {
         let errorText = document.getElementById(elementId);
         errorText.textContent = message;
         errorText.style.display = "block";
+        errorText.style = "color: var(--bs-red);"
+    }
+    var showSuccess = function (elementId, message) {
+        let successText = document.getElementById(elementId);
+        successText.textContent = message;
+        successText.style.display = "block";
+        successText.style = "color: var(--bs-green);"
     }
 
     let requestButton = document.getElementById("request");
@@ -51,13 +61,12 @@ var friendRequestSubmit = function () {
         const url = `http://${window.location.host}/api/friends/add-friend`;
         axios.post(url, { email: requestInput.value })
             .then(response => {
-                console.log(response);
-
+                showSuccess("request_info", "Friend request was sent!");
             })
             .catch(error => {
                 if (error.response.status === 400) {
                     error.response.data.errors.forEach(function (err) {
-                        showError("request_error", err.msg);
+                        showError("request_info", err.msg);
                     });
                 }
             });
@@ -65,24 +74,37 @@ var friendRequestSubmit = function () {
 
 }
 
-var buildAddFriendRequest = function () {
+var buildModalRequests = function (pendingRequests) {
     let addFriendButton = document.getElementById("add-friends");
     addFriendButton.dataset.bsToggle = "modal";
     addFriendButton.dataset.bsTarget = "#modal-2";
+
+    let friendRequestsButton = document.getElementById("friend-requests");
+    friendRequestsButton.dataset.bsToggle = "modal";
+    friendRequestsButton.dataset.bsTarget = "#modal-4";
+
+    if (pendingRequests.length !== 0) {
+        friendRequestsButton.disabled = false;
+    }
 }
 
 var buildFriendsTable = function (friends) {
-
     var buildRow = function (friend) {
         let tr = document.createElement("tr");
         let friendName = document.createElement("td");
+        let friendProfile = document.createElement("a");
         let friendEmail = document.createElement("td");
         let friendLocation = document.createElement("td");
         let friendGender = document.createElement("td");
         let friendAction = document.createElement("td");
         let removeButton = document.createElement("button");
 
-        friendName.textContent = friend.name;
+        //friendName.textContent = friend.name;
+        friendProfile.href = `../profile/${friend.key}`;
+        friendProfile.textContent = friend.name;
+        friendProfile.style.color = "black";
+        //friendProfile.style.textDecoration = "none";
+        //friendProfile.style.fontWeight = "bold";
         friendEmail.textContent = friend.email;
         friendLocation.textContent = friend.location;
         friendGender.textContent = friend.gender;
@@ -94,18 +116,32 @@ var buildFriendsTable = function (friends) {
         removeButton.dataset.bsToggle = "modal";
         removeButton.dataset.bsTarget = "#modal-3";
         let removeConfirmation = document.getElementById("remove");
-        removeConfirmation.addEventListener("click", function () {
-            const url = `http://${window.location.host}/api/users/remove-friend`;
-            axios.post(url, { key: headhunter.key })
+
+        removeButton.onclick = function () {
+            removeConfirmation.onclick = function () {
+                const url = `http://${window.location.host}/api/friends/remove-friend`;
+                axios.post(url, { friendKey: friend.key })
+                    .then(response => {
+                        window.location.reload();
+                    })
+                    .catch(error => {
+
+                    });
+            }
+        }
+        /* removeConfirmation.addEventListener("click", function () {
+            const url = `http://${window.location.host}/api/friends/remove-friend`;
+            axios.post(url, { friendKey: friend.key })
                 .then(response => {
                     window.location.reload();
                 })
                 .catch(error => {
 
                 });
-        });
+        }); */
 
         friendAction.appendChild(removeButton);
+        friendName.appendChild(friendProfile);
         tr.appendChild(friendName);
         tr.appendChild(friendEmail);
         tr.appendChild(friendLocation);
@@ -117,37 +153,139 @@ var buildFriendsTable = function (friends) {
 
     let friendsTable = document.getElementById("friends");
 
+    if (friends.length !== 0) {
+        let div = document.createElement("div");
+        let table = document.createElement("table");
+        let thead = document.createElement("thead");
+        let tr = document.createElement("tr");
+        let friendName = document.createElement("th");
+        let friendEmail = document.createElement("th");
+        let friendLocation = document.createElement("th");
+        let friendGender = document.createElement("th");
+        let friendAction = document.createElement("th");
+
+        div.className = "table-responsive";
+        table.className = "table";
+        friendName.textContent = "Name";
+        friendEmail.textContent = "Email";
+        friendLocation.textContent = "Location";
+        friendGender.textContent = "Gender";
+        friendAction.textContent = "Action";
+        friendAction.className = "text-end";
+
+        tr.appendChild(friendName);
+        tr.appendChild(friendEmail);
+        tr.appendChild(friendLocation);
+        tr.appendChild(friendGender);
+        tr.appendChild(friendAction);
+        thead.appendChild(tr);
+        table.appendChild(thead);
+
+        //friends.forEach(friend => table.appendChild(buildRow(friend)));
+        friends.forEach(function (friend) {
+            console.log(friend)
+            if (!friend.pending) {
+                table.appendChild(buildRow(friend));
+            }
+        });
+
+        div.appendChild(table);
+        friendsTable.appendChild(div);
+    } else {
+        let text = document.createElement("h4");
+        text.textContent = "It seems you haven't connected to anyone yet...";
+
+        friendsTable.appendChild(document.createElement("br"));
+        friendsTable.appendChild(text);
+        friendsTable.appendChild(document.createElement("br"));
+    }
+
+}
+
+var buildPendingRequestsTable = function (friends) {
+    var buildRow = function (friend) {
+        let tr = document.createElement("tr");
+        let friendName = document.createElement("td");
+        let friendProfile = document.createElement("a");
+        let friendAction = document.createElement("td");
+        let acceptButton = document.createElement("button");
+        let rejectButton = document.createElement("button");
+
+        //friendName.textContent = friend.name;
+        friendProfile.href = `../profile/${friend.key}`;
+        friendProfile.textContent = friend.name;
+        friendProfile.style.color = "black";
+        //friendProfile.style.textDecoration = "none";
+        //friendProfile.style.fontWeight = "bold";
+        friendAction.className = "text-end";
+        acceptButton.className = "btn btn-primary";
+        acceptButton.textContent = "Accept";
+        acceptButton.id = "accept-friend";
+        rejectButton.className = "btn btn-primary";
+        rejectButton.textContent = "Reject";
+        rejectButton.id = "reject-friend";
+
+        acceptButton.addEventListener("click", function () {
+            const url = `http://${window.location.host}/api/friends/accept-friend`;
+            axios.post(url, { friendKey: friend.key })
+                .then(response => {
+                    window.location.reload();
+                })
+                .catch(error => {
+
+                });
+        });
+
+        rejectButton.addEventListener("click", function () {
+            const url = `http://${window.location.host}/api/friends/remove-friend`;
+            axios.post(url, { friendKey: friend.key })
+                .then(response => {
+                    window.location.reload();
+                })
+                .catch(error => {
+
+                });
+        });
+
+        friendAction.appendChild(acceptButton);
+        friendAction.appendChild(rejectButton);
+        friendName.appendChild(friendProfile);
+        tr.appendChild(friendName);
+        tr.appendChild(friendAction);
+
+        return tr;
+    }
+
+    let friendsTable = document.getElementById("requests-table");
+
     let div = document.createElement("div");
     let table = document.createElement("table");
     let thead = document.createElement("thead");
     let tr = document.createElement("tr");
     let friendName = document.createElement("th");
-    let friendEmail = document.createElement("th");
-    let friendLocation = document.createElement("th");
-    let friendGender = document.createElement("th");
     let friendAction = document.createElement("th");
 
     div.className = "table-responsive";
     table.className = "table";
     friendName.textContent = "Name";
-    friendEmail.textContent = "Email";
-    friendLocation.textContent = "Location";
-    friendGender.textContent = "Gender";
     friendAction.textContent = "Action";
     friendAction.className = "text-end";
 
     tr.appendChild(friendName);
-    tr.appendChild(friendEmail);
-    tr.appendChild(friendLocation);
-    tr.appendChild(friendGender);
     tr.appendChild(friendAction);
     thead.appendChild(tr);
     table.appendChild(thead);
 
-    friends.forEach(friend => table.appendChild(buildRow(friend)));
+    friends.forEach(function (friend) {
+        console.log(friend)
+        if (friend.pending) {
+            table.appendChild(buildRow(friend));
+        }
+    });
 
     div.appendChild(table);
     friendsTable.appendChild(div);
+
 }
 
 var buildNavBar = function (session) {
@@ -250,6 +388,18 @@ var buildLogoutEvent = function (session) {
                     window.location.href = `http://${window.location.host}/`
                 });
         });
+    }
+}
+
+var clearElementChildren = function (elementId, elementType) {
+    let element = document.getElementById(elementId);
+    let node = element.firstChild;
+    while (node) {
+        let tempNode = node.nextSibling;
+        if (!elementType || node.tagName === elementType) {
+            element.removeChild(node);
+        }
+        node = tempNode;
     }
 }
 
