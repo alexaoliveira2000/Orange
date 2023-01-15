@@ -125,6 +125,13 @@ class User {
             }
         });
     }
+
+    // eliminar um User
+    static deleteUser(id, callBack) {
+        const params = [id];
+        const sql = "delete from users where user_id = ? limit 1;";
+        this.queryDb(sql, params, callBack);
+    }
 }
 
 module.exports = User;

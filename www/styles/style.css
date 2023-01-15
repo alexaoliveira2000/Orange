@@ -56,8 +56,22 @@
     height: 100%;
 }
 
-#search-button {
+#search-button,
+#apply-button-main-filters,
+#apply-button-collapsed-filters,
+#accept-headhunter,
+#add-friends {
     background: rgb(255, 130, 3);
+    border-color: rgb(255, 130, 3);
+    background: rgb(255, 130, 3);
+    border-color: rgb(255, 130, 3);
+    margin-right: 10px;
+}
+
+#reject-headhunter,
+#remove-friend {
+    color: rgb(255, 130, 3);
+    background: rgb(255, 255, 255);
     border-color: rgb(255, 130, 3);
 }
 

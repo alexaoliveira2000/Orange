@@ -15,7 +15,9 @@ let init = function (session) {
     buildLogoutEvent(session);
 }
 
-let buildNavBar = function (session) {
+var buildNavBar = function (session) {
+
+    console.log("USER: " + JSON.stringify(session.user));
 
     var buildSignInButton = function () {
         let a = document.createElement("a");
@@ -36,6 +38,7 @@ let buildNavBar = function (session) {
         let dropdownDiv = document.createElement("div");
         let profileItem = document.createElement("a");
         let friendsItem = document.createElement("a");
+        let pendingHeadhuntersItem = document.createElement("a");
         let dividerDiv = document.createElement("div");
         let logoutItem = document.createElement("a");
 
@@ -51,17 +54,14 @@ let buildNavBar = function (session) {
         dropdownDiv.className = "dropdown-menu shadow dropdown-menu-end animated--grow-in";
         profileItem.id = "profileButton";
         profileItem.className = "dropdown-item";
-        /*profileItem.onclick = function() {
-            let params = new URLSearchParams();
-                params.append("key", session.user.key);
-            
-            window.location.href = "/profile?" + params.toString();
-        }*/
         profileItem.href = "profile";
         profileItem.textContent = "Profile";
         friendsItem.className = "dropdown-item";
         friendsItem.href = "friends";
         friendsItem.textContent = "Friends";
+        pendingHeadhuntersItem.className = "dropdown-item";
+        pendingHeadhuntersItem.href = "pending-headhunters";
+        pendingHeadhuntersItem.textContent = "Pending Headhunters";
         logoutItem.className = "dropdown-item";
         logoutItem.href = "#";
         logoutItem.dataset.bsToggle = "modal";
@@ -70,7 +70,8 @@ let buildNavBar = function (session) {
         dividerDiv.className = "dropdown-divider";
 
         dropdownDiv.appendChild(profileItem);
-        dropdownDiv.appendChild(friendsItem);
+        if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
+        if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);
         dropdownDiv.appendChild(logoutItem);
         a.appendChild(span);
@@ -85,8 +86,6 @@ let buildNavBar = function (session) {
     let jobOffersButton = document.getElementById("job-offers");
     let resumesButton = document.getElementById("resumes");
     let actionDiv = document.getElementById("actionDiv");
-
-    console.log("USER: " + JSON.stringify(session.user));
 
     if (!session.authenticated) {
         actionDiv.appendChild(buildSignInButton());

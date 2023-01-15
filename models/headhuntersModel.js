@@ -1,10 +1,12 @@
 const connection = require("../config/connection")
+const User = require("../models/usersModel");
 
-class Headhunter {
+class Headhunter extends User {
 
     constructor(obj) {
-        this.id = obj.headhunter_id;
-        this.logoUrl = obj.logo_url;
+        super(obj);
+        this.headhunter_id = obj.headhunter_id;
+        this.logoUrl = obj.website_logo;
         this.websiteUrl = obj.website_url;
         this.validated = obj.validated === 1;
     }
@@ -24,12 +26,12 @@ class Headhunter {
 
     // devolver todos os Headhunters (passar de json para Headhunter[])
     static getHeadhunters(callBack) {
-        const sql = "SELECT * FROM headhunter";
-        this.queryDb(sql, [], function(err, result) {
+        const sql = "select users.*, headhunters.* from headhunters left join users on users.user_id = headhunters.headhunter_id;"
+        this.queryDb(sql, [], function (err, result) {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
-                callBack(new Error(`No data found on table "headhunters"`), null);
+                callBack(null, []);
             } else {
                 callBack(null, result.map(headhunter => new Headhunter(headhunter)));
             }
@@ -40,7 +42,7 @@ class Headhunter {
     static getHeadhunter(id, callBack) {
         const params = [id];
         const sql = "SELECT * FROM headhunters WHERE headhunter_id = ?";
-        this.queryDb(sql, params, function(err, result) {
+        this.queryDb(sql, params, function (err, result) {
             let headhunter = result[0] || null;
             if (err) {
                 callBack(err, null);
@@ -61,11 +63,17 @@ class Headhunter {
         this.queryDb(sql, params, callBack);
     }
 
+    static acceptHeadhunter(id, callBack) {
+        const params = [id];
+        const sql = "UPDATE headhunters SET validated = 1 WHERE headhunter_id = ?";
+        this.queryDb(sql, params, callBack);
+    }
+
     // editar um Headhunter
     static editHeadhunter(headhunter, callBack) {
         const params = [
-            headhunter.logoUrl, 
-            headhunter.websiteUrl, 
+            headhunter.logoUrl,
+            headhunter.websiteUrl,
             headhunter.id];
         const sql = "UPDATE headhunters SET website_url = ?, website_logo = ?, validated = ? WHERE headhunter_id = ?";
         this.queryDb(sql, params, callBack);

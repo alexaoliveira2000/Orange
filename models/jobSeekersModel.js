@@ -5,7 +5,6 @@ class JobSeeker extends User {
 
     constructor(obj) {
         super(obj);
-        console.log(obj)
         this.job_seeker_id = obj.job_seeker_id;
         this.gender = obj.gender;
         this.birthDate = obj.birth_date;
@@ -31,7 +30,7 @@ class JobSeeker extends User {
     // devolver todos os JobSeekers (passar de json para JobSeeker[])
     static getJobSeekers(callBack) {
         const sql = "select users.*, job_seekers.* from job_seekers left join users on users.user_id = job_seekers.job_seeker_id;";
-        this.queryDb(sql, [], function(err, result) {
+        this.queryDb(sql, [], function (err, result) {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
@@ -43,8 +42,42 @@ class JobSeeker extends User {
     }
 
     // devolver todos os resumes (com as contagens dos workplaces e courses)
-    static getResumes(callBack) {
-        const sql = `select users.*, job_seekers.*, courses.courses_count, workplaces.workplaces_count
+    static getResumes(filters, callBack) {
+        let buildWhereClause = function (filters) {
+            if (Object.keys(filters).length === 0) {
+                return "";
+            }
+            let conditions = "WHERE";
+            let isFirst = true;
+            if (filters.minAge) {
+                isFirst = false;
+                conditions += ` DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), job_seekers.birth_date)), '%Y')+0 >= ${filters.minAge}`;
+            }
+            if (filters.maxAge) {
+                if (isFirst) isFirst = false;
+                else conditions += " AND";
+                conditions += ` DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), job_seekers.birth_date)), '%Y')+0 <= ${filters.maxAge}`;
+            }
+            conditions += !isFirst && filters.location ? " AND (" : "";
+            if (filters.location) {
+                conditions += isFirst ? " (" : "";
+                if (Array.isArray(filters.location)) {
+                    let isFirstLocation = true;
+                    console.log(filters.location)
+                    filters.location.forEach(location => {
+                        console.log(location)
+                        if (isFirstLocation) isFirstLocation = false;
+                        else conditions += " OR";
+                        conditions += ` job_seekers.location = '${location.replaceAll("%20", " ")}'`;
+                    });
+                } else {
+                    conditions += ` job_seekers.location = '${filters.location.replaceAll("%20", " ")}'`;
+                }
+            }
+            conditions += filters.location ? ")" : "";
+            return conditions;
+        }
+        const sql = `select users.*, job_seekers.*, courses.courses_count, workplaces.workplaces_count, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), job_seekers.birth_date)), '%Y') + 0 AS age
                     from job_seekers
                     join users on users.user_id = job_seekers.job_seeker_id
                     join (	select job_seekers.job_seeker_id as "user_id", count(courses.course_id) as "courses_count"
@@ -57,12 +90,13 @@ class JobSeeker extends User {
                             left join workplaces on workplaces.job_seeker_id = job_seekers.job_seeker_id
                             group by job_seekers.job_seeker_id ) workplaces 
                     on workplaces.user_id = job_seekers.job_seeker_id
+                    ${buildWhereClause(filters)}
                     group by job_seekers.job_seeker_id;`;
         JobSeeker.queryDb(sql, [], function (err, result) {
             if (err) {
                 callBack(err, null);
             } else if (result.length === 0) {
-                callBack(new Error(`No data found on table "users"`), null);
+                callBack(null, []);
             } else {
                 callBack(null, result.map(user => new JobSeeker(user)));
             }
@@ -75,7 +109,7 @@ class JobSeeker extends User {
         const sql = `select users.*, job_seekers.* from job_seekers 
                     join users on users.user_id = job_seekers.job_seeker_id 
                     where job_seeker_id = ?;`;
-        this.queryDb(sql, params, function(err, result) {
+        this.queryDb(sql, params, function (err, result) {
             let jobSeeker = result[0] || null;
             if (err) {
                 callBack(err, null);

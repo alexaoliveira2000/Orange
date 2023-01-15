@@ -6,8 +6,57 @@ const JobSeeker = require("../models/jobSeekersModel");
 const Headhunter = require("../models/headhuntersModel");
 const { body, validationResult } = require('express-validator');
 
+router.post("/accept-headhunter", function (req, res) {
+    if (!req.session.authenticated || req.session.user.type !== "admin") {
+        res.sendStatus(401);
+    }
+    User.getUserByKey(req.body.key, function (err, user) {
+        if (err) {
+            res.sendStatus(500);
+        } else if (!user || user.type !== "headhunter" || user.validated) {
+            res.sendStatus(400);
+        } else {
+            Headhunter.acceptHeadhunter(user.id, function (err, result) {
+                if (err) {
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(200);
+                }
+            });
+        }
+    });
+});
+
+router.post("/reject-headhunter", function (req, res) {
+    if (!req.session.authenticated || req.session.user.type !== "admin") {
+        res.sendStatus(401);
+    }
+    User.getUserByKey(req.body.key, function (err, user) {
+        if (err) {
+            res.sendStatus(500);
+        } else if (!user || user.type !== "headhunter" || user.validated) {
+            res.sendStatus(400);
+        } else {
+            Headhunter.deleteHeadhunter(user.id, function (err, result) {
+                if (err) {
+                    res.sendStatus(500);
+                } else {
+                    User.deleteUser(user.id, function (err, result) {
+                        if (err) {
+                            res.sendStatus(500);
+                        } else {
+                            res.sendStatus(200);
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+});
+
 router.post("/:type",
-    body('email').trim().isEmail(),
+    body('email').trim().isEmail().isLength({ max: 60 }),
     body('password').trim().isLength({ min: 5 }),
     body('description').trim().isLength({ max: 255 }),
     body('user_type').trim().isIn(['job_seeker', 'headhunter']),
@@ -38,7 +87,15 @@ router.post("/:type",
 
 router.post("/job_seeker",
     body("seeker_name").trim().not().isEmpty(),
-    body("birth_date").trim().isDate(),
+    body("birth_date").trim().isDate().custom(value => {
+        let enteredDate = new Date(value);
+        let miminumAdultDate = new Date();
+        miminumAdultDate.setFullYear(miminumAdultDate.getFullYear() - 18);
+        if (enteredDate > miminumAdultDate) {
+            throw new Error("You need to have more than 18 years old!");
+        }
+        return true;
+    }),
     body("gender").trim().isIn(['M', 'F']),
     body("location").trim().not().isEmpty(),
     body("visible").isBoolean(),
@@ -90,6 +147,21 @@ router.post("/headhunter",
             }
         });
     });
+
+router.get("/pending-headhunters", function (req, res) {
+    if (!req.session.authenticated || req.session.user.type !== "admin") {
+        res.sendStatus(401);
+    }
+    Headhunter.getHeadhunters(function (err, headhunters) {
+        if (err) {
+            res.sendStatus(500);
+        } else if (headhunters.length === 0) {
+            res.json({ headhunters: [] });
+        } else {
+            res.json({ headhunters: headhunters.filter(headhunter => !headhunter.validated) });
+        }
+    });
+});
 
 router.get("/", function (req, res) {
     User.getUsers(function (err, users) {

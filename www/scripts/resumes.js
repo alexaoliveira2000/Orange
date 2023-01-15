@@ -1,5 +1,3 @@
-var resumes;
-
 let checkAuthentication = function () {
     const url = `http://${window.location.host}/api/check-authentication`
     axios.get(url)
@@ -12,33 +10,76 @@ let checkAuthentication = function () {
 }
 
 let init = function (session) {
+    
+    // FILTERS (MAIN & COLLAPSED)
+    var createCheckboxFilter = function (filter, filterId, resumes) {
+    
+        var onFilterChange = function (filterInput) {
+            let pairedFilterId = filterId === "main-filters" ? "collapsed-filters" : "main-filters";
+            let pairedFilter = document.getElementById(filterInput.id.replace(filterId, pairedFilterId));
+            pairedFilter.checked = filterInput.checked;
+        }
+    
+        let values = [...new Set(resumes.map((resume) => resume[filter.property]))];
+        values.sort();
+        let filtersDiv = document.getElementById(filterId);
+        let filterItemDiv = document.createElement("div");
+        filterItemDiv.className = "filter-item";
+        filterItemDiv.id = `${filterId}-${filter.property}`;
+        let filterName = document.createElement("h3");
+        filterName.textContent = filter.name;
+        filterItemDiv.appendChild(filterName);
+        values.forEach(function (value, index) {
+            let id = `${filterId}-${filter.property}-${index}`;
+            let filterInputDiv = document.createElement("div");
+            filterInputDiv.className = "form-check";
+            let filterInput = document.createElement("input");
+            filterInput.className = "form-check-input";
+            filterInput.type = "checkbox";
+            filterInput.id = id;
+            let filterLabel = document.createElement("label");
+            filterLabel.className = "form-check-label";
+            filterLabel.htmlFor = id;
+            filterLabel.textContent = value;
+            filterInputDiv.appendChild(filterInput);
+            filterInputDiv.appendChild(filterLabel);
+            filterItemDiv.appendChild(filterInputDiv);
+            filtersDiv.appendChild(filterItemDiv);
+    
+            filterInputDiv.addEventListener("click", function () {
+                onFilterChange(filterInput);
+                onChangeApplyButton();
+            });
+        });
+    }
+
     console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
-    const urlParams = new URLSearchParams(window.location.search);
-    const obj = Object.fromEntries(new URLSearchParams(window.location.search))
-    console.log(obj);
-    //const myParam = urlParams.get('myParam');
-
-    const url = `http://${window.location.host}/api/resumes`
+    console.log(window.location.search);
+    
+    let url = `http://${window.location.host}/api/resumes`;
     axios.get(url)
         .then(response => {
             console.log(response.data)
-            //resumes = response.data.resumes;
-            resumes = response.data.resumes.map(resume => ({
-                ...resume,
-                show: true
-            }));
-            const filters = [
-                { property: "location", name: "Location" }
-            ]
+            let resumes = response.data.resumes;
             createApplyButton("main-filters");
             createAgeFilter("main-filters");
-            createCheckboxFilter({ property: "location", name: "Location" }, "main-filters");
+            createCheckboxFilter({ property: "location", name: "Location" }, "main-filters", resumes);
+
             createApplyButton("collapsed-filters");
             createAgeFilter("collapsed-filters");
-            createCheckboxFilter("location", "collapsed-filters");
-            buildResumeCards(resumes);
+            createCheckboxFilter({ property: "location", name: "Location" }, "collapsed-filters", resumes);
+
+            if (window.location.search) {
+                url += window.location.search;
+            }
+            axios.get(url)
+                .then(response => {
+                    buildResumeCards(response.data.resumes);
+                }).catch(error => {
+
+                });
         })
         .catch(error => {
 
@@ -47,27 +88,30 @@ let init = function (session) {
 
 var createApplyButton = function (filterId) {
 
-    var buildQueryString = function() {
-        let minAge = document.getElementById("min-age");
-        let maxAge = document.getElementById("max-age");
-
+    var buildQueryString = function () {
+        let mainLocationFilter = document.getElementById("main-filters-location");
+        let mainLocationFilters = Array.from(mainLocationFilter.querySelectorAll('div input'));
+        let minAge = document.getElementById("min-age-main-filters");
+        let maxAge = document.getElementById("max-age-main-filters");
         let isFirst = true;
 
         let query = "?";
-
         if (minAge.value) {
-            query += "min-age=" + minAge.value;
+            query += "minAge=" + minAge.value;
             isFirst = false;
-        } 
+        }
         if (maxAge.value) {
             if (!isFirst) query += "&"
             else isFirst = false;
-            query += "max-age=" + maxAge.value;
-        } /* else if () {
-            if (!isFirst) query += "&"
-            else isFirst = false;
-
-        } */
+            query += "maxAge=" + maxAge.value;
+        }
+        mainLocationFilters.forEach(function (option) {
+            if (option.checked) {
+                if (!isFirst) query += "&"
+                else isFirst = false;
+                query += "location=" + option.nextSibling.textContent.replaceAll(" ", "%20");
+            }
+        });
         return query;
     }
 
@@ -79,28 +123,52 @@ var createApplyButton = function (filterId) {
     let button = document.createElement("button");
     button.className = "btn btn-primary";
     button.type = "button";
-    button.disabled = true;
-    button.id = "search-button"
+    //button.disabled = true;
+    button.id = `apply-button-${filterId}`;
     button.textContent = "Apply";
 
     filterItemDiv.appendChild(button);
     filtersDiv.appendChild(filterItemDiv);
 
-    button.addEventListener("click", function() {
-        console.log(buildQueryString())
+    button.addEventListener("click", function () {
+        let queryString = buildQueryString();
+        console.log(queryString)
+        window.history.replaceState('', '', queryString);
+        const url = `http://${window.location.host}/api/resumes${queryString}`
+        axios.get(url)
+            .then(response => {
+                clearElementChildren("resumeCards");
+                buildResumeCards(response.data.resumes);
+            })
+            .catch(error => {
+            });
     });
 
 
 }
 
-var createAgeFilter = function (filterId, minValue, maxValue) {
+var createAgeFilter = function (filterId) {
+    
+    var onFilterChange = function (filterId) {
+
+        let minAgeInput = document.getElementById(`min-age-${filterId}`);
+        let maxAgeInput = document.getElementById(`max-age-${filterId}`);
+
+        let pairedFilterId = filterId === "main-filters" ? "collapsed-filters" : "main-filters";
+        let pairedMinAgeInput = document.getElementById(minAgeInput.id.replace(filterId, pairedFilterId));
+        let pairedMaxAgeInput = document.getElementById(maxAgeInput.id.replace(filterId, pairedFilterId));
+
+        pairedMinAgeInput.value = minAgeInput.value;
+        pairedMaxAgeInput.value = maxAgeInput.value;
+    }
+
     let filtersDiv = document.getElementById(filterId);
 
     let filterItemDiv = document.createElement("div");
     filterItemDiv.className = "filter-item";
     let filterName = document.createElement("h3");
     filterName.textContent = "Age";
-    
+
     let div = document.createElement("div");
     let inputMin = document.createElement("input");
     let strong = document.createElement("strong");
@@ -110,7 +178,7 @@ var createAgeFilter = function (filterId, minValue, maxValue) {
     inputMin.type = "number";
     inputMin.style.width = "60px";
     inputMin.placeholder = "Min";
-    inputMin.id = "min-age";
+    inputMin.id = `min-age-${filterId}`;
     inputMin.min = "18";
     inputMin.max = "65";
     strong.className = "d-xl-flex align-items-xl-center";
@@ -120,33 +188,18 @@ var createAgeFilter = function (filterId, minValue, maxValue) {
     inputMax.type = "number";
     inputMax.style.width = "60px";
     inputMax.placeholder = "Max";
-    inputMax.id = "max-age";
+    inputMax.id = `max-age-${filterId}`;
     inputMax.min = "18";
     inputMax.max = "65";
 
-    if (minValue) {
-        inputMin.value = minValue;
-    }
-    if (maxValue) {
-        inputMax.value = maxValue;
-    }
-
-    let applyButton = document.getElementById("search-button");
-    inputMin.addEventListener("input", function() {
-        if (inputMin.value > inputMax.value) {
-            applyButton.disabled = true;
-        } else {
-            applyButton.disabled = false;
-        }
+    inputMin.addEventListener("input", function () {
+        onFilterChange(filterId);
+        onChangeApplyButton();
     });
-    inputMax.addEventListener("input", function() {
-        if (inputMin.value > inputMax.value) {
-            applyButton.disabled = true;
-        } else {
-            applyButton.disabled = false;
-        }
+    inputMax.addEventListener("input", function () {
+        onFilterChange(filterId);
+        onChangeApplyButton();
     });
-
 
     div.appendChild(inputMin);
     div.appendChild(strong);
@@ -157,33 +210,30 @@ var createAgeFilter = function (filterId, minValue, maxValue) {
     filtersDiv.appendChild(filterItemDiv);
 }
 
-// FILTERS (MAIN & COLLAPSED)
-var createCheckboxFilter = function (filter, filterId) {
-    let values = [...new Set(resumes.map((resume) => resume[filter.property]))];
-    values.sort();
-    let filtersDiv = document.getElementById(filterId);
-    let filterItemDiv = document.createElement("div");
-    filterItemDiv.className = "filter-item";
-    let filterName = document.createElement("h3");
-    filterName.textContent = filter.name;
-    filterItemDiv.appendChild(filterName);
-    values.forEach(function (value, index) {
-        let id = `${filterId}-${filter.property}-${index}`;
-        let filterInputDiv = document.createElement("div");
-        filterInputDiv.className = "form-check";
-        let filterInput = document.createElement("input");
-        filterInput.className = "form-check-input";
-        filterInput.type = "checkbox";
-        filterInput.id = id;
-        let filterLabel = document.createElement("label");
-        filterLabel.className = "form-check-label";
-        filterLabel.htmlFor = id;
-        filterLabel.textContent = value;
-        filterInputDiv.appendChild(filterInput);
-        filterInputDiv.appendChild(filterLabel);
-        filterItemDiv.appendChild(filterInputDiv);
-        filtersDiv.appendChild(filterItemDiv);
-    });
+var onChangeApplyButton = function () {
+
+    let applyButtonMain = document.getElementById("apply-button-main-filters");
+    let applyButtonCollapsed = document.getElementById("apply-button-collapsed-filters");
+    let minAge = document.getElementById("min-age-main-filters");
+    let maxAge = document.getElementById("max-age-main-filters");
+    let mainLocationFilter = document.getElementById("main-filters-location");
+    let mainLocationFilters = Array.from(mainLocationFilter.querySelectorAll('div input'));
+    let locationSelected = mainLocationFilters.some(filter => filter.checked);
+
+    if (minAge.value > maxAge.value) {
+        applyButtonMain.disabled = true;
+    } else if (locationSelected) {
+        applyButtonMain.disabled = false;
+    } else if (minAge.value < 18 || maxAge.value < 18 || minAge.value > 65 || maxAge.value > 65) {
+        applyButtonMain.disabled = true;
+    } else if (!minAge.value && !maxAge.value && !locationSelected) {
+        applyButtonMain.disabled = false;
+    } else {
+        applyButtonMain.disabled = false;
+    }
+
+    applyButtonCollapsed.disabled = applyButtonMain.disabled;
+
 }
 
 var buildResumeCards = function (resumes) {
@@ -227,7 +277,8 @@ var buildResumeCards = function (resumes) {
         let locationValue = document.createElement("h6");
 
         div.className = "col-lg-4 col-xlg-3 col-md-5";
-        div.style.marginBottom = "20px";
+        div.style.marginTop = "10px";
+        div.style.marginBottom = "10px";
         cardDiv.className = "card";
         cardBodyDiv.className = "card-body";
         nameText.className = "text-center card-title m-t-10";
@@ -280,9 +331,31 @@ var buildResumeCards = function (resumes) {
     }
     let resumeCards = document.getElementById("resumeCards");
     resumes.forEach(resume => resumeCards.appendChild(buildResumeCard(resume)));
+    if (resumes.length === 0) {
+        let imageDiv = document.createElement("div");
+        imageDiv.id = "no-results";
+        imageDiv.className = "text-center d-flex justify-content-center align-items-center";
+        let image = document.createElement("img");
+        image.id = "no-results-image";
+        image.src = "images/sadorange.png";
+
+        let textDiv = document.createElement("div");
+        textDiv.className = "text-center d-flex justify-content-center align-items-center";
+        let text = document.createElement("h2");
+        text.id = "no-results-text";
+        text.className = "text-info";
+        text.textContent = "No results found";
+
+        imageDiv.appendChild(image);
+        textDiv.appendChild(text);
+        resumeCards.appendChild(imageDiv);
+        resumeCards.appendChild(textDiv);
+    }
 }
 
-let buildNavBar = function (session) {
+var buildNavBar = function (session) {
+
+    console.log("USER: " + JSON.stringify(session.user));
 
     var buildSignInButton = function () {
         let a = document.createElement("a");
@@ -303,6 +376,7 @@ let buildNavBar = function (session) {
         let dropdownDiv = document.createElement("div");
         let profileItem = document.createElement("a");
         let friendsItem = document.createElement("a");
+        let pendingHeadhuntersItem = document.createElement("a");
         let dividerDiv = document.createElement("div");
         let logoutItem = document.createElement("a");
 
@@ -316,12 +390,16 @@ let buildNavBar = function (session) {
         span.className = "d-none d-lg-inline me-2 text-gray-600 small";
         span.textContent = session.user.name;
         dropdownDiv.className = "dropdown-menu shadow dropdown-menu-end animated--grow-in";
+        profileItem.id = "profileButton";
         profileItem.className = "dropdown-item";
         profileItem.href = "profile";
         profileItem.textContent = "Profile";
         friendsItem.className = "dropdown-item";
         friendsItem.href = "friends";
         friendsItem.textContent = "Friends";
+        pendingHeadhuntersItem.className = "dropdown-item";
+        pendingHeadhuntersItem.href = "pending-headhunters";
+        pendingHeadhuntersItem.textContent = "Pending Headhunters";
         logoutItem.className = "dropdown-item";
         logoutItem.href = "#";
         logoutItem.dataset.bsToggle = "modal";
@@ -330,7 +408,8 @@ let buildNavBar = function (session) {
         dividerDiv.className = "dropdown-divider";
 
         dropdownDiv.appendChild(profileItem);
-        dropdownDiv.appendChild(friendsItem);
+        if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
+        if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);
         dropdownDiv.appendChild(logoutItem);
         a.appendChild(span);
@@ -345,8 +424,6 @@ let buildNavBar = function (session) {
     let jobOffersButton = document.getElementById("job-offers");
     let resumesButton = document.getElementById("resumes");
     let actionDiv = document.getElementById("actionDiv");
-
-    console.log("USER: " + JSON.stringify(session.user));
 
     if (!session.authenticated) {
         actionDiv.appendChild(buildSignInButton());
@@ -376,6 +453,18 @@ var buildLogoutEvent = function (session) {
                     window.location.href = `http://${window.location.host}/`
                 });
         });
+    }
+}
+
+var clearElementChildren = function (elementId, elementType) {
+    let element = document.getElementById(elementId);
+    let node = element.firstChild;
+    while (node) {
+        let tempNode = node.nextSibling;
+        if (!elementType || node.tagName === elementType) {
+            element.removeChild(node);
+        }
+        node = tempNode;
     }
 }
 

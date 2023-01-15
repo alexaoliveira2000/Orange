@@ -13,7 +13,114 @@ let init = function (session) {
     console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
+
+    const url = `http://${window.location.host}/api/users/pending-headhunters`;
+    axios.get(url)
+        .then(response => {
+            console.log(response.data.headhunters);
+            buildPendingHeadhuntersTable(response.data.headhunters)
+        })
+        .catch(error => {
+
+        });
 }
+
+var buildPendingHeadhuntersTable = function (headhunters) {
+
+    var buildRow = function (headhunter) {
+        let tr = document.createElement("tr");
+        let headhunterName = document.createElement("td");
+        let headhunterEmail = document.createElement("td");
+        let headhunterWebsite = document.createElement("td");
+        let headhunterLogo = document.createElement("td");
+        let headhunterActions = document.createElement("td");
+        let acceptButton = document.createElement("button");
+        let rejectButton = document.createElement("button");
+
+        headhunterName.textContent = headhunter.name;
+        headhunterEmail.textContent = headhunter.email;
+        headhunterWebsite.textContent = headhunter.websiteUrl;
+        headhunterLogo.textContent = headhunter.logoUrl;
+        headhunterActions.className = "text-end";
+        acceptButton.className = "btn btn-primary";
+        rejectButton.className = "btn btn-primary";
+        acceptButton.textContent = "Accept";
+        rejectButton.textContent = "Reject";
+        acceptButton.id = "accept-headhunter";
+        rejectButton.id = "reject-headhunter";
+
+        acceptButton.addEventListener("click", function () {
+            const url = `http://${window.location.host}/api/users/accept-headhunter`;
+            axios.post(url, {key: headhunter.key})
+                .then(response => {
+                    window.location.reload();
+                })
+                .catch(error => {
+
+                });
+        });
+
+        rejectButton.dataset.bsToggle = "modal";
+        rejectButton.dataset.bsTarget = "#modal-2";
+        let rejectConfirmation = document.getElementById("reject");
+
+        rejectConfirmation.addEventListener("click", function () {
+            const url = `http://${window.location.host}/api/users/reject-headhunter`;
+            axios.post(url, {key: headhunter.key})
+                .then(response => {
+                    window.location.reload();
+                })
+                .catch(error => {
+
+                });
+        });
+
+        headhunterActions.appendChild(acceptButton);
+        headhunterActions.appendChild(rejectButton);
+        tr.appendChild(headhunterName);
+        tr.appendChild(headhunterEmail);
+        tr.appendChild(headhunterWebsite);
+        tr.appendChild(headhunterLogo);
+        tr.appendChild(headhunterActions);
+
+        return tr;
+    }
+
+    let pendingTable = document.getElementById("pending-table");
+
+    let div = document.createElement("div");
+    let table = document.createElement("table");
+    let thead = document.createElement("thead");
+    let tr = document.createElement("tr");
+    let headhunterName = document.createElement("th");
+    let headhunterEmail = document.createElement("th");
+    let headhunterWebsite = document.createElement("th");
+    let headhunterLogo = document.createElement("th");
+    let headhunterActions = document.createElement("th");
+
+    div.className = "table-responsive";
+    table.className = "table";
+    headhunterName.textContent = "Name";
+    headhunterEmail.textContent = "Email";
+    headhunterWebsite.textContent = "Website";
+    headhunterLogo.textContent = "Logo";
+    headhunterActions.textContent = "Actions";
+    headhunterActions.className = "text-end";
+
+    tr.appendChild(headhunterName);
+    tr.appendChild(headhunterEmail);
+    tr.appendChild(headhunterWebsite);
+    tr.appendChild(headhunterLogo);
+    tr.appendChild(headhunterActions);
+    thead.appendChild(tr);
+    table.appendChild(thead);
+
+    headhunters.forEach(headhunter => table.appendChild(buildRow(headhunter)));
+
+    div.appendChild(table);
+    pendingTable.appendChild(div);
+}
+
 
 var buildNavBar = function (session) {
 

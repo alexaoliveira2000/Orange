@@ -21,6 +21,10 @@ var checkUserCreated = function () {
         let loginMessage = document.getElementById("login_message");
         loginMessage.style.display = "block";
         loginMessage.textContent = "Your account has been created!";
+    } else if (urlParams.has("headhunterCreated")) {
+        let loginMessage = document.getElementById("login_message");
+        loginMessage.style.display = "block";
+        loginMessage.textContent = "Your account has been created, wait for an approval!";
     } else if (urlParams.has("userLogout")) {
         let loginMessage = document.getElementById("login_message");
         loginMessage.style.display = "block";
@@ -28,14 +32,12 @@ var checkUserCreated = function () {
     } else if (urlParams.has("waitingValidation")) {
         let loginMessage = document.getElementById("login_message");
         loginMessage.style.display = "block";
-        loginMessage.textContent = "Headhunter was not accepted!";
+        loginMessage.textContent = "Headhunter is not yet accepted!";
     }
 }
 
 var formSubmitValidation = function () {
-
-    console.log();
-
+    
     var resetErrors = function (nodeElements) {
         var elements = [...nodeElements];
         elements.forEach(function (element) {
@@ -44,7 +46,6 @@ var formSubmitValidation = function () {
                 elemErrorText.style.display = "none";
             }
         });
-
     }
 
     var showError = function (elementId, message) {

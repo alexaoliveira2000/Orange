@@ -1,4 +1,5 @@
 const express = require("express");
+const Headhunter = require("../models/headhuntersModel");
 const router = express.Router();
 const User = require("../models/usersModel");
 
@@ -9,12 +10,23 @@ router.post("/auth", function (req, res) {
         res.sendStatus(401);
     }
     User.verifyUser(email, pass, function (err, user) {
+        console.log(user)
         if (err) {
             res.sendStatus(500);
         } else if (!user) {
             res.sendStatus(401);
-        } else if (user.type === "headhunter" && !user.validated) {
-            res.sendStatus(412);
+        } else if (user.type === "headhunter") {
+            Headhunter.getHeadhunter(user.id, function (err, headhunter) {
+                if (err) {
+                    res.sendStatus(500);
+                } else if (!headhunter.validated) {
+                    res.sendStatus(412);
+                } else {
+                    req.session.authenticated = true;
+                    req.session.user = user;
+                    res.sendStatus(200);
+                }
+            })
         } else {
             req.session.authenticated = true;
             req.session.user = user;

@@ -24,7 +24,6 @@ var formSubmitValidation = function () {
                 elemErrorText.style.display = "none";
             }
         });
-
     }
 
     var showError = function (elementId, message) {
@@ -67,7 +66,12 @@ var formSubmitValidation = function () {
         }
         axios.post(`http://${window.location.host}/api/users/${type}`, body)
             .then(response => {
-                window.location.href = `http://${window.location.host}/login?userCreated`
+                if (type === "headhunter") {
+                    window.location.href = `http://${window.location.host}/login?headhunterCreated`
+                } else {
+                    window.location.href = `http://${window.location.host}/login?userCreated`
+                }
+                
             })
             .catch(error => {
                 if (error.response.status === 400) {
