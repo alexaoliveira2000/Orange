@@ -76,6 +76,18 @@ class Course {
         });
     }
 
+    static getCourseTypeOptions(callBack) {
+        const sql = "SHOW COLUMNS FROM courses WHERE Field = 'course_type'";
+        this.queryDb(sql, [], function(err, result) {
+            let fieldOptions = result[0].Type || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, fieldOptions);
+            }
+        });
+    }
+
     // criar um Course
     static createCourse(jsonData, callBack) {
         const courseData = JSON.parse(jsonData);

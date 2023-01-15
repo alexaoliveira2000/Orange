@@ -33,6 +33,51 @@
                 </div>
             </div>
         </nav>
+        <div class="modal fade" tabindex="-1" id="mainModal">
+            <div class="modal-dialog">
+              <div id="modalContent" class="modal-content" style="width: 600px;">
+                <div class="modal-header">
+                  <h5 id="titleModal" class="modal-title" style="color: rgb(255,130,3);"></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="bodyModal" class="modal-body d-flex justify-content-start">
+                </div>
+                <div class="modal-footer">
+                  <button id="firstButtonModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+                  <button id="secondButtonModal" type="button" class="btn btn-primary"></button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" id="confirmationModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 id="titleModal" class="modal-title">Confirmation</h5>
+                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="bodyConfirmationModal" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                  <button id="confirmButtonModal" type="button" class="btn btn-primary" style="background: rgb(255,130,3);border-color: rgb(255,130,3);" data-bs-dismiss="modal">Confirme</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to sign out?</h4>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" type="button" data-bs-dismiss="modal" style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
+                        <button id="logout" class="btn btn-primary" type="button" style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div style="background:rgb(246, 246, 246); height: 100%;">
             <div class="container" style="padding: 1%;color: var(--bs-black);">
                 <div class="row" style="margin: 5%;margin-top: 0%;margin-bottom: 0%;">
@@ -40,18 +85,18 @@
                         <div class="border rounded d-flex" style="background: #ffffff;padding: 6px;width: 900px;">
                             <div class="col d-flex align-items-center" style="background: #ffffff;padding: 3%;">
                                 <section style="width:100%;">
+                                    <i class="fas fa-edit d-flex float-end justify-content-end align-items-center" style="width: 50%;height: 30px;font-size: 24px;color: rgb(143,143,143);"></i>
                                     <h1 id="username" class="d-flex justify-content-start" style="font-size: 30px; color: rgb(255,130,3);border-color: rgb(0,0,0);text-align: center;"></h1>
                                     <section>
                                         <p id="userDescription" style="color:rgb(0,0,0);font-family:Montserrat, sans-serif;width:100%;"></p>
                                     </section>
-                                    <section class="d-inline-flex align-items-center align-content-center justify-content-lg-center" style="margin-bottom: 1%;width: 115px;"><i class="fas fa-birthday-cake" style="font-size: 22px;color: #8f8f8f;"></i>
-                                        <p id="userBirthDay" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0;padding-top: 3px;margin-left: 8px;"></p>
-                                    </section>
-                                    <section class="d-inline-flex justify-content-center align-items-center align-content-center justify-content-lg-center" style="margin-bottom: 1%;width: 115px;margin-left: 10px;"><i class="fas fa-user" style="font-size: 22px;color: #8f8f8f;"></i>
-                                        <p id="userGender" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;padding-top: 3px;margin-left: 8px;"></p>
-                                    </section>
-                                    <section class="d-inline-flex justify-content-center align-items-center align-content-center justify-content-lg-center" style="margin-bottom: 1%;width: 70px;margin-left: 10px;"><i class="fas fa-map-marker-alt" style="font-size: 22px;color: #8f8f8f;"></i>
-                                        <p id="userLocation" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;padding-top: 3px;margin-left: 8px;"></p>
+                                    <section class="d-inline-flex justify-content-start align-items-center" style="width: 100%;">
+                                        <i class="fas fa-birthday-cake" style="font-size: 22px;color: #8f8f8f;"></i>
+                                        <p id="userBirthDay" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;margin-left: 8px;padding-top: 3px;"></p>
+                                        <i class="fas fa-user" style="margin-left: 15px;font-size: 22px;color: #8f8f8f;"></i>
+                                        <p id="userGender" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;margin-left: 8px;padding-top: 3px;"></p>
+                                        <i class="fas fa-map-marker-alt" style="margin-left: 15px;font-size: 22px;color: #8f8f8f;"></i>
+                                        <p id="userLocation" style="color: rgb(0,0,0);font-family: Montserrat, sans-serif;text-align: center;margin: 0px;margin-left: 8px;padding-top: 3px;"></p>
                                     </section>
                                 </section>
                             </div>
@@ -62,7 +107,7 @@
                     <div class="col d-flex justify-content-center">
                         <section id="coursesList" class="d-block border rounded" style="background:var(--bs-body-bg);width:900px;padding:20px;border-color:rgba(0,0,0,0);border-top-left-radius:100px;border-top-right-radius:100px;border-bottom-right-radius:100px;border-bottom-left-radius:100px;display:flex;margin-top:2%;margin-bottom:2%;">
                             <section class="d-flex align-items-center" style="height:40px;width:100%;margin-bottom:1%;">
-                                <h1 class="text-center d-flex justify-content-start align-items-center" style="color: rgb(255,130,3);font-size: 27px;height: 100%;width: 50%;margin: 0px;">Courses</h1><i class="fas fa-plus d-flex justify-content-end align-items-center" style="width:50%;font-size:27px;color:rgb(143,143,143);text-align:center;height:100%;"></i>
+                                <h1 class="text-center d-flex justify-content-start align-items-center" style="color: rgb(255,130,3);font-size: 27px;height: 100%;width: 50%;margin: 0px;">Courses</h1><i id="addCourse" class="fas fa-plus d-flex justify-content-end align-items-center" style="width:50%;font-size:27px;color:rgb(143,143,143);text-align:center;height:100%;" data-bs-toggle="modal" data-bs-target="#mainModal"></i>
                             </section>
                         </section>
                     </div>
@@ -71,7 +116,7 @@
                     <div class="col d-flex justify-content-center">
                         <section id="workplacesList" class="d-block border rounded" style="background:var(--bs-body-bg);width:900px;padding:20px;border-color:rgba(0,0,0,0);border-top-left-radius:100px;border-top-right-radius:100px;border-bottom-right-radius:100px;border-bottom-left-radius:100px;display:flex;margin-top:2%;margin-bottom:2%;">
                             <section class="d-flex align-items-center" style="height:40px;width:100%;margin-bottom:1%;">
-                                <h1 class="text-center d-flex justify-content-start align-items-center" style="color: rgb(255,130,3);font-size: 27px;height: 100%;width: 50%;margin: 0px;">Workplaces</h1><i class="fas fa-plus d-flex justify-content-end align-items-center" style="width:50%;font-size:27px;color:rgb(143,143,143);text-align:center;height:100%;"></i>
+                                <h1 class="text-center d-flex justify-content-start align-items-center" style="color: rgb(255,130,3);font-size: 27px;height: 100%;width: 50%;margin: 0px;">Workplaces</h1><i id="addWorkplace" class="fas fa-plus d-flex justify-content-end align-items-center" style="width:50%;font-size:27px;color:rgb(143,143,143);text-align:center;height:100%;" data-bs-toggle="modal" data-bs-target="#mainModal"></i>
                             </section>
                         </section>
                     </div>

@@ -33,11 +33,20 @@ router.get("/:userKey", function (req, res) {
                         Course.getCoursesUser(user.id, (err, courses) => {
                             if(courses) {
                                 data.courses = courses;
-                                Workplace.getWorkplacesUser(user.id, (err, workplaces) => {
-                                    if (workplaces) {
-                                        data.workplaces = workplaces;
-                                        res.status(200).send(data);
-
+                                Course.getCourseTypeOptions((err, fieldOptions) => {
+                                    if (fieldOptions) {
+                                        data.coursesOptions = fieldOptions;
+                                        Workplace.getWorkplacesUser(user.id, (err, workplaces) => {
+                                            if (workplaces) {
+                                                data.workplaces = workplaces;
+                                                res.status(200).send(data);
+        
+                                            } else if(err) {
+                                                res.sendStatus(500);
+                                            } else {
+                                                res.sendStatus(401);
+                                            }
+                                        });
                                     } else if(err) {
                                         res.sendStatus(500);
                                     } else {
