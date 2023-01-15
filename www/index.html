@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles/bootstrap.min.css">
     <link rel="stylesheet" href="styles/Navbar-Centered-Links-icons.css">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="fonts/fontawesome-all.min.css">
     <script src="scripts/bootstrap.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="scripts/index.js"></script>
@@ -23,8 +24,10 @@
                 <div class="collapse navbar-collapse" id="navcol-3">
                     <ul id="nav-items" class="navbar-nav mx-auto">
                         <li id="home" class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                        <li id="job-offers" class="nav-item" style="display: none;"><a class="nav-link" href="job-offers">Job Offers</a></li>
-                        <li id="resumes" class="nav-item" style="display: none;"><a class="nav-link" href="resumes">Resumes</a></li>
+                        <li id="job-offers" class="nav-item" style="display: none;"><a class="nav-link"
+                                href="job-offers">Job Offers</a></li>
+                        <li id="resumes" class="nav-item" style="display: none;"><a class="nav-link"
+                                href="resumes">Resumes</a></li>
                         <li id="about-us" class="nav-item"><a class="nav-link" href="about-us">About us</a></li>
                     </ul>
                     <div id="actionDiv">
@@ -53,12 +56,13 @@
             <div class="text">
                 <h2>What is Orange?</h2>
                 <p>Besides a color, Orange is a community for professionals who are looking for the perfect job or
-                    employees.</p><button class="btn btn-outline-light btn-lg" type="button">Learn More</button>
+                    employees.</p>
             </div>
         </section>
         <section class="clean-block clean-info dark">
             <div class="block-heading">
-                <h2 class="text-info" style="--bs-info: black;--bs-info-rgb: 0,0,0;">How does Orange work?</h2>
+                <h2 class="text-info" style="--bs-info: black;--bs-info-rgb: 0,0,0; font-weight: bold;">How does Orange
+                    work?</h2>
                 <p>Simple. Orange is divided into two big groups of users: job seekers and headhunters. When you join,
                     you can pick depending on what you're looking for!</p>
             </div>
@@ -104,26 +108,84 @@
             </div>
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-md-6"><img class="img-thumbnail" src="images/jobseeker.jpg"></div>
+                    <div class="col-md-6"><img class="img-thumbnail" src="images/jobseeker.jpg" /></div>
                     <div class="col-md-6">
-                        <h3>Joining as a job seeker...</h3>
+                        <h3 style="font-weight: bold">Joining as a job seeker...</h3>
                         <div class="getting-started-info">
-                            <p>If you're looking for that perfect job you always dreamed of, just sign up as a job
-                                seeker, build your profile and search Job Offers.</p>
-                        </div><button class="btn btn-outline-primary btn-lg" type="button">Join Now</button>
+                            <p>If you&#39;re looking for that perfect job you always dreamed of, just sign up as a job
+                                seeker, build your profile and search Job Offers. You can also add friends! In case you
+                                don&#39;t want to be seen by headhunters, you can turn off this option.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="row align-items-center">
                     <div class="col-md-6"><img class="img-thumbnail" src="images/headhunter.jpg"></div>
                     <div class="col-md-6">
-                        <h3>Joining as a headhunter...</h3>
+                        <h3 style="font-weight: bold">Joining as a headhunter...</h3>
                         <div class="getting-started-info">
-                            <p>If you're looking for the perfect employee for your company, just sign up as a
-                                headhunter, build you company profile and search Resumes.</p>
-                        </div><button class="btn btn-outline-primary btn-lg" type="button">Join Now</button>
+                            <p>If you&#39;re looking for the perfect employee for your company, just sign up as a
+                                headhunter, build you company profile and search Resumes. You must be approved by an
+                                admin before you can access this type of account!</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <section class="clean-block features">
+                    <div class="container">
+                        <div class="block-heading">
+                            <h2 style="--bs-info: black;--bs-info-rgb: 0,0,0; font-weight: bold;" class="text-info">
+                                Pages</h2>
+                            <p>Depending in your user type. you can access several pages within the app, besides this
+                                one and the &quot;About us&quot; section.</p>
+                        </div>
+
+                        <div class="row justify-content-center">
+
+                            <div class="col-md-5 d-flex feature-box">
+                                <i class="fas fa-suitcase"></i>
+                                <div style="margin-left: 20px">
+                                    <h4>Job Offers</h4>
+                                    <p>Only available for Job Seekers. Here you can search all available job offers. You
+                                        can filter, sort and compare them aswell! Any of these actions you do are seen
+                                        immediately.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex feature-box">
+                                <i class="fas fa-users"></i>
+                                <div style="margin-left: 20px">
+                                    <h4>Resumes</h4>
+                                    <p>Only available for Headhunters. It shows all job seekers resumes that want to be
+                                        seen
+                                        by you. You can filter resumes by age (minimum and maximum) and by location. All
+                                        filters can be applied so that you can save the URL for later! From here, you
+                                        can
+                                        access job seekers profiles aswell.</p>
+                                </div>
+
+                            </div>
+                            <div class="col-md-5 d-flex feature-box">
+                                <i class="fas fa-user-graduate"></i>
+                                <div style="margin-left: 20px">
+                                    <h4>Profile</h4>
+                                    <p>Only available for Job Seekers. If you access your profile, you can add, edit and
+                                        remove your information, including workplaces and courses. You can also access
+                                        other
+                                        user&#39;s profile.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex feature-box">
+                                <i class="fas fa-user-friends"></i>
+                                <div style="margin-left: 20px">
+                                    <h4>Friends</h4>
+                                    <p>Only available for Job Seekers. If you know anyone who uses this app, you can
+                                        send a
+                                        friend request so you stay connected. In this page, you can see all of your
+                                        friends
+                                        (and remove them), send and accept friend requests.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
         </section>
 
         <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
@@ -134,8 +196,10 @@
                         <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-light" type="button" data-bs-dismiss="modal" style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
-                        <button id="logout" class="btn btn-primary" type="button" style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                        <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                            style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
+                        <button id="logout" class="btn btn-primary" type="button"
+                            style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
                     </div>
                 </div>
             </div>

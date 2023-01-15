@@ -390,7 +390,7 @@ var updateJobCards = function () {
         salaryImage.height = 30;
         salaryImage.src = "images/salary.png";
         salaryInfo.style.fontWeight = "bold";
-        salaryInfo.textContent = `€${job.salary}/year`
+        salaryInfo.textContent = `€${job.salary}`
         salaryDiv.appendChild(salaryImage);
         salaryDiv.appendChild(salaryInfo);
 
@@ -542,7 +542,7 @@ var updateComparationBar = function (comparationTable) {
                         value.textContent = formatDate(job[comparation.property]);
                         break;
                     case "Salary":
-                        value.textContent = `€${job[comparation.property]}/year`;
+                        value.textContent = `€${(job[comparation.property] * 12) / parseInt(job["duration"])}/year`;
                         break;
                     default:
                         value.textContent = job[comparation.property];
