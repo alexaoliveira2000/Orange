@@ -261,4 +261,44 @@ router.delete("/job-seeker/:key", function (req, res) {
     });
 });
 
-module.exports = router;
+router.put("/edit", function (req, res) {
+    if(!req.session.authenticated) {
+        res.sendStatus(401);
+    }
+
+    if(req.body) {
+
+        let bodyUser = {
+            "name": req.body.name,
+            "email": req.body.email,
+            "password": req.body.password,
+            "description": req.body.description,
+        },
+            bodyJobSeeker = {
+                "gender": req.body.gender,
+                "birthDate": req.body.birthDate,
+                "location": req.body.location,
+                "isVisibleToCompanies": req.body.isVisibleToCompanies,
+            }
+            User.editUser(bodyUser, (err, suc) => {
+                if(suc) {
+                    JobSeeker.editJobSeeker(bodyJobSeeker, (err, suc) => {
+                        if(suc) {
+                            res.sendStatus(204);
+                        }else if(err) {
+                            res.sendStatus(500);
+                        } else {
+                            res.sendStatus(401);
+                        }
+                    });
+                } else if(err) {
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(401);
+                }
+            });
+    }
+    
+});
+
+module.exports = router; 

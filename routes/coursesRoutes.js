@@ -23,6 +23,24 @@ router.post("/delete/:id", function (req, res) {
     }
 });
 
+router.put("/edit", function (req, res) {
+    if(!req.session.authenticated) {
+        res.sendStatus(401);
+    }
+    
+    if (req.body) {
+        Course.editCourse(req.body, (err, suc) => {
+            if(suc) {
+                res.sendStatus(204);
+            } else if(err) {
+                res.sendStatus(500);
+            } else {
+                res.sendStatus(401);
+            }
+        })
+    }
+});
+
 router.post("/create", function (req, res) {
         
     Course.createCourse(req.body, function (err, result) {
