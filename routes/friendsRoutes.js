@@ -20,11 +20,15 @@ router.get("/:key", function (req, res) {
                     res.sendStatus(500);
                 } else if (friends.length === 0) {
                     res.json({ friends: [] });
+                    return;
                 } else {
                     let friendsArray = [];
                     friends.forEach(function (friend) {
-                        if (!friend.pending) {
-                            friendsArray.push(friend.jobSeekerId === user.id ? friend.friendId : friend.jobSeekerId);
+                        if (!friend.pending || (friend.pending && friend.friendId === req.session.user.id)) {
+                            friendsArray.push({
+                            friendId: friend.jobSeekerId === user.id ? friend.friendId : friend.jobSeekerId,
+                            pending: friend.pending
+                        });
                         }
                     });
                     JobSeeker.getJobSeekers(function (err, jobSeekers) {
@@ -34,7 +38,11 @@ router.get("/:key", function (req, res) {
                             res.json({ friends: [] });
                             return;
                         } else {
-                            let userFriends = jobSeekers.filter(jobSeeker => friendsArray.includes(jobSeeker.id));
+                            let friendsMap = friendsArray.map(f => f.friendId);
+                            let userFriends = jobSeekers.filter(jobSeeker => friendsMap.includes(jobSeeker.id));
+                            userFriends.forEach(function (friend) {
+                                friend.pending = friendsArray.filter(f => f.friendId === friend.id)[0].pending;
+                            });
                             res.json({ friends: userFriends });
                             return;
                         }
@@ -46,9 +54,9 @@ router.get("/:key", function (req, res) {
 });
 
 router.post("/add-friend",
-    body("email").trim().isEmail().withMessage("Value is not an email")
-        .isLength({ max: 60 }).withMessage("Email is too long")
-        .custom(email => email === req.session.user.email).withMessage("You can not add yourself (duh)"),
+    body("email")
+        .isEmail().withMessage("Value is not an email")
+        .isLength({ max: 60 }).withMessage("Email is too long"),
     function (req, res) {
         if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
             res.sendStatus(401);
@@ -56,6 +64,17 @@ router.post("/add-friend",
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.status(400).json({ errors: errors.array() });
+            return;
+        }
+        if (req.body.email === req.session.user.email) {
+            res.status(400).json({
+                errors: [{
+                    value: req.body.email,
+                    msg: 'You can not add yourself (duh)',
+                    param: 'email',
+                    location: 'body'
+                }]
+            });
             return;
         }
         User.getUserByEmail(req.body.email, function (err1, user) {
@@ -83,6 +102,8 @@ router.post("/add-friend",
                 return;
             } else {
                 Friend.getFriendship(req.session.user.id, user.id, function (err2, friendship) {
+                    console.log(friendship)
+                    //friendship = friendship[0];
                     if (err2) {
                         res.sendStatus(500);
                     } else if (friendship && !friendship.pending) {
@@ -99,7 +120,7 @@ router.post("/add-friend",
                         res.status(400).json({
                             errors: [{
                                 value: req.body.email,
-                                msg: "You already sent a friend request to this user",
+                                msg: "There's already a pending friend request with this user",
                                 param: 'email',
                                 location: 'body'
                             }]
@@ -115,16 +136,6 @@ router.post("/add-friend",
                         });
                     }
                 });
-
-
-
-                Friend.removeFriend(req.body.friendKey, req.body.key, function (err, result) {
-                    if (err) {
-                        res.sendStatus(500);
-                    } else {
-                        res.sendStatus(200);
-                    }
-                });
             }
         });
     });
@@ -133,21 +144,60 @@ router.post("/remove-friend", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
         res.sendStatus(401);
     }
-    if (!req.body.friendKey || !req.body.key) {
+    if (!req.body.friendKey) {
         res.sendStatus(400);
     }
-
     User.getUserByKey(req.body.friendKey, function (err, user) {
         if (err) {
             res.sendStatus(500);
         } else if (!user) {
             res.sendStatus(400);
         } else {
-            Friend.removeFriend(req.body.friendKey, req.body.key, function (err, result) {
+            Friend.getFriendship(req.session.user.id, user.id, function (err, friendship) {
                 if (err) {
                     res.sendStatus(500);
+                } else if (!friendship) {
+                    res.sendStatus(400);
                 } else {
-                    res.sendStatus(200);
+                    Friend.removeFriend(req.session.user.id, user.id, function (err, result) {
+                        if (err) {
+                            res.sendStatus(500);
+                        } else {
+                            res.sendStatus(200);
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+router.post("/accept-friend", function (req, res) {
+    if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
+        res.sendStatus(401);
+    }
+    if (!req.body.friendKey) {
+        res.sendStatus(400);
+    }
+    User.getUserByKey(req.body.friendKey, function (err, user) {
+        if (err) {
+            res.sendStatus(500);
+        } else if (!user) {
+            res.sendStatus(400);
+        } else {
+            Friend.getFriendship(req.session.user.id, user.id, function (err, friendship) {
+                if (err) {
+                    res.sendStatus(500);
+                } else if (!friendship) {
+                    res.sendStatus(400);
+                } else {
+                    Friend.acceptFriend(req.session.user.id, user.id, function (err, result) {
+                        if (err) {
+                            res.sendStatus(500);
+                        } else {
+                            res.sendStatus(200);
+                        }
+                    });
                 }
             });
         }

@@ -57,8 +57,6 @@ class FriendList {
         this.queryDb(sql, params, function(err, result) {
             if (err) {
                 callBack(err, null);
-            } else if (result.length === 0) {
-                callBack(null, null);
             } else {
                 callBack(null, result.map(friend => new FriendList(friend)));
             }
@@ -74,7 +72,7 @@ class FriendList {
             } else if (result.length === 0) {
                 callBack(null, null);
             } else {
-                callBack(null, result.map(friend => new FriendList(friend)));
+                callBack(null, new FriendList(result[0]));
             }
         });
     }
@@ -100,9 +98,17 @@ class FriendList {
         this.queryDb(sql, params, callBack);
     }
 
+    // remover um amigo
     static removeFriend(friendId, id, callBack) {
         const params = [friendId, id, id, friendId];
         const sql = "delete from friends_lists where (job_seeker_id = ? AND friend_id = ?) OR (job_seeker_id = ? AND friend_id = ?) limit 1;";
+        this.queryDb(sql, params, callBack);
+    }
+
+    // aceitar um amigo
+    static acceptFriend(id, friendId, callBack) {
+        const params = [id, friendId, friendId, id];
+        const sql = "UPDATE friends_lists SET pending = 0 WHERE (job_seeker_id = ? AND friend_id = ?) OR (job_seeker_id = ? AND friend_id = ?)";
         this.queryDb(sql, params, callBack);
     }
 }

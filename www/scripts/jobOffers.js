@@ -92,6 +92,7 @@ var buildNavBar = function (session) {
         let dropdownDiv = document.createElement("div");
         let profileItem = document.createElement("a");
         let friendsItem = document.createElement("a");
+        let headhuntersItem = document.createElement("a");
         let pendingHeadhuntersItem = document.createElement("a");
         let dividerDiv = document.createElement("div");
         let logoutItem = document.createElement("a");
@@ -113,6 +114,9 @@ var buildNavBar = function (session) {
         friendsItem.className = "dropdown-item";
         friendsItem.href = "friends";
         friendsItem.textContent = "Friends";
+        headhuntersItem.className = "dropdown-item";
+        headhuntersItem.href = "headhunters";
+        headhuntersItem.textContent = "Headhunters";
         pendingHeadhuntersItem.className = "dropdown-item";
         pendingHeadhuntersItem.href = "pending-headhunters";
         pendingHeadhuntersItem.textContent = "Pending Headhunters";
@@ -125,6 +129,7 @@ var buildNavBar = function (session) {
 
         dropdownDiv.appendChild(profileItem);
         if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
+        if (session.user.type === "admin") dropdownDiv.appendChild(headhuntersItem);
         if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);
         dropdownDiv.appendChild(logoutItem);
@@ -385,7 +390,7 @@ var updateJobCards = function () {
         salaryImage.height = 30;
         salaryImage.src = "images/salary.png";
         salaryInfo.style.fontWeight = "bold";
-        salaryInfo.textContent = `€${job.salary}/year`
+        salaryInfo.textContent = `€${job.salary}`
         salaryDiv.appendChild(salaryImage);
         salaryDiv.appendChild(salaryInfo);
 
@@ -537,7 +542,7 @@ var updateComparationBar = function (comparationTable) {
                         value.textContent = formatDate(job[comparation.property]);
                         break;
                     case "Salary":
-                        value.textContent = `€${job[comparation.property]}/year`;
+                        value.textContent = `€${(job[comparation.property] * 12) / parseInt(job["duration"])}/year`;
                         break;
                     default:
                         value.textContent = job[comparation.property];
