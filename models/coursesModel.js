@@ -89,11 +89,11 @@ class Course {
     }
 
     // criar um Course
-    static createCourse(jsonData, callBack) {
-        const courseData = JSON.parse(jsonData);
-        const params = [courseData.name, courseData.schoolName, courseData.type, 
-            courseData.averageGrade];
-        const sql = "insert into courses (course_name, school_name, course_type, average_grade) values (?, ?, ?, ?)";
+    static createCourse(data, callBack) {
+        //const courseData = JSON.parse(jsonData);
+        const params = [data.name, data.schoolName, data.type, 
+            data.averageGrade, data.jobSeekerId];
+        const sql = "insert into courses (course_name, school_name, course_type, average_grade, job_seeker_id) values (?, ?, ?, ?, ?)";
         this.queryDb(sql, params, callBack);
     }
 

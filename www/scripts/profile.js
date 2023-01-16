@@ -20,10 +20,8 @@ let init = function(session) {
         const url = `http://${window.location.host}/api/profile/${value}`
         axios.get(url)
         .then(response => {
-            //buildModalStructure();
-            buildDOM(response.data);
+            buildDOM(response.data, session);
             buildNavBar(session);
-            buildLogoutEvent(session);
         })
         .catch(error => {
             console.log(error);
@@ -33,6 +31,12 @@ let init = function(session) {
 }
 
 let buildNavBar = function (session) {
+
+    let actionDiv = document.getElementById("actionDiv");
+
+    while(actionDiv.hasChildNodes()) {
+        actionDiv.removeChild(actionDiv.firstChild);
+    }
 
     var buildSignInButton = function () {
         let a = document.createElement("a");
@@ -76,6 +80,10 @@ let buildNavBar = function (session) {
         logoutItem.href = "#";
         logoutItem.dataset.bsToggle = "modal";
         logoutItem.dataset.bsTarget = "#modal-1";
+        logoutItem.onclick = function() { 
+            document.getElementById("logout").onclick = function() {buildLogoutEvent(session);};
+            document.getElementById("titleConfirmation").textContent = "Are you sure you want to sign out?";
+        }
         logoutItem.textContent = "Sign out";
         dividerDiv.className = "dropdown-divider";
 
@@ -94,7 +102,6 @@ let buildNavBar = function (session) {
 
     let jobOffersButton = document.getElementById("job-offers");
     let resumesButton = document.getElementById("resumes");
-    let actionDiv = document.getElementById("actionDiv");
 
     console.log("USER: " + JSON.stringify(session.user));
 
@@ -115,41 +122,47 @@ let buildNavBar = function (session) {
 
 var buildLogoutEvent = function (session) {
     if (session.authenticated) {
-        let logoutConfirmation = document.getElementById("logout");
-        logoutConfirmation.addEventListener("click", function () {
-            const url = `http://${window.location.host}/api/logout`
-            axios.post(url)
-                .then(response => {
-                    window.location.href = `http://${window.location.host}/login?userLogout`;
-                })
-                .catch(error => {
-                    window.location.href = `http://${window.location.host}/`
-                });
-        });
+        const url = `http://${window.location.host}/api/logout`
+        axios.post(url)
+            .then(response => {
+                window.location.href = `http://${window.location.host}/login?userLogout`;
+            })
+            .catch(error => {
+                window.location.href = `http://${window.location.host}/`
+            });
     }
 }
 
-let buildDOM = function(data) {
+let buildDOM = function(data, session) {
 
     let userData = data.user,
-        //coursesData = data.courses,
-        workplacesData = data.workplaces,
         coursesList = document.getElementById("coursesList"),
-        workplacesList = document.getElementById("workplacesList");
+        workplacesList = document.getElementById("workplacesList"),
+        isCurrentUserProfile = (data.user.id === session.user.id);
 
     data.coursesOptions = enumStringToArray(data.coursesOptions);
 
     document.getElementById("username").textContent = userData.name;
     document.getElementById("userDescription").textContent = userData.description;
-    document.getElementById("userBirthDay").textContent = handleDates(userData.birthDate);
+    document.getElementById("userBirthDay").textContent = handleDates(userData.birthDate, false);
     document.getElementById("userGender").textContent = (userData.gender === "M") ? "Masculino" : "Feminino";
     document.getElementById("userLocation").textContent = userData.location;
+    document.getElementById("userEmail").textContent = userData.email;
 
-    document.getElementById("addCourse").onclick = function() { buildModalForm("C", undefined, data.coursesOptions); }
-    document.getElementById("addWorkplace").onclick = function() { buildModalForm("W"); }
+    document.getElementById("userEdit").onclick = function() { buildModalForm("User", data.user, undefined, session) };
+    document.getElementById("addCourse").onclick = function() { buildModalForm("Course", undefined, data.coursesOptions, session); }
+    document.getElementById("addWorkplace").onclick = function() { buildModalForm("Workplace", undefined, undefined, session); }
 
-    buildLists(coursesList, data, true);
-    buildLists(workplacesList, workplacesData, false);
+    if(isCurrentUserProfile) {
+
+        document.getElementById("userEdit").style.display = "flex";
+        document.getElementById("addCourse").style.display = "flex";
+        document.getElementById("addWorkplace").style.display = "flex";
+
+    }
+
+    buildLists(coursesList, data, true, session);
+    buildLists(workplacesList, data, false, session);
 
 }
 
@@ -184,21 +197,26 @@ let formatCourseTypeValue = function(value, isReverse) {
 
 }
 
-let handleDates = function(dateString) {
+let handleDates = function(dateString, isForm) {
 
     let dateArr = dateString.split("-");
     let year = dateArr[0];
     let month = dateArr[1].substring(0,2);
     let day = dateArr[2].substring(0,2);
 
-    return day.concat("/",month,"/",year);
+    return (!isForm) ? day.concat("/",month,"/",year) : month.concat("/",day,"/",year);
 }
 
-let buildLists = function(list, data, isCourse) {
+let buildLists = function(list, data, isCourse, session) {
 
-    let coursesOptions = (isCourse) ? data.coursesOptions : "";
+    let coursesOptions = (isCourse) ? data.coursesOptions : "",
+        isCurrentUserProfile = (data.user.id === session.user.id);
         
-    data = (isCourse) ? data.courses : data;
+    data = (isCourse) ? data.courses : data.workplaces;
+
+    while(list.childNodes.length > 3) {
+        list.removeChild(list.lastChild);
+    }
 
     if(data.length === 0) {
 
@@ -210,7 +228,6 @@ let buildLists = function(list, data, isCourse) {
 
         titleNoData.className = "text-center";
         titleNoData.style = "font-size: 20px; margin:10px;";
-        titleNoData.textContent = "Não foram encontrados dados";
 
         if(isCourse) {
             titleNoData.textContent = "The user has no associated courses";
@@ -229,7 +246,6 @@ let buildLists = function(list, data, isCourse) {
                 bodyDiv = document.createElement("div"),
                 sectionTitle = document.createElement("section"),
                 titleHeader = document.createElement("h4"),
-                editIcon = document.createElement("i"),
                 subtitleHeader = document.createElement("h6"),
                 descriptionParagraph = document.createElement("p");
 
@@ -241,35 +257,29 @@ let buildLists = function(list, data, isCourse) {
             sectionTitle.className = "d-flex";
     
             titleHeader.className = "d-flex justify-content-start align-items-center";
-            titleHeader.style = "width:50%;height:30px;";
-    
-            editIcon.className = "fas fa-edit d-flex justify-content-end align-items-center";
-            editIcon.style = "width:50%;height:30px;font-size:24px;color:rgb(143,143,143);";
-            editIcon.setAttribute("data-bs-toggle", "modal");
-            editIcon.setAttribute("data-bs-target", "#mainModal");
+            titleHeader.style = "width:90%;height:30px;";
     
             subtitleHeader.className = "text-muted card-subtitle mb-2";
     
             descriptionParagraph.className = "card-text";
-    
-            if(isCourse) {
-    
-                titleHeader.textContent = data[i].name;
-                subtitleHeader.textContent = data[i].schoolName;
-                descriptionParagraph.textContent = "With an average grade of " + data[i].averageGrade;
-                editIcon.onclick = function() { buildModalForm("C", data[i], coursesOptions); }
-    
-            } else {
-    
-                titleHeader.textContent = data[i].name;
-                subtitleHeader.textContent = handleDates(data[i].startDate) + " - " + handleDates(data[i].endDate);
-                descriptionParagraph.textContent = data[i].functionDescription;
-                editIcon.onclick = function() { buildModalForm("W", data[i]); }
-    
-            }
+            titleHeader.textContent = data[i].name;
+            subtitleHeader.textContent = (isCourse) ? data[i].schoolName : handleDates(data[i].startDate, false) + " - " + handleDates(data[i].endDate, false);
+            descriptionParagraph.textContent = (isCourse) ? ("With an average grade of " + data[i].averageGrade) : data[i].functionDescription;
     
             sectionTitle.appendChild(titleHeader);
-            sectionTitle.appendChild(editIcon);
+
+            if(isCurrentUserProfile) {
+
+                let editIcon = document.createElement("i");
+
+                editIcon.className = "fas fa-edit d-flex justify-content-end align-items-center";
+                editIcon.style = "width:10%;height:30px;font-size:24px;color:rgb(143,143,143);";
+                editIcon.setAttribute("data-bs-toggle", "modal");
+                editIcon.setAttribute("data-bs-target", "#mainModal");
+                editIcon.onclick = (isCourse) ? function() { buildModalForm("Course", data[i], coursesOptions, session); } : function() { buildModalForm("Workplace", data[i], undefined, session); };
+
+                sectionTitle.appendChild(editIcon);
+            }
     
             bodyDiv.appendChild(sectionTitle);
             bodyDiv.appendChild(subtitleHeader);
@@ -284,148 +294,133 @@ let buildLists = function(list, data, isCourse) {
 
 }
 
-let buildModalForm = function(firstLetter, data, coursesOptions) {
+let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
-    let modalBody = document.getElementById("bodyModal"),
+    let modalForm = document.getElementById("modalForm"),
         firstColumn = document.createElement("div"),
-        secondColumn = document.createElement("div"),
-        buttonSection = document.createElement("section"),
-        deleteButton = document.createElement("button"),
-        saveButton = document.createElement("button");
+        secondColumn = document.createElement("div");
 
-    while(modalBody.hasChildNodes()) {
-        modalBody.removeChild(modalBody.firstChild);
+    while(modalForm.hasChildNodes()) {
+        modalForm.removeChild(modalForm.firstChild);
     }
     
-    modalBody.appendChild(firstColumn);
-    modalBody.appendChild(secondColumn);
+    modalForm.appendChild(firstColumn);
+    modalForm.appendChild(secondColumn);
 
     firstColumn.className = "col-4 col-xl-3 d-block";
     firstColumn.style = "padding: 5px;";
     secondColumn.className = "col-3 col-xl-3 d-block";
-    secondColumn.style = "padding: 5px;margin-left: 140px";
-
-    buttonSection.className = "d-block float-end";
-    buttonSection.style = "margin-top: 20px;"
-
-    deleteButton.className = "btn btn-primary";
-    deleteButton.style = "margin-right: 10px;background: #b10b00;border-style: none;"
-    saveButton.className = "btn btn-primary";
-    saveButton.style = "background: rgb(255,130,3);border-style: none;";
-
-    buttonSection.appendChild(deleteButton);
-    buttonSection.appendChild(saveButton);
+    secondColumn.style = "padding: 5px;margin-left: 120px";
 
 
-    if(firstLetter === "C") {
+    if(typeRecord === "Course" || typeRecord === "User") {
 
-        let nameSection = document.createElement("section"),
-            nameLabel = document.createElement("label"),
-            nameInput = document.createElement("input"),
-            schoolSection = document.createElement("section"),
-            schoolLabel = document.createElement("label"),
-            schoolInput = document.createElement("input"),
-            typeSection = document.createElement("section"),
-            typeLabel = document.createElement("label"),
-            typeSelect = document.createElement("select"),
-            gradeSection = document.createElement("section"),
-            gradeLabel = document.createElement("label"),
-            gradeInput = document.createElement("input");
+        let firstSection = document.createElement("section"),
+            firstLabel = document.createElement("label"),
+            firstInput = document.createElement("input"),
+            secondSection = document.createElement("section"),
+            secondLabel = document.createElement("label"),
+            secondInput = document.createElement("input"),
+            thirdSection = document.createElement("section"),
+            thirdLabel = document.createElement("label"),
+            thirdInput = (typeRecord === "Course") ? document.createElement("select") : document.createElement("input"),
+            fourthSection = document.createElement("section"),
+            fourthLabel = document.createElement("label"),
+            fourthInput = (typeRecord === "Course") ? document.createElement("input") : document.createElement("textarea");
         
         document.getElementById("modalContent").style = "width: 470px;";
         
-        nameSection.className = "d-block";
-        nameSection.style = "margin-top: 10px;";
+        firstSection.className = "d-block";
+        firstSection.style = "margin-top: 10px;";
 
-        nameLabel.className = "form-label";
-        nameLabel.style = "margin-right: 78px;margin-bottom: 0px;";
-        nameLabel.textContent = "Name";
+        firstLabel.className = "form-label";
+        firstLabel.style = "margin-right: 78px;margin-bottom: 0px;";
+        firstLabel.textContent = "Name";
         
-        nameInput.required = true;
+        firstInput.required = true;
+        firstInput.name = "name";
 
-        schoolSection.className = "d-block";
-        schoolSection.style = "margin-top: 10px;";
+        secondSection.className = "d-block";
+        secondSection.style = "margin-top: 10px;";
 
-        schoolLabel.className = "form-label";
-        schoolLabel.style = "margin-right: 20px;margin-bottom: 0px;width: 120px !important;";
-        schoolLabel.textContent = "School Name";
+        secondLabel.className = "form-label";
+        secondLabel.style = "margin-right: 20px;margin-bottom: 0px;width: 120px !important;";
+        secondLabel.textContent = (typeRecord === "Course") ? "School Name" : "Email";
 
-        schoolInput.required = true;
+        secondInput.required = true;
+        secondInput.type = (typeRecord === "Course") ? "text" : "email";
+        secondInput.name = (typeRecord === "Course") ? "schoolName" : "email";
 
-        typeSection.className = "d-block";
-        typeSection.style = "margin-top: 10px;";
+        thirdSection.className = "d-block";
+        thirdSection.style = "margin-top: 10px;";
 
-        typeLabel.className = "form-label";
-        typeLabel.style = "margin-right: 90px;margin-bottom: 0px;";
-        typeLabel.textContent = "Type";
+        thirdLabel.className = "form-label";
+        thirdLabel.style = (typeRecord === "Course") ? "margin-right: 90px;margin-bottom: 0px;" : "margin-right: 10px;margin-bottom: 0px;";
+        thirdLabel.textContent = (typeRecord === "Course") ? "Type" : "Password";
 
-        typeSelect.required = true;
+        thirdInput.required = true;
+        thirdInput.name = (typeRecord === "Course") ? "type" : "password";
 
-        for(let i = 0; i < coursesOptions.length; i++) {
+        fourthSection.className = "d-block";
+        fourthSection.style = "margin-top: 10px;";
 
-            let option = document.createElement("option");
+        fourthLabel.className = "form-label";
+        fourthLabel.style = "margin-right: 10px;margin-bottom: 0px;width: 120px !important;";
+        fourthLabel.textContent = (typeRecord === "Course") ? "Average Grade" : "Description";
 
-            option.text = coursesOptions[i];
-            typeSelect.add(option);
+        fourthInput.required = true;
+        fourthInput.className = (typeRecord === "Course") ? "form-control-sm" : "form-control-lg";
+        fourthInput.style = (typeRecord === "Course") ? "width: 70px;" : "font-size: 16px;";
+        fourthInput.name = (typeRecord === "Course") ? "averageGrade" : "description";
+
+        if(typeRecord === "Course") {
+
+            for(let i = 0; i < coursesOptions.length; i++) {
+
+                let option = document.createElement("option");
+    
+                option.text = coursesOptions[i];
+                thirdInput.add(option);
+            }
+
+            fourthInput.type ="number";
+            fourthInput.max = 20;
+            fourthInput.min = 0;
+
+        } else {
+            thirdInput.type = "password";
         }
-
-        gradeSection.className = "d-block";
-        gradeSection.style = "margin-top: 10px;";
-
-        gradeLabel.className = "form-label";
-        gradeLabel.style = "margin-right: 10px;margin-bottom: 0px;width: 120px !important;";
-        gradeLabel.textContent = "Average Grade";
-
-        gradeInput.required = true;
-        gradeInput.type ="number";
-        gradeInput.className = "form-control-sm";
-        gradeInput.style = "width: 70px;";
-        gradeInput.max = 20;
-        gradeInput.min = 0;
 
         if(data) {
 
-            nameInput.value = data.name;
-            schoolInput.value = data.schoolName;
-            typeSelect.value = formatCourseTypeValue(data.type, false);
-            gradeInput.value = data.averageGrade;
-        
-            document.getElementById("firstButtonModal").textContent = "Delete";
-            document.getElementById("firstButtonModal").style = "background: #b10b00;border-color: #b10b00;color: rgb(255,255,255)";
-            document.getElementById("secondButtonModal").textContent = "Save Changes";
-            document.getElementById("secondButtonModal").style = "background: rgb(255,130,3);border-color: rgb(255,255,255);";
-            document.getElementById("titleModal").textContent = "Edit Course";
+            firstInput.value = data.name;
+            secondInput.value = (typeRecord === "Course") ? data.schoolName : data.email;
+            thirdInput.value = (typeRecord === "Course") ? formatCourseTypeValue(data.type, false) : "";
+            fourthInput.value = (typeRecord === "Course") ? data.averageGrade : data.description;
 
-        } else {
-
-            document.getElementById("firstButtonModal").textContent = "Close";
-            document.getElementById("firstButtonModal").style = "background: rgb(255,255,255);border-color: rgb(255,130,3);color: rgb(255,130,3)";
-            document.getElementById("secondButtonModal").textContent = "Submit";
-            document.getElementById("secondButtonModal").style = "background: rgb(255,130,3);border-color: rgb(255,130,3);";
-            document.getElementById("titleModal").textContent = "Add Course";
         }
+        
+        firstSection.appendChild(firstLabel);
+        firstSection.appendChild(firstInput);
 
-        nameSection.appendChild(nameLabel);
-        nameSection.appendChild(nameInput);
+        secondSection.appendChild(secondLabel);
+        secondSection.appendChild(secondInput);
 
-        schoolSection.appendChild(schoolLabel);
-        schoolSection.appendChild(schoolInput);
+        thirdSection.appendChild(thirdLabel);
+        thirdSection.appendChild(thirdInput);
 
-        typeSection.appendChild(typeLabel);
-        typeSection.appendChild(typeSelect);
+        fourthSection.appendChild(fourthLabel);
+        fourthSection.appendChild(fourthInput);
 
-        gradeSection.appendChild(gradeLabel);
-        gradeSection.appendChild(gradeInput);
+        firstColumn.appendChild(firstSection);
+        firstColumn.appendChild(secondSection);
 
-        firstColumn.appendChild(nameSection);
-        firstColumn.appendChild(schoolSection);
-
-        secondColumn.appendChild(typeSection);
-        secondColumn.appendChild(gradeSection);
+        secondColumn.appendChild(thirdSection);
+        secondColumn.appendChild(fourthSection);
 
 
 
-    } else if(firstLetter === "W") {
+    } else if(typeRecord === "Workplace") {
 
         let nameSection = document.createElement("section"),
             nameLabel = document.createElement("label"),
@@ -443,8 +438,6 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
             functionLabel = document.createElement("label"),
             functionTextArea = document.createElement("textarea");
         
-        document.getElementById("modalContent").style = "width: 540px;";
-        
         nameSection.className = "d-block";
         nameSection.style = "margin-top: 10px;";
 
@@ -453,6 +446,7 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
         nameLabel.textContent = "Name";
         
         nameInput.required = true;
+        nameInput.name = "name";
 
         logoSection.className = "d-block";
         logoSection.style = "margin-top: 10px;";
@@ -463,6 +457,7 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
 
         logoInput.required = true;
         logoInput.type = "url";
+        logoInput.name = "logoUrl";
 
         startDateSection.className = "d-block";
         startDateSection.style = "margin-top: 10px;";
@@ -473,6 +468,8 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
 
         startDateInput.required = true;
         startDateInput.type ="date";
+        startDateInput.name = "startDate";
+        startDateInput.pattern = "dd/mm/yyyy";
 
         endDateSection.className = "d-block";
         endDateSection.style = "margin-top: 10px;";
@@ -483,6 +480,8 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
 
         endDateInput.required = true;
         endDateInput.type ="date";
+        endDateInput.name = "endDate";
+        endDateInput.pattern = "dd/mm/yyyy";
 
         functionSection.className = "d-block";
         functionSection.style = "margin-top: 10px;";
@@ -494,24 +493,16 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
         functionTextArea.required = true;
         functionTextArea.className ="form-control-lg";
         functionTextArea.style = "font-size: 16px;";
+        functionTextArea.name = "functionDescription";
 
         if(data) {
 
             nameInput.value = data.name;
             logoInput.value = data.logoUrl;
-            startDateInput.value = data.startDate;
-            endDateInput.value = data.endDate;
+            startDateInput.value = handleDates(data.startDate, true);
+            endDateInput.value = handleDates(data.endDate, true);
             functionTextArea.value = data.functionDescription;
-        
-            document.getElementById("firstButtonModal").textContent = "Delete";
-            document.getElementById("secondButtonModal").textContent = "Save Changes";
-            document.getElementById("titleModal").textContent = "Edit Workplace";
 
-        } else {
-
-            document.getElementById("firstButtonModal").textContent = "Close";
-            document.getElementById("secondButtonModal").textContent = "Submit";
-            document.getElementById("titleModal").textContent = "Add Workplace";
         }
 
         nameSection.appendChild(nameLabel);
@@ -536,27 +527,86 @@ let buildModalForm = function(firstLetter, data, coursesOptions) {
 
         secondColumn.appendChild(functionSection);
 
-    } else {
-
-
-
     }
 
+    let firstButton = document.getElementById("firstButtonModal"),
+        secondButton = document.getElementById("secondButtonModal"),
+        record = (typeRecord === "Course") ? "courses" : "workplaces";
 
-}
+    document.getElementById("modalContent").style = (typeRecord === "Course") ? "width: 470px;" : "width: 540px;";
+    firstButton.textContent = (data) ? "Delete" : "Close";
+    firstButton.style = (data) ? "background: #b10b00;border-color: #b10b00;color: rgb(255,255,255)" : "background: rgb(255,255,255);border-color: rgb(255,130,3);color: rgb(255,130,3)";
+    document.getElementById("secondButtonModal").textContent = (data) ? "Save Changes" : "Submit";
+    document.getElementById("secondButtonModal").style = (data) ? "background: rgb(255,130,3);border-color: rgb(255,255,255);" : "background: rgb(255,130,3);border-color: rgb(255,130,3);";
+    document.getElementById("titleModal").textContent = (data) ? ("Edit " + typeRecord) : ("Add " + typeRecord);
 
-let buildConfirmationModal = function(message) {
+    if(data) {
 
-    let confirmationModalBody = document.getElementById("bodyConfirmationModal"),
-        confirmationText = document.createElement("h2");
+        firstButton.dataset.bsToggle = "modal";
+        firstButton.dataset.bsTarget = "#modal-1";
+        firstButton.setAttribute("data-id", data.id);
+        document.getElementById("titleConfirmation").textContent = "Are you sure you want to delete this record?";
+        document.getElementById("logout").onclick = function() {
 
-        while(confirmationModalBody.hasChildNodes()) {
-            confirmationModalBody.removeChild(confirmationModalBody.firstChild);
+            let idToDelete = firstButton.getAttribute("data-id");
+
+            if(idToDelete) {
+                const url = `http://${window.location.host}/api/${record}/delete/${idToDelete}`
+                axios.post(url)
+                .then(response => {
+                    console.log(response);
+                    checkAuthentication();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            }
+
+        };
+
+    } else {
+        firstButton.removeAttribute("data-bs-toggle");
+        firstButton.removeAttribute("data-bs-target");
+
+        modalForm.setAttribute("action", "/create");
+        modalForm.setAttribute("method", "/POST");
+        
+        modalForm.onsubmit = function(event) {
+
+            event.preventDefault() 
+
+            let elements = modalForm.elements;
+
+            let body = (typeRecord === "Course") ? {
+                "averageGrade": elements.averageGrade.value,
+                "name": elements.name.value,
+                "schoolName": elements.schoolName.value,
+                "type": formatCourseTypeValue(elements.type.value, true),
+                "jobSeekerId": session.user.id
+            } : {
+                "name": elements.name.value,
+                "logoUrl": elements.logoUrl.value,
+                "startDate": elements.startDate.value,
+                "endDate": elements.endDate.value,
+                "functionDescription": elements.functionDescription.value,
+                "jobSeekerId": session.user.id
+            }
+
+            axios.post(`http://${window.location.host}/api/${record}/create`, body)
+                .then(response => {
+
+                    console.log(record + " created");
+                    checkAuthentication();
+                    
+                })
+                .catch(error => {
+                    if (error.response.status === 400) {
+                        console.log(error);
+                    }
+                });
+
         }
-
-        confirmationText.textContent = message;
-
-        confirmationModalBody.appendChild(confirmationText);
+    }
 
 
 }

@@ -79,11 +79,11 @@ class Workplace {
     }
 
     // criar um Workplace
-    static createWorkplace(jsonData, callBack) {
-        const workplaceData = JSON.parse(jsonData);
-        const params = [workplaceData.name, workplaceData.logoUrl, workplaceData.startDate, 
-            workplaceData.endDate, workplaceData.functionDescription];
-        const sql = "insert into workplaces (workplace_name, logo_url, start_date, end_date, function_description) values (?, ?, ?, ?, ?)";
+    static createWorkplace(data, callBack) {
+        //const workplaceData = JSON.parse(jsonData);
+        const params = [data.name, data.logoUrl, data.startDate, 
+            data.endDate, data.functionDescription, data.jobSeekerId];
+        const sql = "insert into workplaces (workplace_name, logo_url, start_date, end_date, function_description, job_seeker_id) values (?, ?, ?, ?, ?, ?)";
         this.queryDb(sql, params, callBack);
     }
 
