@@ -18,14 +18,14 @@ let init = function (session) {
     axios.get(url)
         .then(response => {
             console.log(response.data.headhunters);
-            buildHeadhuntersTable(response.data.headhunters)
+            buildHeadhuntersTable(response.data.headhunters, session)
         })
         .catch(error => {
 
         });
 }
 
-var buildHeadhuntersTable = function (headhunters) {
+var buildHeadhuntersTable = function (headhunters, session) {
 
     var buildRow = function (headhunter) {
         let tr = document.createElement("tr");
@@ -37,7 +37,6 @@ var buildHeadhuntersTable = function (headhunters) {
         let headhunterWebsite = document.createElement("td");
         let websiteLink = document.createElement("a");
         let headhunterActions = document.createElement("td");
-        let deleteButton = document.createElement("button");
 
         headhunterName.textContent = headhunter.name;
         headhunterImage.src = headhunter.logoUrl;
@@ -48,38 +47,45 @@ var buildHeadhuntersTable = function (headhunters) {
         websiteLink.href = headhunter.websiteUrl;
         websiteLink.style.color = "black";
         headhunterActions.className = "text-end";
-        deleteButton.className = "btn btn-primary";
-        deleteButton.textContent = "Delete";
-        deleteButton.id = "delete-headhunter";
-
-        deleteButton.dataset.bsToggle = "modal";
-        deleteButton.dataset.bsTarget = "#modal-2";
-        let deleteConfirmation = document.getElementById("delete-headhunter");
-
-        deleteButton.onclick = function () {
-            deleteConfirmation.onclick = function () {
-                const url = `http://${window.location.host}/api/users/headhunter/${headhunter.key}`;
-                console.log(url)
-                axios.delete(url)
-                    .then(response => {
-                        window.location.reload();
-                    })
-                    .catch(error => {
-
-                    });
-            }
-        }
 
         headhunterPicture.appendChild(headhunterImage);
         headhunterLogo.appendChild(headhunterPicture);
         headhunterWebsite.appendChild(websiteLink);
-        headhunterActions.appendChild(deleteButton);
+        tr.appendChild(headhunterLogo);
+        tr.appendChild(headhunterName);
+        tr.appendChild(headhunterEmail);
+        tr.appendChild(headhunterWebsite);
         tr.appendChild(headhunterLogo);
         tr.appendChild(headhunterName);
         tr.appendChild(headhunterEmail);
         tr.appendChild(headhunterWebsite);
         tr.appendChild(headhunterActions);
 
+        if (session.authenticated && session.user.type === "admin") {
+            let deleteButton = document.createElement("button");
+            deleteButton.className = "btn btn-primary";
+            deleteButton.textContent = "Delete";
+            deleteButton.id = "delete-headhunter";
+            deleteButton.dataset.bsToggle = "modal";
+            deleteButton.dataset.bsTarget = "#modal-2";
+
+            let deleteConfirmation = document.getElementById("delete-headhunter");
+            deleteButton.onclick = function () {
+                deleteConfirmation.onclick = function () {
+                    const url = `http://${window.location.host}/api/users/headhunter/${headhunter.key}`;
+                    console.log(url)
+                    axios.delete(url)
+                        .then(response => {
+                            window.location.reload();
+                        })
+                        .catch(error => {
+
+                        });
+                }
+            }
+            headhunterActions.appendChild(deleteButton);
+
+        }
         return tr;
     }
 
@@ -95,23 +101,27 @@ var buildHeadhuntersTable = function (headhunters) {
         let headhunterName = document.createElement("th");
         let headhunterEmail = document.createElement("th");
         let headhunterWebsite = document.createElement("th");
-        let headhunterActions = document.createElement("th");
+
         div.className = "table-responsive";
         table.className = "table";
         headhunterLogo.textContent = "Logo";
         headhunterName.textContent = "Name";
         headhunterEmail.textContent = "Email";
         headhunterWebsite.textContent = "Website";
-        headhunterActions.textContent = "Action";
-        headhunterActions.className = "text-end";
 
         tr.appendChild(headhunterLogo);
         tr.appendChild(headhunterName);
         tr.appendChild(headhunterEmail);
         tr.appendChild(headhunterWebsite);
-        tr.appendChild(headhunterActions);
         thead.appendChild(tr);
         table.appendChild(thead);
+
+        if (session.authenticated && session.user.type === "admin") {
+            let headhunterActions = document.createElement("th");
+            headhunterActions.textContent = "Action";
+            headhunterActions.className = "text-end";
+            tr.appendChild(headhunterActions);
+        }
 
         headhunters.forEach(headhunter => table.appendChild(buildRow(headhunter)));
         div.appendChild(table);
@@ -125,7 +135,6 @@ var buildHeadhuntersTable = function (headhunters) {
         headhuntersTable.appendChild(document.createElement("br"));
     }
 }
-
 
 var buildNavBar = function (session) {
 
@@ -181,7 +190,7 @@ var buildNavBar = function (session) {
         logoutItem.textContent = "Sign out";
         dividerDiv.className = "dropdown-divider";
 
-        dropdownDiv.appendChild(profileItem);
+        if (session.user.type === "job_seeker") dropdownDiv.appendChild(profileItem);
         if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
         if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);

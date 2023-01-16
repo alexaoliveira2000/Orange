@@ -342,7 +342,7 @@ var buildNavBar = function (session) {
         logoutItem.textContent = "Sign out";
         dividerDiv.className = "dropdown-divider";
 
-        dropdownDiv.appendChild(profileItem);
+        if (session.user.type === "job_seeker") dropdownDiv.appendChild(profileItem);
         if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
         if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);

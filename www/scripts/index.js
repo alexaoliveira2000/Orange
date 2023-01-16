@@ -38,7 +38,6 @@ var buildNavBar = function (session) {
         let dropdownDiv = document.createElement("div");
         let profileItem = document.createElement("a");
         let friendsItem = document.createElement("a");
-        let headhuntersItem = document.createElement("a");
         let pendingHeadhuntersItem = document.createElement("a");
         let dividerDiv = document.createElement("div");
         let logoutItem = document.createElement("a");
@@ -60,9 +59,6 @@ var buildNavBar = function (session) {
         friendsItem.className = "dropdown-item";
         friendsItem.href = "friends";
         friendsItem.textContent = "Friends";
-        headhuntersItem.className = "dropdown-item";
-        headhuntersItem.href = "headhunters";
-        headhuntersItem.textContent = "Headhunters";
         pendingHeadhuntersItem.className = "dropdown-item";
         pendingHeadhuntersItem.href = "pending-headhunters";
         pendingHeadhuntersItem.textContent = "Pending Headhunters";
@@ -73,9 +69,8 @@ var buildNavBar = function (session) {
         logoutItem.textContent = "Sign out";
         dividerDiv.className = "dropdown-divider";
 
-        dropdownDiv.appendChild(profileItem);
+        if (session.user.type === "job_seeker") dropdownDiv.appendChild(profileItem);
         if (session.user.type === "job_seeker") dropdownDiv.appendChild(friendsItem);
-        if (session.user.type === "admin") dropdownDiv.appendChild(headhuntersItem);
         if (session.user.type === "admin") dropdownDiv.appendChild(pendingHeadhuntersItem);
         dropdownDiv.appendChild(dividerDiv);
         dropdownDiv.appendChild(logoutItem);

@@ -163,9 +163,9 @@ router.get("/pending-headhunters", function (req, res) {
 });
 
 router.get("/headhunters", function (req, res) {
-    if (!req.session.authenticated || req.session.user.type !== "admin") {
+/*     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
-    }
+    } */
     Headhunter.getHeadhunters(function (err, headhunters) {
         if (err) {
             res.sendStatus(500);

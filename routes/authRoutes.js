@@ -84,6 +84,9 @@ let hasPermission = function(session, page) {
     if (page === "about-us.html") {
         return true;
     }
+    if (page === "headhunters.html") {
+        return true;
+    }
     if (page === "login.html") {
         return !session.authenticated;
     }
