@@ -490,6 +490,11 @@ var updateJobCards = function () {
 // COMPARATION BAR
 var updateComparationBar = function (comparationTable) {
     var createComparationTable = function (comparationTable) {
+        var salaryByYear = function(job) {
+            return ((job.salary * 12) / parseInt(job.duration)).toFixed(2);
+        }
+
+
         clearElementChildren("compare-table");
         let comparationJobs = jobs.filter(job => job.compare);
         let table = document.getElementById("compare-table");
@@ -502,14 +507,11 @@ var updateComparationBar = function (comparationTable) {
         let thHeader = document.createElement("th");
         thHeader.appendChild(document.createElement("br"));
         emptyHeader.appendChild(thHeader);
-
-
         headerRow.appendChild(emptyHeader);
+
         comparationJobs.forEach(function (job) {
             let header = document.createElement("th");
             header.className = "text-nowrap";
-            //header.textContent = `<br /><strong>${job.title},<br />${job.company}</strong><br /><br />`;
-
             header.appendChild(document.createElement("br"));
             let strongHeader = document.createElement("strong");
             strongHeader.textContent = `${job.title},`;
@@ -525,7 +527,7 @@ var updateComparationBar = function (comparationTable) {
         });
         head.appendChild(headerRow);
 
-        // rows
+        let bestJob = comparationJobs.reduce((max, job) => salaryByYear(max) > salaryByYear(job) ? max : job);
         let body = document.createElement("tbody");
         comparationTable.forEach(function (comparation) {
             let row = document.createElement("tr");
@@ -542,10 +544,13 @@ var updateComparationBar = function (comparationTable) {
                         value.textContent = formatDate(job[comparation.property]);
                         break;
                     case "Salary":
-                        value.textContent = `€${(job[comparation.property] * 12) / parseInt(job["duration"])}/year`;
+                        value.textContent = `€${salaryByYear(job)}/year`;
                         break;
                     default:
                         value.textContent = job[comparation.property];
+                }
+                if (job === bestJob) {
+                    value.style.color = "green";
                 }
                 row.appendChild(value);
             });
