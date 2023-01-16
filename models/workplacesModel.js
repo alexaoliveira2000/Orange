@@ -88,11 +88,15 @@ class Workplace {
     }
 
     // editar um Workplace
-    static editWorkplace(jsonData, callBack) {
-        const workplaceData = JSON.parse(jsonData);
-        convertObject(workplaceData);
-        const params = [workplaceData, workplaceData.workplace_id];
-        const sql = "UPDATE workplaces SET ? WHERE workplace_id = ?";
+    static editWorkplace(workplace, callBack) {
+        const params = [
+            workplace.name,
+            workplace.logoUrl,
+            workplace.start_date,
+            workplace.end_date,
+            workplace.function_description,
+            workplace.job_seeker_id];
+        const sql = "UPDATE workplaces SET workplace_name = ?, logo_url = ?, start_date = ?, end_date = ?, function_description = ?, job_seeker_id = ? WHERE workplace_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

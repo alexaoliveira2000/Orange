@@ -98,11 +98,14 @@ class Course {
     }
 
     // editar um Course
-    static editCourse(jsonData, callBack) {
-        const courseData = JSON.parse(jsonData);
-        convertObject(courseData);
-        const params = [courseData, courseData.course_id];
-        const sql = "UPDATE courses SET ? WHERE course_id = ?";
+    static editCourse(course, callBack) {
+        const params = [
+            course.name,
+            course.schoolName,
+            course.type,
+            course.averageGrade,
+            course.job_seeker_id];
+        const sql = "UPDATE courses SET course_name = ?, school_name = ?, course_type = ?, average_grade = ?, job_seeker_id = ? WHERE course_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

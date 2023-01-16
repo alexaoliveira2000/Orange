@@ -24,14 +24,35 @@ router.post("/delete/:id", function (req, res) {
 });
 
 router.post("/create", function (req, res) {
-        
-        Workplace.createWorkplace(req.body, function (err, result) {
-            if (err) {
-                res.sendStatus(500);
-            } else {
-                res.sendStatus(201);
-            }
-        });
+    if(!req.session.authenticated) {
+        res.sendStatus(401);
+    }
+        if(req.body) {
+            Workplace.createWorkplace(req.body, function (err, result) {
+                if (err) {
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(201);
+                }
+            });
+        }
+});
+
+router.put("/edit", function (req, res) {
+    if(!req.session.authenticated) {
+        res.sendStatus(401);
+    }
+        if(req.body) {
+            Workplace.editWorkplace(req.body, function (err, result) {
+                if(result) {
+                    res.sendStatus(204);
+                } else if(err) {
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(401);
+                }
+            });
+        }
 });
 
 module.exports = router;

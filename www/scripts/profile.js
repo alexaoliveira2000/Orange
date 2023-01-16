@@ -469,7 +469,6 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         startDateInput.required = true;
         startDateInput.type ="date";
         startDateInput.name = "startDate";
-        startDateInput.pattern = "dd/mm/yyyy";
 
         endDateSection.className = "d-block";
         endDateSection.style = "margin-top: 10px;";
@@ -481,7 +480,6 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         endDateInput.required = true;
         endDateInput.type ="date";
         endDateInput.name = "endDate";
-        endDateInput.pattern = "dd/mm/yyyy";
 
         functionSection.className = "d-block";
         functionSection.style = "margin-top: 10px;";
@@ -530,14 +528,13 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
     }
 
     let firstButton = document.getElementById("firstButtonModal"),
-        secondButton = document.getElementById("secondButtonModal"),
-        record = (typeRecord === "Course") ? "courses" : "workplaces";
+        secondButton = document.getElementById("secondButtonModal");
 
     document.getElementById("modalContent").style = (typeRecord === "Course") ? "width: 470px;" : "width: 540px;";
     firstButton.textContent = (data) ? "Delete" : "Close";
     firstButton.style = (data) ? "background: #b10b00;border-color: #b10b00;color: rgb(255,255,255)" : "background: rgb(255,255,255);border-color: rgb(255,130,3);color: rgb(255,130,3)";
-    document.getElementById("secondButtonModal").textContent = (data) ? "Save Changes" : "Submit";
-    document.getElementById("secondButtonModal").style = (data) ? "background: rgb(255,130,3);border-color: rgb(255,255,255);" : "background: rgb(255,130,3);border-color: rgb(255,130,3);";
+    secondButton.textContent = (data) ? "Save Changes" : "Submit";
+    secondButton.style = (data) ? "background: rgb(255,130,3);border-color: rgb(255,255,255);" : "background: rgb(255,130,3);border-color: rgb(255,130,3);";
     document.getElementById("titleModal").textContent = (data) ? ("Edit " + typeRecord) : ("Add " + typeRecord);
 
     if(data) {
@@ -551,7 +548,7 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             let idToDelete = firstButton.getAttribute("data-id");
 
             if(idToDelete) {
-                const url = `http://${window.location.host}/api/${record}/delete/${idToDelete}`
+                const url = `http://${window.location.host}/api/${typeRecord.toLowerCase()}/delete/${idToDelete}`
                 axios.post(url)
                 .then(response => {
                     console.log(response);
@@ -563,6 +560,65 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             }
 
         };
+
+        firstButton.removeAttribute("data-bs-toggle");
+        firstButton.removeAttribute("data-bs-target");
+
+        modalForm.setAttribute("action", "/edit");
+        modalForm.setAttribute("method", "/PUT");
+        
+        modalForm.onsubmit = function(event) {
+
+            event.preventDefault() 
+
+            let elements = modalForm.elements,
+                body = {};
+
+            if(typeRecord === "Course") {
+
+                body = {
+                    "averageGrade": elements.averageGrade.value,
+                    "name": elements.name.value,
+                    "schoolName": elements.schoolName.value,
+                    "type": formatCourseTypeValue(elements.type.value, true)
+                }
+
+            } else if(typeRecord === "Workplace") {
+
+                body = {
+                    "name": elements.name.value,
+                    "logoUrl": elements.logoUrl.value,
+                    "startDate": elements.startDate.value,
+                    "endDate": elements.endDate.value,
+                    "functionDescription": elements.functionDescription.value
+                }
+
+            } else if(typeRecord === "User") {
+
+                body = {
+                    "name": elements.name.value,
+                    "email": elements.email.value,
+                    "password": elements.password.value,
+                    "description": elements.description.value
+                }
+
+            }
+
+            axios.post(`http://${window.location.host}/api/${typeRecord.toLowerCase()}/edit`, body)
+                .then(response => {
+
+                    console.log(typeRecord + " edit");
+                    checkAuthentication();
+                    document.getElementById("firstButtonModal").click();
+
+                })
+                .catch(error => {
+                    if (error.response.status === 400) {
+                        console.log(error);
+                    }
+                });
+
+        }
 
     } else {
         firstButton.removeAttribute("data-bs-toggle");
@@ -592,12 +648,13 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
                 "jobSeekerId": session.user.id
             }
 
-            axios.post(`http://${window.location.host}/api/${record}/create`, body)
+            axios.post(`http://${window.location.host}/api/${typeRecord.toLowerCase()}/create`, body)
                 .then(response => {
 
-                    console.log(record + " created");
+                    console.log(typeRecord + " created");
                     checkAuthentication();
-                    
+                    document.getElementById("firstButtonModal").click();
+
                 })
                 .catch(error => {
                     if (error.response.status === 400) {
