@@ -30,6 +30,7 @@ var buildHeadhuntersTable = function (headhunters, session) {
     var buildRow = function (headhunter) {
         let tr = document.createElement("tr");
         let headhunterName = document.createElement("td");
+        let headhunterDescription = document.createElement("a");
         let headhunterPicture = document.createElement("picture");
         let headhunterImage = document.createElement("img");
         let headhunterLogo = document.createElement("td");
@@ -38,7 +39,11 @@ var buildHeadhuntersTable = function (headhunters, session) {
         let websiteLink = document.createElement("a");
         let headhunterActions = document.createElement("td");
 
-        headhunterName.textContent = headhunter.name;
+        headhunterDescription.dataset.bsToggle = "modal";
+        headhunterDescription.dataset.bsTarget = "#modal-3";
+        headhunterDescription.textContent = headhunter.name;
+        headhunterDescription.style.color = "black";
+        headhunterDescription.href = "#";
         headhunterImage.src = headhunter.logoUrl;
         headhunterImage.style.height = "50px";
         headhunterImage.style.width = "50px";
@@ -48,6 +53,7 @@ var buildHeadhuntersTable = function (headhunters, session) {
         websiteLink.style.color = "black";
         headhunterActions.className = "text-end";
 
+        headhunterName.appendChild(headhunterDescription);
         headhunterPicture.appendChild(headhunterImage);
         headhunterLogo.appendChild(headhunterPicture);
         headhunterWebsite.appendChild(websiteLink);
@@ -60,6 +66,17 @@ var buildHeadhuntersTable = function (headhunters, session) {
         tr.appendChild(headhunterEmail);
         tr.appendChild(headhunterWebsite);
         tr.appendChild(headhunterActions);
+
+        headhunterDescription.addEventListener("click", function() {
+            let headhunterTitle = document.getElementById("headhunter_title");
+            let headhunterDescription = document.getElementById("headhunter_description");
+            headhunterTitle.textContent = headhunter.name;
+            if (headhunter.description !== "") {
+                headhunterDescription.textContent = headhunter.description;
+            } else {
+                headhunterDescription.textContent = "This company doesn't have a description.";
+            }
+        });
 
         if (session.authenticated && session.user.type === "admin") {
             let deleteButton = document.createElement("button");

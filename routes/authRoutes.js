@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
 
@@ -13,7 +12,7 @@ router.get("/profile", function (req, res) {
         res.sendStatus(401);
     }
     res.redirect(`profile/${req.session.user.key}`);
-})
+});
 
 router.get("/profile/:key", function (req, res, next) {
     console.log("mandou:" + req.params.key)
@@ -30,7 +29,7 @@ router.get("/profile/:key", function (req, res, next) {
         res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
     }
     return;
-})
+});
 
 router.get("/friends", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
@@ -54,7 +53,7 @@ router.get("/friends/:key", function (req, res, next) {
         res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
     }
     return;
-})
+});
 
 router.get('/:page', function (req, res, next) {
     let page = req.params.page;
@@ -72,6 +71,7 @@ router.get('/:page', function (req, res, next) {
             //res.sendStatus(401);
             res.sendFile(path.join(__dirname, '../www/', "unauthorized.html"));
         }
+        return;
     } else {
         next();
     }

@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", function (req, res) {
+    if (!req.session.authenticated) {
+        res.sendStatus(401);
+        return;
+    }
+
     res.send([
         {
             _id: 1,
@@ -75,7 +80,8 @@ router.get("/", function (req, res) {
             work_type: "Full-Time",
             area: "IT"
         }
-    ])
+    ]);
+    return;
 });
 
 module.exports = router;

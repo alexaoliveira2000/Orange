@@ -37,7 +37,8 @@ router.post("/auth", function (req, res) {
 
 router.post("/logout", function (req, res) {
     if (!req.session.authenticated) {
-        res.sendStatus(400).json("There is no user authenticated");
+        res.send(400).json({error: "There is no user authenticated"});
+        return;
     } else {
         req.session.authenticated = false;
         req.session.user = null;

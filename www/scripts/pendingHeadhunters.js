@@ -29,6 +29,7 @@ var buildPendingHeadhuntersTable = function (headhunters) {
     var buildRow = function (headhunter) {
         let tr = document.createElement("tr");
         let headhunterName = document.createElement("td");
+        let headhunterDescription = document.createElement("a");
         let headhunterPicture = document.createElement("picture");
         let headhunterImage = document.createElement("img");
         let headhunterLogo = document.createElement("td");
@@ -39,7 +40,11 @@ var buildPendingHeadhuntersTable = function (headhunters) {
         let acceptButton = document.createElement("button");
         let rejectButton = document.createElement("button");
 
-        headhunterName.textContent = headhunter.name;
+        headhunterDescription.dataset.bsToggle = "modal";
+        headhunterDescription.dataset.bsTarget = "#modal-3";
+        headhunterDescription.textContent = headhunter.name;
+        headhunterDescription.style.color = "black";
+        headhunterDescription.href = "#";
         headhunterImage.src = headhunter.logoUrl;
         headhunterImage.style.height = "50px";
         headhunterImage.style.width = "50px";
@@ -54,6 +59,17 @@ var buildPendingHeadhuntersTable = function (headhunters) {
         rejectButton.textContent = "Reject";
         acceptButton.id = "accept-headhunter";
         rejectButton.id = "reject-headhunter";
+
+        headhunterDescription.addEventListener("click", function() {
+            let headhunterTitle = document.getElementById("headhunter_title");
+            let headhunterDescription = document.getElementById("headhunter_description");
+            headhunterTitle.textContent = headhunter.name;
+            if (headhunter.description !== "") {
+                headhunterDescription.textContent = headhunter.description;
+            } else {
+                headhunterDescription.textContent = "This company doesn't have a description.";
+            }
+        });
 
         acceptButton.addEventListener("click", function () {
             const url = `http://${window.location.host}/api/users/accept-headhunter`;
@@ -93,6 +109,7 @@ var buildPendingHeadhuntersTable = function (headhunters) {
                 });
         }); */
 
+        headhunterName.appendChild(headhunterDescription);
         headhunterPicture.appendChild(headhunterImage);
         headhunterLogo.appendChild(headhunterPicture);
         headhunterWebsite.appendChild(websiteLink);

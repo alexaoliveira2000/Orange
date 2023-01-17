@@ -6,7 +6,7 @@ const Friend = require("../models/friendsListModel");
 const { body, validationResult } = require('express-validator');
 
 router.get("/:key", function (req, res) {
-    if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
+    if (!req.session.authenticated || req.session.user.type !== "job_seeker" || req.session.user.key !== req.params.key) {
         res.sendStatus(401);
     }
     User.getUserByKey(req.params.key, function (err, user) {
@@ -131,7 +131,7 @@ router.post("/add-friend",
                             if (err3) {
                                 res.sendStatus(500);
                             } else {
-                                res.sendStatus(200);
+                                res.sendStatus(201);
                             }
                         });
                     }

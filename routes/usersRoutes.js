@@ -9,6 +9,9 @@ router.post("/accept-headhunter", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
     }
+    if (!req.body.key) {
+        res.sendStatus(400);
+    }
     User.getUserByKey(req.body.key, function (err, user) {
         if (err) {
             res.sendStatus(500);
@@ -29,6 +32,9 @@ router.post("/accept-headhunter", function (req, res) {
 router.post("/reject-headhunter", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
+    }
+    if (!req.body.key) {
+        res.sendStatus(400);
     }
     User.getUserByKey(req.body.key, function (err, user) {
         if (err) {
@@ -56,7 +62,7 @@ router.post("/reject-headhunter", function (req, res) {
 
 router.post("/:type",
     body('email').trim().isEmail().isLength({ max: 60 }),
-    body('password').trim().isLength({ min: 5 }),
+    body('password').trim().isLength({ min: 5 , max: 60}),
     body('description').trim().isLength({ max: 255 }),
     body('user_type').trim().isIn(['job_seeker', 'headhunter']),
     function (req, res, next) {
@@ -163,9 +169,6 @@ router.get("/pending-headhunters", function (req, res) {
 });
 
 router.get("/headhunters", function (req, res) {
-/*     if (!req.session.authenticated || req.session.user.type !== "admin") {
-        res.sendStatus(401);
-    } */
     Headhunter.getHeadhunters(function (err, headhunters) {
         if (err) {
             res.sendStatus(500);
@@ -183,7 +186,7 @@ router.get("/", function (req, res) {
     }
     User.getUsers(function (err, users) {
         if (err) {
-            res.status(404).send(err);
+            res.sendStatus(500);
         }  else {
             res.json({ users: users });
         }
@@ -196,7 +199,7 @@ router.get("/:id", function (req, res) {
     }
     User.getUser(req.params.id, function (err, user) {
         if (err) {
-            res.status(404).send(err);
+            res.sendStatus(500);
         } else if (!user) {
             res.status(404).send(`User not found`);
         } else {
@@ -215,8 +218,6 @@ router.delete("/headhunter/:key", function (req, res) {
         } else if (!user || user.type !== "headhunter") {
             res.sendStatus(400);
         } else {
-            console.log(req.params.key)
-            console.log(user)
             Headhunter.deleteHeadhunter(user.id, function (err2, result) {
                 if (err2) {
                     res.sendStatus(500);
