@@ -132,12 +132,16 @@ class JobSeeker extends User {
         this.queryDb(sql, params, callBack);
     }
 
-    // editar um JobSeeker
-    static editJobSeeker(jsonData, callBack) {
-        const jobSeekerData = JSON.parse(jsonData);
-        convertObject(jobSeekerData);
-        const params = [jobSeekerData, jobSeekerData.job_seeker_id];
-        const sql = "UPDATE job_seekers SET ? WHERE job_seeker_id = ?";
+    // editar um jobseeker
+    static editJobSeeker(data, callBack) {
+        const params = [
+            data.gender,
+            data.birthDate,
+            data.location,
+            data.isVisibleToCompanies,
+            data.jobSeekerId
+        ];
+        const sql = "UPDATE job_seekers SET gender = ?, birth_date = ?, location = ?, visible_to_companies = ? WHERE job_seeker_id = ?";
         this.queryDb(sql, params, callBack);
     }
 

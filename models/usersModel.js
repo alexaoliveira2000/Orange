@@ -102,6 +102,34 @@ class User {
         this.queryDb(sql, params, callBack);
     }
 
+    // editar um utilizador
+    static editUser(data, callBack) {
+        let params = "",
+            sql = "";
+
+        if(data.password) {
+            const passwordHash = bcrypt.hashSync(data.password, 10);
+            params = [
+                data.name,
+                data.description,
+                data.email,
+                passwordHash,
+                data.userKey
+            ];
+            sql = "UPDATE users SET user_name = ?, user_description = ?, email = ?, pass = ? WHERE user_key = ?";
+        } else {
+            params = [
+                data.name,
+                data.description,
+                data.email,
+                data.userKey
+            ];
+            sql = "UPDATE users SET user_name = ?, user_description = ?, email = ? WHERE user_key = ?";
+        }
+
+        this.queryDb(sql, params, callBack);
+    }
+
     // validar email e pass do formulário
     static verifyUser(email, pass, callBack) {
         const bcrypt = require('bcrypt');
