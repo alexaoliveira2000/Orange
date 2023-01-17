@@ -104,7 +104,8 @@ class Course {
             course.schoolName,
             course.type,
             course.averageGrade,
-            course.job_seeker_id];
+            course.jobSeekerId,
+            course.id];
         const sql = "UPDATE courses SET course_name = ?, school_name = ?, course_type = ?, average_grade = ?, job_seeker_id = ? WHERE course_id = ?";
         this.queryDb(sql, params, callBack);
     }

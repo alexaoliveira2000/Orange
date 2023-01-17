@@ -273,12 +273,14 @@ router.put("/edit", function (req, res) {
             "email": req.body.email,
             "password": req.body.password,
             "description": req.body.description,
+            "userKey": req.session.user.key
         },
             bodyJobSeeker = {
-                "gender": req.body.gender,
+                "gender": (req.body.gender === "Masculino") ? "M" : "F",
                 "birthDate": req.body.birthDate,
                 "location": req.body.location,
                 "isVisibleToCompanies": req.body.isVisibleToCompanies,
+                "jobSeekerId": req.session.user.id
             }
             User.editUser(bodyUser, (err, suc) => {
                 if(suc) {
