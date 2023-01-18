@@ -19,7 +19,15 @@ class Course {
         this.average_grade = obj.averageGrade;
     }
 
-    // devolver uma query recebida como argumento (em json)
+    /**
+    * Executes a query on the database
+    *
+    * @function
+    * @param {string} sql - The sql query
+    * @param {Array} params - The query parameters
+    * @param {Function} callBack - The callback function to be called with the query result or error
+    *
+    */
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
         mysqlCon.query(sql, params, function (err, result) {
@@ -32,7 +40,13 @@ class Course {
         mysqlCon.end();
     }
 
-    // devolver todos os Courses (passar de json para Course[])
+    /**
+    * Retrieves all courses from the database
+    *
+    * @function
+    * @param {Function} callBack - The callback function to be called with the query result or error
+    *
+    */
     static getCourses(callBack) {
         const sql = "SELECT * FROM courses";
         this.queryDb(sql, [], function(err, result) {

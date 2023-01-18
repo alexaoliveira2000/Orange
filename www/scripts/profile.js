@@ -1,3 +1,8 @@
+/**
+checkAuthentication is a function that verifies the user's authentication status.
+It makes a GET request to the server to check if the user is authenticated.
+If the request is successful, it will execute the init function passing the response data as a parameter.
+*/
 let checkAuthentication = function () {
     const url = `http://${window.location.host}/api/check-authentication`
     axios.get(url)
@@ -9,6 +14,11 @@ let checkAuthentication = function () {
         });
 }
 
+/**
+Initializes the profile page by fetching user data from the server and building the DOM.
+@function
+@param {Object} session - current session object
+*/
 let init = function(session) {
     let pathname = window.location.pathname,
         pathnameArray = pathname.split("/"),
@@ -30,6 +40,20 @@ let init = function(session) {
 
 }
 
+/**
+Builds the navigation bar for the website based on the user's session.
+If the user is not authenticated, a "Sign in" button will be displayed.
+If the user is authenticated, a dropdown button with their name will be displayed,
+with options for "Profile", "Friends", and "Sign out". Additionally, if the user is a job seeker,
+the "Job Offers" button will be displayed, if the user is a headhunter, the "Resumes" button
+will be displayed, and if the user is an admin, both buttons will be displayed.
+@function
+@param {Object} session - The current user's session.
+@param {boolean} session.authenticated - Whether the user is authenticated or not.
+@param {Object} session.user - The user's data.
+@param {string} session.user.name - The user's name.
+@param {string} session.user.type - The user's type.
+*/
 let buildNavBar = function (session) {
 
     let actionDiv = document.getElementById("actionDiv");
@@ -120,6 +144,11 @@ let buildNavBar = function (session) {
     }
 }
 
+/**
+@function
+@param {Object} session - The session object.
+This function is used to handle the logout event. It makes a POST request to the logout endpoint. If the request is successful, it redirects the user to the login page with a query parameter "userLogout". If there is an error, it redirects the user to the homepage.
+*/
 var buildLogoutEvent = function (session) {
     if (session.authenticated) {
         const url = `http://${window.location.host}/api/logout`
@@ -133,12 +162,18 @@ var buildLogoutEvent = function (session) {
     }
 }
 
+/**
+@function
+@param {Object} data - The data used to build the DOM.
+@param {Object} session - The session object.
+This function is used to build the DOM elements with the provided data. It sets the user's information, such as name, description, birthdate, gender, location and email. It also adds an "edit" button for the current user's profile. Additionally, it adds two "add" buttons for the current user's profile, one for adding a course and one for adding a workplace. If the current user is the profile owner, it will display the add and edit buttons. Lastly, it calls the buildLists function to build the courses and workplaces lists.
+*/
 let buildDOM = function(data, session) {
 
     let userData = data.user,
         coursesList = document.getElementById("coursesList"),
         workplacesList = document.getElementById("workplacesList"),
-        isCurrentUserProfile = (data.user.id === session.user.id);
+        isCurrentUserProfile = (data.user.key === session.user.key);
 
     data.coursesOptions = enumStringToArray(data.coursesOptions);
 
@@ -166,6 +201,12 @@ let buildDOM = function(data, session) {
 
 }
 
+/**
+@function
+@param {String} enumString - A string representation of an ENUM type.
+@returns {Array} An array of the ENUM options.
+This function takes in a string representation of an ENUM type and returns an array of the options. It removes the "enum(" and ")" from the string and splits the options by ",". After that, it uses the formatCourseTypeValue function to format the options.
+*/
 let enumStringToArray = function(enumString) {
 
     enumString = enumString.replace("enum(", "").replace(")", "");
@@ -180,6 +221,12 @@ let enumStringToArray = function(enumString) {
     return enumOptions;
 }
 
+/**
+@function
+@param {String} value - The value to format.
+@param {Boolean} isReverse - A flag to determine whether the format should be reversed or not.
+This function is used to format the value of course type. If isReverse is true, it will convert the value to lowercase, replace spaces with underscores. If isReverse is false, it will replace underscores with spaces and capitalize the first letter of each word.
+*/
 let formatCourseTypeValue = function(value, isReverse) {
 
     if(isReverse) {
@@ -197,10 +244,18 @@ let formatCourseTypeValue = function(value, isReverse) {
 
 }
 
+/**
+@function
+@param {HTMLElement} list - The list element to build the data in.
+@param {Object} data - The data that will be used to build the list.
+@param {Boolean} isCourse - A flag to determine whether the data is for courses or workplaces.
+@param {Object} session - The session object.
+This function is used to build and update a list of data, either "courses" or "workplaces" based on the value of "isCourse", in the provided "list" element. If "data" is empty, it will append a message to the list indicating that the user has no associated courses or workplaces, depending on the value of "isCourse". Otherwise, it will iterate through the "data" and create elements for each item, such as a "title", "subtitle", and "description". The elements will be appended to the "list" element. If the current user is the profile owner, the function will also add an edit icon to each element that when clicked will open a modal form to edit the item.
+*/
 let buildLists = function(list, data, isCourse, session) {
 
     let coursesOptions = (isCourse) ? data.coursesOptions : "",
-        isCurrentUserProfile = (data.user.id === session.user.id);
+        isCurrentUserProfile = (data.user.key === session.user.key);
         
     data = (isCourse) ? data.courses : data.workplaces;
 
@@ -308,15 +363,19 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         let firstSection = document.createElement("section"),
             firstLabel = document.createElement("label"),
             firstInput = document.createElement("input"),
+            firstSmall = document.createElement("small"),
             secondSection = document.createElement("section"),
             secondLabel = document.createElement("label"),
             secondInput = document.createElement("input"),
+            secondSmall = document.createElement("small"),
             thirdSection = document.createElement("section"),
             thirdLabel = document.createElement("label"),
             thirdInput = (typeRecord === "Course") ? document.createElement("select") : document.createElement("input"),
+            thirdSmall = document.createElement("small"),
             fourthSection = document.createElement("section"),
             fourthLabel = document.createElement("label"),
-            fourthInput = (typeRecord === "Course") ? document.createElement("input") : document.createElement("textarea");
+            fourthInput = (typeRecord === "Course") ? document.createElement("input") : document.createElement("textarea"),
+            fourthSmall = document.createElement("small");
         
         firstSection.className = "d-block";
         firstSection.style = "margin-top: 10px;";
@@ -327,6 +386,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         
         firstInput.required = true;
         firstInput.name = "name";
+
+        firstSmall.id = "nameError";
+        firstSmall.style = "color: var(--bs-red); display: none;";
 
         secondSection.className = "d-block";
         secondSection.style = "margin-top: 10px;";
@@ -339,6 +401,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         secondInput.type = (typeRecord === "Course") ? "text" : "email";
         secondInput.name = (typeRecord === "Course") ? "schoolName" : "email";
 
+        secondSmall.id = (typeRecord === "Course") ? "schoolNameError" : "emailError";
+        secondSmall.style = "color: var(--bs-red); display: none;";
+
         thirdSection.className = "d-block";
         thirdSection.style = "margin-top: 10px;";
 
@@ -348,6 +413,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
         thirdInput.required = (typeRecord === "Course") ? true : false;
         thirdInput.name = (typeRecord === "Course") ? "type" : "password";
+
+        thirdSmall.id = (typeRecord === "Course") ? "courseTypeError" : "passwordError";
+        thirdSmall.style = "color: var(--bs-red); display: none;";
 
         fourthSection.className = "d-block";
         fourthSection.style = "margin-top: 10px;";
@@ -361,17 +429,24 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         fourthInput.style = (typeRecord === "Course") ? "width: 70px;" : "font-size: 16px;";
         fourthInput.name = (typeRecord === "Course") ? "averageGrade" : "description";
 
+        fourthSmall.id = (typeRecord === "Course") ? "averageGradeError" : "descriptionError";
+        fourthSmall.style = "color: var(--bs-red); display: none;";
+
         firstSection.appendChild(firstLabel);
         firstSection.appendChild(firstInput);
+        firstSection.appendChild(firstSmall);
 
         secondSection.appendChild(secondLabel);
         secondSection.appendChild(secondInput);
+        secondSection.appendChild(secondSmall);
 
         thirdSection.appendChild(thirdLabel);
         thirdSection.appendChild(thirdInput);
+        thirdSection.appendChild(thirdSmall);
 
         fourthSection.appendChild(fourthLabel);
         fourthSection.appendChild(fourthInput);
+        fourthSection.appendChild(fourthSmall);
 
         firstColumn.appendChild(firstSection);
         firstColumn.appendChild(secondSection);
@@ -397,15 +472,19 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             let fiveSection = document.createElement("section"),
             fiveLabel = document.createElement("label"),
             fiveInput = document.createElement("input"),
+            fiveSmall = document.createElement("small"),
             sixthSection = document.createElement("section"),
             sixthLabel = document.createElement("label"),
             sixthInput = document.createElement("select"),
+            sixthSmall = document.createElement("small"),
             sevenSection = document.createElement("section"),
             sevenLabel = document.createElement("label"),
             sevenInput = document.createElement("input"),
+            sevenSmall = document.createElement("small"),
             eightSection = document.createElement("section"),
             eightLabel = document.createElement("label"),
             eightInput = document.createElement("input"),
+            eightSmall = document.createElement("small"),
             optionOne = document.createElement("option"),
             optionTwo = document.createElement("option"); 
 
@@ -420,6 +499,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             fiveInput.type ="date";
             fiveInput.name = "birthDate";
             fiveInput.value = data.birthDate.substring(0, 10);
+
+            fiveSmall.id = "birthDateError";
+            fiveSmall.style = "color: var(--bs-red); display: none;";
 
             sixthSection.className = "d-block";
             sixthSection.style = "margin-top: 10px;";
@@ -437,6 +519,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             sixthInput.name = "gender";
             sixthInput.value = (data.gender === "M") ? "Masculino" : "Feminino";
 
+            sixthSmall.id = "genderError";
+            sixthSmall.style = "color: var(--bs-red); display: none;";
+
             sevenSection.className = "d-inline-flex";
             sevenSection.style = "margin-top: 10px;width: 250px;";
 
@@ -447,7 +532,10 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             sevenInput.type = "checkbox";
             sevenInput.style = "margin-left: 10px";
             sevenInput.name = "visible";
-            sevenInput.value = (data.isVisibleToCompanies === 1) ? true : false;
+            sevenInput.checked = (data.isVisibleToCompanies === 1) ? true : false;
+
+            sevenSmall.id = "visibleError";
+            sevenSmall.style = "color: var(--bs-red); display: none;";
 
             eightSection.className = "d-block";
             eightSection.style = "margin-top: 10px;";
@@ -458,20 +546,26 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
             
             eightInput.required = true;
             eightInput.name = "location";
-
             eightInput.value = data.location;
+
+            eightSmall.id = "locationError";
+            eightSmall.style = "color: var(--bs-red); display: none;";
 
             fiveSection.appendChild(fiveLabel);
             fiveSection.appendChild(fiveInput);
+            fiveSection.appendChild(fiveSmall);
 
             sixthSection.appendChild(sixthLabel);
             sixthSection.appendChild(sixthInput);
+            sixthSection.appendChild(sixthSmall);
 
             sevenSection.appendChild(sevenLabel);
             sevenSection.appendChild(sevenInput);
+            sevenSection.appendChild(sevenSmall);
 
             eightSection.appendChild(eightLabel);
             eightSection.appendChild(eightInput);
+            eightSection.appendChild(eightSmall);
 
             firstColumn.appendChild(eightSection);
             firstColumn.appendChild(fiveSection);
@@ -500,18 +594,23 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         let nameSection = document.createElement("section"),
             nameLabel = document.createElement("label"),
             nameInput = document.createElement("input"),
+            nameSmall = document.createElement("small"),
             logoSection = document.createElement("section"),
             logoLabel = document.createElement("label"),
             logoInput = document.createElement("input"),
+            logoSmall = document.createElement("small"),
             startDateSection = document.createElement("section"),
             startDateLabel = document.createElement("label"),
             startDateInput = document.createElement("input"),
+            startSmall = document.createElement("small"),
             endDateSection = document.createElement("section"),
             endDateLabel = document.createElement("label"),
             endDateInput = document.createElement("input"),
+            endSmall = document.createElement("small"),
             functionSection = document.createElement("section"),
             functionLabel = document.createElement("label"),
-            functionTextArea = document.createElement("textarea");
+            functionTextArea = document.createElement("textarea"),
+            functionSmall = document.createElement("small");
         
         nameSection.className = "d-block";
         nameSection.style = "margin-top: 10px;";
@@ -522,6 +621,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         
         nameInput.required = true;
         nameInput.name = "name";
+
+        nameSmall.id = "nameError";
+        nameSmall.style = "color: var(--bs-red); display: none;";
 
         logoSection.className = "d-block";
         logoSection.style = "margin-top: 10px;";
@@ -534,6 +636,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         logoInput.type = "url";
         logoInput.name = "logoUrl";
 
+        logoSmall.id = "logoUrlError";
+        logoSmall.style = "color: var(--bs-red); display: none;";
+
         startDateSection.className = "d-block";
         startDateSection.style = "margin-top: 10px;";
 
@@ -545,6 +650,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         startDateInput.type ="date";
         startDateInput.name = "startDate";
 
+        startSmall.id = "startDateError";
+        startSmall.style = "color: var(--bs-red); display: none;";
+
         endDateSection.className = "d-block";
         endDateSection.style = "margin-top: 10px;";
 
@@ -555,6 +663,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         endDateInput.required = true;
         endDateInput.type ="date";
         endDateInput.name = "endDate";
+
+        endSmall.id = "endDateError";
+        endSmall.style = "color: var(--bs-red); display: none;";
 
         functionSection.className = "d-block";
         functionSection.style = "margin-top: 10px;";
@@ -568,6 +679,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         functionTextArea.style = "font-size: 16px;";
         functionTextArea.name = "functionDescription";
 
+        functionSmall.id = "functionDescriptionError";
+        functionSmall.style = "color: var(--bs-red); display: none;";
+
         if(data) {
 
             nameInput.value = data.name;
@@ -580,18 +694,23 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
         nameSection.appendChild(nameLabel);
         nameSection.appendChild(nameInput);
+        nameSection.appendChild(nameSmall);
 
         logoSection.appendChild(logoLabel);
         logoSection.appendChild(logoInput);
+        logoSection.appendChild(logoSmall);
 
         startDateSection.appendChild(startDateLabel);
         startDateSection.appendChild(startDateInput);
+        startDateSection.appendChild(startSmall);
 
         endDateSection.appendChild(endDateLabel);
         endDateSection.appendChild(endDateInput);
+        endDateSection.appendChild(endSmall);
 
         functionSection.appendChild(functionLabel);
         functionSection.appendChild(functionTextArea);
+        functionSection.appendChild(functionSmall);
 
         firstColumn.appendChild(nameSection);
         firstColumn.appendChild(logoSection);
@@ -611,6 +730,22 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
     secondButton.textContent = (data) ? "Save Changes" : "Submit";
     secondButton.style = "background: rgb(255,130,3);border-color: rgb(255,130,3);";
     document.getElementById("titleModal").textContent = (data) ? ("Edit " + typeRecord) : ("Add " + typeRecord);
+
+    var resetErrors = function (nodeElements) {
+        var elements = [...nodeElements];
+        elements.forEach(function (element) {
+            let elemErrorText = document.getElementById(element.id + "Error");
+            if (elemErrorText) {
+                elemErrorText.style.display = "none";
+            }
+        });
+    }
+
+    var showError = function (elementId, message) {
+        let errorText = document.getElementById(elementId);
+        errorText.textContent = message;
+        errorText.style.display = "block";
+    }
 
     if(data) {
 
@@ -646,11 +781,13 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         
         modalForm.onsubmit = function(event) {
 
-            event.preventDefault() 
+            event.preventDefault();
 
             let elements = modalForm.elements,
                 body = {},
                 idToEdit = firstButton.getAttribute("data-id");
+
+                resetErrors(elements);
 
             if(typeRecord === "Course") {
 
@@ -659,7 +796,6 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
                     "name": elements.name.value,
                     "schoolName": elements.schoolName.value,
                     "type": formatCourseTypeValue(elements.type.value, true),
-                    "jobSeekerId": session.user.id,
                     "id": idToEdit
                 }
 
@@ -671,7 +807,6 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
                     "startDate": elements.startDate.value,
                     "endDate": elements.endDate.value,
                     "functionDescription": elements.functionDescription.value,
-                    "jobSeekerId": session.user.id,
                     "id": idToEdit
                 }
 
@@ -702,7 +837,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
                 })
                 .catch(error => {
                     if (error.response.status === 400) {
-                        console.log(error);
+                        error.response.data.errors.forEach(function (err) {
+                            showError(err.param + "Error", err.msg);
+                        });
                     }
                 });
 
@@ -717,23 +854,23 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         
         modalForm.onsubmit = function(event) {
 
-            event.preventDefault() 
+            event.preventDefault();
 
             let elements = modalForm.elements;
+
+            resetErrors(elements);
 
             let body = (typeRecord === "Course") ? {
                 "averageGrade": elements.averageGrade.value,
                 "name": elements.name.value,
                 "schoolName": elements.schoolName.value,
-                "type": formatCourseTypeValue(elements.type.value, true),
-                "jobSeekerId": session.user.id
+                "type": formatCourseTypeValue(elements.type.value, true)
             } : {
                 "name": elements.name.value,
                 "logoUrl": elements.logoUrl.value,
                 "startDate": elements.startDate.value,
                 "endDate": elements.endDate.value,
-                "functionDescription": elements.functionDescription.value,
-                "jobSeekerId": session.user.id
+                "functionDescription": elements.functionDescription.value
             }
 
             axios.post(`http://${window.location.host}/api/${typeRecord.toLowerCase()}/create`, body)
@@ -746,7 +883,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
                 })
                 .catch(error => {
                     if (error.response.status === 400) {
-                        console.log(error);
+                        error.response.data.errors.forEach(function (err) {
+                            showError(err.param + "Error", err.msg);
+                        });
                     }
                 });
 

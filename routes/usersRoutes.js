@@ -262,45 +262,70 @@ router.delete("/job-seeker/:key", function (req, res) {
     });
 });
 
-router.put("/edit", function (req, res) {
-    if(!req.session.authenticated) {
-        res.sendStatus(401);
-    }
+router.put("/edit", body('email').trim().isEmail().isLength({ max: 60 }),
+    body('password').trim().custom(value => {
+        if(!value || (value.length >= 5)) {
+            return true;
+        } else {
+            throw new Error("The password needs to have atleast 5 characters.");
+        }
+    }),
+    body('description').trim().isLength({ max: 255 }),
+    body("name").trim().not().isEmpty(),
+    body("birthDate").trim().isDate().custom(value => {
+        let enteredDate = new Date(value);
+        let miminumAdultDate = new Date();
+        miminumAdultDate.setFullYear(miminumAdultDate.getFullYear() - 18);
+        if (enteredDate > miminumAdultDate) {
+            throw new Error("You need to have more than 18 years old!");
+        }
+        return true;
+    }),
+    body("gender").trim().isIn(['Masculino', 'Feminino']),
+    body("location").trim().not().isEmpty(),
+    body("isVisibleToCompanies").isBoolean(),
+    function (req, res) {
+            
+        if(!req.session.authenticated) {
+            res.sendStatus(401);
+        }
 
-    if(req.body) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+        }
 
-        let bodyUser = {
-            "name": req.body.name,
-            "email": req.body.email,
-            "password": req.body.password,
-            "description": req.body.description,
-            "userKey": req.session.user.key
-        },
-            bodyJobSeeker = {
-                "gender": (req.body.gender === "Masculino") ? "M" : "F",
-                "birthDate": req.body.birthDate,
-                "location": req.body.location,
-                "isVisibleToCompanies": req.body.isVisibleToCompanies,
-                "jobSeekerId": req.session.user.id
-            }
-            User.editUser(bodyUser, (err, suc) => {
-                if(suc) {
-                    JobSeeker.editJobSeeker(bodyJobSeeker, (err, suc) => {
-                        if(suc) {
-                            res.sendStatus(204);
-                        }else if(err) {
-                            res.sendStatus(500);
-                        } else {
-                            res.sendStatus(401);
-                        }
-                    });
-                } else if(err) {
-                    res.sendStatus(500);
-                } else {
-                    res.sendStatus(401);
+        if(req.body) {
+
+            let bodyUser = {
+                "name": req.body.name,
+                "email": req.body.email,
+                "password": req.body.password,
+                "description": req.body.description,
+                "userKey": req.session.user.key
+            },
+                bodyJobSeeker = {
+                    "gender": (req.body.gender === "Masculino") ? "M" : "F",
+                    "birthDate": req.body.birthDate,
+                    "location": req.body.location,
+                    "isVisibleToCompanies": req.body.isVisibleToCompanies,
+                    "jobSeekerId": req.session.user.id
                 }
-            });
-    }
+                User.editUser(bodyUser, (err, suc) => {
+                    if(suc) {
+                        JobSeeker.editJobSeeker(bodyJobSeeker, (err, suc) => {
+                            if(suc) {
+                                res.sendStatus(204);
+                            }else if(err) {
+                                res.sendStatus(500);
+                            }
+                        });
+                    } else if(err) {
+                        res.sendStatus(500);
+                    }
+                });
+        }
     
 });
 
