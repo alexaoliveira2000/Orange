@@ -60,7 +60,14 @@ class Course {
         });
     }
 
-    // devolver um Course (passar de json para Course)
+    /**
+    * Retrieves a specific course from the database based on its id
+    *
+    * @function
+    * @param {number} id - The id of the course to be retrieved
+    * @param {Function} callBack - The callback function to be called with the query result or error
+    *
+    */
     static getCourse(id, callBack) {
         const params = [id];
         const sql = "SELECT * FROM courses WHERE course_id = ?";
@@ -74,7 +81,12 @@ class Course {
         });
     }
 
-    // devolver os Courses de um utilizador (passar de json para Course[])
+    /**
+    @function
+    @param {number} id - The id of the user.
+    @param {function} callBack - The function to call after the query.
+    @description Get all the courses associated to a user with a specific id.
+    */
     static getCoursesUser(id, callBack) {
         const params = [id];
         const sql = "SELECT * FROM courses where job_seeker_id = ?";
@@ -90,6 +102,11 @@ class Course {
         });
     }
 
+    /**
+    @function getCourseTypeOptions
+    @param {function} callBack - The callback function that returns the result of the query.
+    @description Gets the possible options for the course type field in the courses table.
+    */
     static getCourseTypeOptions(callBack) {
         const sql = "SHOW COLUMNS FROM courses WHERE Field = 'course_type'";
         this.queryDb(sql, [], function(err, result) {
@@ -102,7 +119,11 @@ class Course {
         });
     }
 
-    // criar um Course
+    /**
+    This function creates a new course in the database
+    @param {Object} data - An object containing the course data, with properties: name, schoolName, type, averageGrade, jobSeekerId
+    @param {function} callBack - A callback function that is called after the query is executed, it takes two parameters: error and result
+    */
     static createCourse(data, callBack) {
         //const courseData = JSON.parse(jsonData);
         const params = [data.name, data.schoolName, data.type, 
@@ -111,7 +132,13 @@ class Course {
         this.queryDb(sql, params, callBack);
     }
 
-    // editar um Course
+    /**
+    This function is used to edit a course in the database. It takes in the course object and a callback function as arguments.
+    The course object should contain the following properties: name, schoolName, type, averageGrade, jobSeekerId and id.
+    The callback function is used to handle the result of the query, it will take in two arguments, an error and a success object.
+    @param {Object} course - The course object to be updated in the database
+    @param {Function} callBack - The callback function to handle the result of the query
+    */
     static editCourse(course, callBack) {
         const params = [
             course.name,
@@ -124,7 +151,12 @@ class Course {
         this.queryDb(sql, params, callBack);
     }
 
-    // eliminar um Course
+    /**
+    This function is used to delete a course from the database based on its id.
+    @function
+    @param {number} id - The id of the course that is going to be deleted.
+    @param {function} callBack - A callback function that will be called after the deletion. It takes 2 parameters: an error and a success object.
+    */
     static deleteCourse(id, callBack) {
         const params = [id];
         const sql = "delete from courses where course_id = ? limit 1;";

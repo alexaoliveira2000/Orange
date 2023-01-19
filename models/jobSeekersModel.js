@@ -14,7 +14,15 @@ class JobSeeker extends User {
         this.workplacesCount = obj.workplaces_count || 0;
     }
 
-    // devolver uma query recebida como argumento (em json)
+    /**
+    * Executes a query on the database
+    *
+    * @function
+    * @param {string} sql - The sql query
+    * @param {Array} params - The query parameters
+    * @param {Function} callBack - The callback function to be called with the query result or error
+    *
+    */
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
         mysqlCon.query(sql, params, function (err, result) {
@@ -27,7 +35,11 @@ class JobSeeker extends User {
         mysqlCon.end();
     }
 
-    // devolver todos os JobSeekers (passar de json para JobSeeker[])
+    /**
+    This function retrieve all job seekers from the database
+    @function
+    @param {function} callBack - The callback function which will be called after the query execution
+    */
     static getJobSeekers(callBack) {
         const sql = "select users.*, job_seekers.* from job_seekers left join users on users.user_id = job_seekers.job_seeker_id;";
         this.queryDb(sql, [], function (err, result) {
@@ -103,7 +115,12 @@ class JobSeeker extends User {
         });
     }
 
-    // devolver um JobSeeker (passar de json para JobSeeker)
+    /**
+    @function
+    @param {number} id - The id of the JobSeeker
+    @param {function} callBack - The function to be called after execution
+    This function retrieves a single job seeker by their id and maps the results to a JobSeeker object.
+    */
     static getJobSeeker(id, callBack) {
         const params = [id];
         const sql = `select users.*, job_seekers.* from job_seekers 
@@ -119,7 +136,16 @@ class JobSeeker extends User {
         });
     }
 
-    // criar um JobSeeker
+    /**
+    This function creates a new job seeker in the database.
+    @function
+    @param {number} userId - The user id of the job seeker.
+    @param {Object} data - The data of the job seeker.
+    @param {string} data.gender - The gender of the job seeker.
+    @param {date} data.birth_date - The birth date of the job seeker.
+    @param {string} data.location - The location of the job seeker.
+    @param {string} data.visible - The visibility of the job seeker to companies.
+    */
     static createJobSeeker(userId, data, callBack) {
         const params = [
             userId,
@@ -132,7 +158,17 @@ class JobSeeker extends User {
         this.queryDb(sql, params, callBack);
     }
 
-    // editar um jobseeker
+    /**
+    This function updates the information of a specific job seeker in the database.
+    @static
+    @param {Object} data - The data of the job seeker to be updated
+    @param {string} data.gender - The gender of the job seeker
+    @param {string} data.birthDate - The birth date of the job seeker
+    @param {string} data.location - The location of the job seeker
+    @param {boolean} data.isVisibleToCompanies - Whether the job seeker's information is visible to companies
+    @param {number} data.jobSeekerId - The id of the job seeker to update
+    @param {Function} callBack - The function to be executed after the job seeker has been updated
+    */
     static editJobSeeker(data, callBack) {
         const params = [
             data.gender,
@@ -145,7 +181,11 @@ class JobSeeker extends User {
         this.queryDb(sql, params, callBack);
     }
 
-    // eliminar um JobSeeker
+    /**
+    This function is used to delete a Job Seeker from the database.
+    @param {number} id - The id of the Job Seeker to be deleted.
+    @param {function} callBack - The function that is called after the query is executed.
+    */
     static deleteJobSeeker(id, callBack) {
         const params = [id];
         const sql = "delete from job_seekers where job_seeker_id = ? limit 1;";
