@@ -5,6 +5,15 @@ const JobSeeker = require("../models/jobSeekersModel");
 const Headhunter = require("../models/headhuntersModel");
 const { body, validationResult } = require('express-validator');
 
+/**
+ * @function
+ * @description Handle a POST request to the "/accept-headhunter" route. This function is used to accept a headhunter user after a admin user validates the user's information. 
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {401} If the user is not authenticated or is not an admin
+ * @throws {400} If the request body does not contain a key or if the user is not a headhunter or if the user is already validated
+ * @throws {500} If there is an error during the process of getting the user by key or accepting the headhunter
+ */
 router.post("/accept-headhunter", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -29,6 +38,15 @@ router.post("/accept-headhunter", function (req, res) {
     });
 });
 
+/**
+ * @function
+ * @description Handle a POST request to the "/reject-headhunter" route. This function is used to reject a headhunter user after a admin user validates the user's information. It will delete the headhunter and the user from the system.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {401} If the user is not authenticated or is not an admin
+ * @throws {400} If the request body does not contain a key or if the user is not a headhunter or if the user is already validated
+ * @throws {500} If there is an error during the process of getting the user by key or deleting the headhunter or user
+ */
 router.post("/reject-headhunter", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -60,6 +78,20 @@ router.post("/reject-headhunter", function (req, res) {
 
 });
 
+/**
+ * @function
+ * @description Handle a POST request to the "/:type" route. This function is used to validate the request body and check if the email is already in use.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @throws {400} If the request body contains invalid data or the email is already in use
+ * @throws {500} If there is an error during the process of getting the user by email
+ * @property {Object} body - Express request body object
+ * @property {string} body.email - The email of the user.
+ * @property {string} body.password - The password of the user.
+ * @property {string} body.description - The description of the user.
+ * @property {string} body.user_type - The type of the user, can be job_seeker or headhunter
+ */
 router.post("/:type",
     body('email').trim().isEmail().isLength({ max: 60 }),
     body('password').trim().isLength({ min: 5 , max: 60}),
@@ -90,6 +122,20 @@ router.post("/:type",
         });
     });
 
+/**
+ * @function
+ * @description Handle a POST request to the "/job_seeker" route. This function is used to validate the request body and create a new job seeker user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {400} If the request body contains invalid data or the user is not 18 years old
+ * @throws {500} If there is an error during the process of creating the user or job seeker.
+ * @property {Object} body - Express request body object
+ * @property {string} body.seeker_name - The name of the job seeker.
+ * @property {string} body.birth_date - The birth date of the job seeker.
+ * @property {string} body.gender - The gender of the job seeker, can be 'M' or 'F'.
+ * @property {string} body.location - The location of the job seeker.
+ * @property {boolean} body.visible - Indicates if the job seeker profile is visible or not.
+ */
 router.post("/job_seeker",
     body("seeker_name").trim().not().isEmpty(),
     body("birth_date").trim().isDate().custom(value => {
@@ -126,13 +172,25 @@ router.post("/job_seeker",
         });
     });
 
+    /**
+ * @function
+ * @description Handle a POST request to the "/headhunter" route. This function is used to validate the request body and create a new headhunter user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {400} If the request body contains invalid data
+ * @throws {500} If there is an error during the process of creating the user or headhunter.
+ * @property {Object} body - Express request body object
+ * @property {string} body.headhunter_name - The name of the headhunter.
+ * @property {string} body.logo - The logo url of the headhunter.
+ * @property {string} body.website - The website url of the headhunter.
+ */
 router.post("/headhunter",
     body("headhunter_name").trim().not().isEmpty(),
     body("logo").trim().isURL(),
     body("website").trim().isURL(),
     function (req, res) {
         const errors = validationResult(req);
-        console.log(errors.array());
+
         if (!errors.isEmpty()) {
             res.status(400).json({ errors: errors.array() });
             return;
@@ -153,6 +211,15 @@ router.post("/headhunter",
         });
     });
 
+    /**
+ * @function
+ * @description Handle a GET request to the "/pending-headhunters" route. This function is used to get all the headhunters that are not validated yet.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {401} If the user is not authenticated or is not an admin
+ * @throws {500} If there is an error during the process of getting the headhunters
+ * @property {Object} headhunters - An array of headhunters that are not validated yet.
+ */
 router.get("/pending-headhunters", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -168,6 +235,14 @@ router.get("/pending-headhunters", function (req, res) {
     });
 });
 
+/**
+ * @function
+ * @description Handle a GET request to the "/headhunters" route. This function is used to get all the validated headhunters.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {500} If there is an error during the process of getting the headhunters
+ * @property {Object} headhunters - An array of validated headhunters.
+ */
 router.get("/headhunters", function (req, res) {
     Headhunter.getHeadhunters(function (err, headhunters) {
         if (err) {
@@ -180,6 +255,15 @@ router.get("/headhunters", function (req, res) {
     });
 });
 
+/**
+ * @function
+ * @description Handle a GET request to the "/" route. This function is used to get all the users.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @throws {401} If the user is not authenticated or is not an admin
+ * @throws {500} If there is an error during the process of getting the users
+ * @property {Object} users - An array of all the users.
+ */
 router.get("/", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -193,6 +277,16 @@ router.get("/", function (req, res) {
     });
 });
 
+/**
+@function
+@description Retrieves a user by ID from the database and returns it in the response.
+@param {string} id - The ID of the user to retrieve.
+@property {object} req - The request object.
+@property {object} res - The response object.
+@throws {401} If the user is not authenticated or is not an admin.
+@throws {500} If an error occurs while trying to retrieve the user from the database.
+@throws {404} If the user is not found in the database.
+*/
 router.get("/:id", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -208,6 +302,16 @@ router.get("/:id", function (req, res) {
     });
 });
 
+/**
+@function
+@description Deletes a headhunter by key from the database.
+@param {string} key - The key of the headhunter to delete.
+@property {object} req - The request object.
+@property {object} res - The response object.
+@throws {401} If the user is not authenticated or is not an admin.
+@throws {500} If an error occurs while trying to delete the headhunter from the database.
+@throws {400} If the headhunter is not found in the database or is not of type "headhunter".
+*/
 router.delete("/headhunter/:key", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -235,6 +339,16 @@ router.delete("/headhunter/:key", function (req, res) {
     });
 });
 
+/**
+@function
+@description Deletes a job-seeker by key from the database.
+@param {string} key - The key of the job-seeker to delete.
+@property {object} req - The request object.
+@property {object} res - The response object.
+@throws {401} If the user is not authenticated or is not an admin.
+@throws {500} If an error occurs while trying to delete the job-seeker from the database.
+@throws {400} If the job-seeker is not found in the database or is not of type "job-seeker".
+*/
 router.delete("/job-seeker/:key", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "admin") {
         res.sendStatus(401);
@@ -262,6 +376,15 @@ router.delete("/job-seeker/:key", function (req, res) {
     });
 });
 
+/**
+@function
+@description Edits a user and jobseeker information by key from the database.
+@property {object} req - The request object, contains the user and jobseeker information to edit
+@property {object} res - The response object.
+@throws {401} If the user is not authenticated
+@throws {500} If an error occurs while trying to edit the user and jobseeker from the database.
+@throws {400} If the user or jobseeker information is invalid or does not meet the validation requirements.
+*/
 router.put("/edit", body('email').trim().isEmail().isLength({ max: 60 }),
     body('password').trim().custom(value => {
         if(!value || (value.length >= 5)) {

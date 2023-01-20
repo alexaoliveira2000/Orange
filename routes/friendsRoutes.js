@@ -5,6 +5,16 @@ const JobSeeker = require("../models/jobSeekersModel");
 const Friend = require("../models/friendsListModel");
 const { body, validationResult } = require('express-validator');
 
+/**
+@function
+@description A route handler for getting the friends list of a user.
+@param {string} key - The key of the user to retrieve the friends list for.
+@property {Session} session - The session object containing the user's information.
+@throws {401} Will return a status code of 401 if the user is not authenticated or is not a job seeker or the key provided in the request does not match the session's user key.
+@throws {400} Will return a status code of 400 if no user is found with the provided key.
+@throws {500} Will return a status code of 500 if there is an error while querying the database.
+@returns {JSON} An object containing the friends list of the user.
+*/
 router.get("/:key", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "job_seeker" || req.session.user.key !== req.params.key) {
         res.sendStatus(401);
@@ -53,6 +63,16 @@ router.get("/:key", function (req, res) {
     });
 });
 
+/**
+@function
+@description A route handler for adding a friend to the current user's friend list.
+@param {string} email - The email of the user to add as a friend.
+@property {Session} session - The session object containing the user's information.
+@throws {500} Will return a status code of 500 if there is an error while querying the database.
+@throws {401} Will return a status code of 401 if the user is not authenticated or is not a job seeker.
+@throws {400} Will return a status code of 400 if the email provided is invalid or the user is already friends with the provided email or if the provided email is the same as the user's own email.
+@returns {201} if the friend was added successfully.
+*/
 router.post("/add-friend",
     body("email")
         .isEmail().withMessage("Value is not an email")
@@ -102,7 +122,6 @@ router.post("/add-friend",
                 return;
             } else {
                 Friend.getFriendship(req.session.user.id, user.id, function (err2, friendship) {
-                    console.log(friendship)
                     //friendship = friendship[0];
                     if (err2) {
                         res.sendStatus(500);
@@ -140,6 +159,17 @@ router.post("/add-friend",
         });
     });
 
+
+/**
+@function
+@description A route handler for removing a friend from a user's friends list.
+@param {string} friendKey - The key of the friend to remove.
+@property {Session} session - The session object containing the user's information.
+@throws {401} Will return a status code of 401 if the user is not authenticated or is not a job seeker.
+@throws {400} Will return a status code of 400 if no friendKey is provided in the request body or if no user is found with the provided friendKey.
+@throws {500} Will return a status code of 500 if there is an error while querying the database.
+@returns {200} if the friend is successfully removed.
+*/
 router.post("/remove-friend", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
         res.sendStatus(401);
@@ -172,6 +202,16 @@ router.post("/remove-friend", function (req, res) {
     });
 });
 
+/**
+@function
+@description A route handler for accepting a friend request.
+@param {string} friendKey - The key of the user to accept the friend request from.
+@property {Session} session - The session object containing the user's information.
+@throws {401} Will return a status code of 401 if the user is not authenticated or is not a job seeker.
+@throws {400} Will return a status code of 400 if no friendKey is provided in the request body or if no user is found with the provided friendKey or if no friendship is found between the current user and the user with the provided friendKey.
+@throws {500} Will return a status code of 500 if there is an error while querying the database.
+@returns {200} if the friend request was accepted successfully.
+*/
 router.post("/accept-friend", function (req, res) {
     if (!req.session.authenticated || req.session.user.type !== "job_seeker") {
         res.sendStatus(401);

@@ -1,6 +1,9 @@
 const connection = require("../config/connection")
 const { body, validationResult } = require('express-validator');
 
+/**
+ * 
+ */
 class Workplace {
 
     constructor(obj) {
@@ -23,12 +26,15 @@ class Workplace {
     }
 
     /**
-    @function
-    @static
-    Executes a query to the database using the provided SQL statement and parameters.
-    @param {string} sql - The SQL statement to be executed.
-    @param {object} params - The parameters to be used in the SQL statement.
-    @param {function} callBack - The callback function to be executed after the query is complete. The first parameter is an error object (if any) and the second parameter is the result of the query.
+    * @function queryDb
+    * @param {string} sql - The sql query
+    * @param {Array} params - The query parameters
+    * @param {Function} callBack - The callback function to be called with the query result or error
+    * @throws Will throw an error if the provided sql or params is not valid.
+    * @returns {void}
+    * @description Executes a query on the database
+    * @memberof Workplace
+    *
     */
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -43,11 +49,12 @@ class Workplace {
     }
 
     /**
-    @function
-    @static
-    @async
-    This function queries the database and retrieves all the workplaces.
-    @param {function} callBack - A callback function to handle the results of the query, it takes an error as first parameter and the result, if any, as the second.
+    @function getWorkplaces
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of all workplaces in the table.
+    @throws {Error} If there is an error with the query or no data found in table.
+    @description Retrieves all workplaces from the table.
+    @memberof Workplace
     */
     static getWorkplaces(callBack) {
         const sql = "SELECT * FROM workplaces";
@@ -63,12 +70,12 @@ class Workplace {
     }
 
     /**
-    @function
-    @async
+    @function getWorkplace
     @param {number} id - The id of the workplace.
     @param {function} callBack - The callback function that will be called after the query to the database is finished.
     @returns {Workplace} - An instance of the Workplace class.
     @throws {Error} - If there's an error with the query or no data is found.
+    @memberof Workplace
     @description This function makes a query to the database to get a specific workplace by its id.
     */
     static getWorkplace(id, callBack) {
@@ -85,10 +92,13 @@ class Workplace {
     }
 
     /**
-    This function is used to get all the workplaces associated with a user by user's ID
-    @function
-    @param {number} id - The ID of the user whose workplaces are to be retrieved
-    @param {function} callBack - The callback function that will be called when the data is retrieved. It will receive two parameters: an error object and the data retrieved.
+    @function getWorkplacesUser
+    @param {Number} id - The id of the user associated with the workplaces
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of all workplaces associated with the user with the provided id.
+    @throws {Error} If there is an error with the query or no workplaces associated to the user.
+    @description Retrieves all workplaces associated with a specific user by id.
+    @memberof Workplace
     */
     static getWorkplacesUser(id, callBack) {
         const params = [id];
@@ -106,19 +116,20 @@ class Workplace {
     }
 
     /**
-    * Creates a workplace in the database
-    * 
-    @static
     @function createWorkplace
-    @param {Object} data - An object containing the new workplace data.
-    @param {string} data.name - The name of the workplace.
-    @param {string} data.logoUrl - The url of the workplace logo.
-    @param {string} data.startDate - The start date of the workplace.
-    @param {string} data.endDate - The end date of the workplace.
-    @param {string} data.functionDescription - The function description of the workplace.
-    @param {string} data.jobSeekerId - The job seeker id associated to the workplace.
-    @param {function} callBack - A callback function that will be called after the query.
-    */
+    @param {Object} data - The data of the workplace to be created.
+    @param {String} data.name - The name of the workplace.
+    @param {String} data.logoUrl - The logo URL of the workplace.
+    @param {String} data.startDate - The start date of the workplace.
+    @param {String} data.endDate - The end date of the workplace.
+    @param {String} data.functionDescription - The function description of the workplace.
+    @param {Number} data.jobSeekerId - The id of the job seeker associated with the workplace.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description Creates a new workplace in the database with the provided data.
+    @memberof Workplace
+*/
     static createWorkplace(data, callBack) {
         //const workplaceData = JSON.parse(jsonData);
         const params = [data.name, data.logoUrl, data.startDate, 
@@ -128,9 +139,6 @@ class Workplace {
     }
 
     /**
-    * Updates an existing workplace in the database
-    *
-    * @static
     * @function editWorkplace
     * @param {Object} workplace - An object containing the workplace information
     * @property {string} workplace.name - The name of the workplace
@@ -141,6 +149,10 @@ class Workplace {
     * @property {number} workplace.jobSeekerId - The ID of the job seeker
     * @property {number} workplace.id - The ID of the workplace
     * @param {function} callBack - The callback function that will be called after the query is executed
+    * @returns {void}
+    * @throws {Error} if there is an error with the query.
+    * @memberof Workplace
+    * @description Updates an existing workplace in the database
     * 
 */
     static editWorkplace(workplace, callBack) {
@@ -157,12 +169,13 @@ class Workplace {
     }
 
     /**
-    * Deletes an existing workplace from the database
-    *
-    * @static
     * @function deleteWorkplace
     * @param {number} id - The ID of the workplace to be deleted
     * @param {function} callBack - The callback function that will be called after the query is executed
+    * @returns {void}
+    * @throws {Error} if there is an error with the query.
+    * @memberof Workplace
+    * @description Deletes an existing workplace from the database
     * 
     */
     static deleteWorkplace(id, callBack) {

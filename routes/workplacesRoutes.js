@@ -3,6 +3,16 @@ const router = express.Router();
 const Workplace = require("../models/workplacesModel");
 const { body, validationResult } = require('express-validator');
 
+/**
+@function
+@param {string} id - The id of the workplace to delete.
+@property {Object} req - The request object.
+@property {Object} res - The response object.
+@throws {401} - If the user is not authenticated.
+@throws {500} - If there is an error deleting the workplace.
+@throws {400} - If the workplace id is not provided.
+@description Handles the deletion of a workplace by its id.
+*/
 router.post("/delete/:id", function (req, res) {
     let workplaceId = req.params.id;
     
@@ -12,7 +22,6 @@ router.post("/delete/:id", function (req, res) {
     
     if (workplaceId) {
         Workplace.deleteWorkplace(workplaceId, (err, suc) => {
-            console.log("Teste: " + suc);
             if(suc) {
                 res.sendStatus(204);
             } else if(err) {
@@ -24,6 +33,20 @@ router.post("/delete/:id", function (req, res) {
     }
 });
 
+/**
+@function
+@param {string} name - The name of the workplace.
+@param {string} logoUrl - The URL of the workplace's logo.
+@param {string} startDate - The start date of the workplace.
+@param {string} endDate - The end date of the workplace.
+@param {string} functionDescription - The description of the workplace.
+@property {Object} req - The request object.
+@property {Object} res - The response object.
+@throws {401} - If the user is not authenticated.
+@throws {500} - If there is an error creating the workplace.
+@throws {400} - If the validation of the request body fails.
+@description Handles the creation of a new workplace.
+*/
 router.post("/create", body("name").trim().isLength({ max: 255 }).not().isEmpty(),
     body("logoUrl").trim().isURL().isLength({ max: 255 }).not().isEmpty(),
     body("startDate").trim().isDate().custom(value => {
@@ -67,6 +90,20 @@ router.post("/create", body("name").trim().isLength({ max: 255 }).not().isEmpty(
             }
 });
 
+/**
+@function
+@param {string} name - The new name of the workplace.
+@param {string} logoUrl - The new URL of the workplace's logo.
+@param {string} startDate - The new start date of the workplace.
+@param {string} endDate - The new end date of the workplace.
+@param {string} functionDescription - The new description of the workplace.
+@property {Object} req - The request object.
+@property {Object} res - The response object.
+@throws {401} - If the user is not authenticated.
+@throws {500} - If there is an error editing the workplace.
+@throws {400} - If the validation of the request body fails.
+@description Handles the edition of a workplace.
+*/
 router.put("/edit", body("name").trim().isLength({ max: 255 }).not().isEmpty(),
     body("logoUrl").trim().isURL().isLength({ max: 255 }).not().isEmpty(),
     body("startDate").trim().isDate().custom(value => {

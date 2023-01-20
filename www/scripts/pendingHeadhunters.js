@@ -9,15 +9,18 @@ let checkAuthentication = function () {
         });
 }
 
+/**
+@function
+@description Initializes the page by building the navigation bar and logout event, and making a request to retrieve pending headhunters to build the table.
+@param {object} session - Object containing session information.
+*/
 let init = function (session) {
-    console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
 
     const url = `http://${window.location.host}/api/users/pending-headhunters`;
     axios.get(url)
         .then(response => {
-            console.log(response.data.headhunters);
             buildPendingHeadhuntersTable(response.data.headhunters)
         })
         .catch(error => {
@@ -25,6 +28,20 @@ let init = function (session) {
         });
 }
 
+/**
+@function buildPendingHeadhuntersTable
+@param {Array} headhunters - array of pending headhunters
+@property {string} name - name of the headhunter
+@property {string} logoUrl - url of the headhunter's logo
+@property {string} email - email of the headhunter
+@property {string} websiteUrl - website of the headhunter
+@property {string} key - key of the headhunter
+@property {string} description - description of the headhunter
+@description This function builds a table of pending headhunters that can be accepted or rejected by an admin.
+On clicking the name of the headhunter, a modal with the headhunters name and description will be shown.
+On clicking the accept button, the headhunter will be accepted and the page will be reloaded.
+On clicking the reject button, a modal with a confirmation message will be shown and on confirmation, the headhunter will be rejected and the page will be reloaded.
+*/
 var buildPendingHeadhuntersTable = function (headhunters) {
     var buildRow = function (headhunter) {
         let tr = document.createElement("tr");
@@ -98,16 +115,6 @@ var buildPendingHeadhuntersTable = function (headhunters) {
                     });
             }
         }
-        /* rejectConfirmation.addEventListener("click", function () {
-            const url = `http://${window.location.host}/api/users/reject-headhunter`;
-            axios.post(url, { key: headhunter.key })
-                .then(response => {
-                    window.location.reload();
-                })
-                .catch(error => {
-
-                });
-        }); */
 
         headhunterName.appendChild(headhunterDescription);
         headhunterPicture.appendChild(headhunterImage);
@@ -169,8 +176,6 @@ var buildPendingHeadhuntersTable = function (headhunters) {
 }
 
 var buildNavBar = function (session) {
-
-    console.log("USER: " + JSON.stringify(session.user));
 
     var buildSignInButton = function () {
         let a = document.createElement("a");

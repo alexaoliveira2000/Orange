@@ -8,10 +8,9 @@ router.get('/', function (req, res) {
 });
 
 /**
-* Handles a GET request to retrieve the user's profile
-*
 * @function
 * @route {GET} /profile
+* @description Handles a GET request to retrieve the user's profile
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {boolean} req.session.authenticated - Indicates if the user is authenticated
@@ -28,10 +27,10 @@ router.get("/profile", function (req, res) {
 });
 
 /**
-* Handles a GET request to retrieve the profile of a user
 *
 * @function
 * @route {GET} /profile/:key
+* @description Handles a GET request to retrieve the profile of a user
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {string} req.params.key - The key of the user
@@ -43,7 +42,6 @@ router.get("/profile", function (req, res) {
 *
 */
 router.get("/profile/:key", function (req, res, next) {
-    console.log("mandou:" + req.params.key)
     if(!req.session.authenticated) {
         res.sendStatus(401);
     }
@@ -60,10 +58,10 @@ router.get("/profile/:key", function (req, res, next) {
 });
 
 /**
-* Handles a GET request to retrieve the user's friends
 *
 * @function
 * @route {GET} /friends
+* @description Handles a GET request to retrieve the user's friends
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {boolean} req.session.authenticated - Indicates if the user is authenticated
@@ -81,10 +79,10 @@ router.get("/friends", function (req, res) {
 });
 
 /**
-* Handles a GET request to retrieve the friends of a user
 *
 * @function
 * @route {GET} /friends/:key
+* @description Handles a GET request to retrieve the friends of a user
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {string} req.params.key - The key of the user
@@ -96,7 +94,6 @@ router.get("/friends", function (req, res) {
 *
 */
 router.get("/friends/:key", function (req, res, next) {
-    console.log("mandou:" + req.params.key)
     if(!req.session.authenticated) {
         res.sendStatus(401);
     }
@@ -113,10 +110,10 @@ router.get("/friends/:key", function (req, res, next) {
 });
 
 /**
-* Handles a GET request to retrieve a specific page
 *
 * @function
 * @route {GET} /:page
+* @description Handles a GET request to retrieve a specific page
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @param {Object} next - Express next object
@@ -149,9 +146,9 @@ router.get('/:page', function (req, res, next) {
 });
 
 /**
-* Validates if the user has permission to access a specific page
 *
-* @function
+* @function hasPermission
+* @description Validates if the user has permission to access a specific page
 * @param {Object} session - Express session object
 * @param {string} page - The name of the page
 * @returns {boolean} - Indicates if the user has permission to access the page

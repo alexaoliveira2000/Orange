@@ -71,8 +71,6 @@ let init = function (session) {
 
 var buildNavBar = function (session) {
 
-    console.log("USER: " + JSON.stringify(session.user));
-
     var buildSignInButton = function () {
         let a = document.createElement("a");
         a.id = "orange-button";

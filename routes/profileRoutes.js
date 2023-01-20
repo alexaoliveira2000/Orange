@@ -14,16 +14,13 @@ router.get("/", function (req, res) {
 })
 
 /**
-router.get is a method provided by the Express.js framework that creates a route and maps it to a callback function.
-This route listens for a GET request made to a path that includes a parameter named "userKey".
-When this route is hit, it will execute the callback function passed to the router.get method.
-Inside the callback function, it first checks if the session is authenticated.
-If it is not, it sends a 401 status code.
-Next, it checks if the userKey is provided, then it will pass this userKey to the User.getUserByKey method that will
-return the user that has that corresponding key, then pass this user id to the JobSeeker.getJobSeeker method which
-returns the corresponding JobSeeker, after that its used Course.getCoursesUser method to return the courses associated
-to the user, it also calls the Course.getCourseTypeOptions method to get the courses types, finally the Workplace.getWorkplacesUser
-method is called and this method returns the workplaces associated to the user.
+@function
+@description A route handler for getting the user's information, jobseeker information, courses and workplaces.
+@param {string} userKey - The key of the user to retrieve the information for.
+@property {Session} session - The session object containing the user's information.
+@throws {401} Will return a status code of 401 if the user is not authenticated or if there is no user with the provided key, or if there is an error while querying the database.
+@throws {500} Will return a status code of 500 if there is an error while querying the database.
+@returns {JSON} An object containing the user information, jobseeker information, courses and workplaces of the user.
 */
 router.get("/:userKey", function (req, res) {
     let userKey = req.params.userKey,
@@ -36,8 +33,6 @@ router.get("/:userKey", function (req, res) {
     if (userKey) {
         User.getUserByKey(userKey, (err, user) => {
             if(user) {
-                console.log("User: " + user);
-                console.log("username: " + user.name)
                 data.user = user;
                 JobSeeker.getJobSeeker(user.id, (err, jobSeeker) => {
                     data.user = Object.assign({}, user, jobSeeker);

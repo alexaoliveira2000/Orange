@@ -1,3 +1,9 @@
+/**
+@function checkAuthentication
+@description Check if the user is authenticated.
+@property {string} url - The url to check the authentication status.
+@property {function} init - A function that initializes the navigation bar and logout event.
+*/
 let checkAuthentication = function () {
     const url = `http://${window.location.host}/api/check-authentication`
     axios.get(url)
@@ -9,15 +15,20 @@ let checkAuthentication = function () {
         });
 }
 
+/**
+@function init
+@description Initializes the navigation bar and logout event.
+@param {Object} session - The session object.
+@property {function} buildNavBar - A function that builds the navigation bar.
+@property {function} buildLogoutEvent - A function that builds the logout event.
+*/
 let init = function (session) {
-    console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
 }
 
-var buildNavBar = function (session) {
 
-    console.log("USER: " + JSON.stringify(session.user));
+var buildNavBar = function (session) {
 
     var buildSignInButton = function () {
         let a = document.createElement("a");
@@ -102,6 +113,12 @@ var buildNavBar = function (session) {
     }
 }
 
+/**
+@function buildLogoutEvent
+@param {Object} session - The session object.
+This function is used to handle the logout event. It makes a POST request to the logout endpoint. If the request is successful, it redirects the user to the login page with a query parameter "userLogout". 
+If there is an error, it redirects the user to the homepage.
+*/
 var buildLogoutEvent = function (session) {
     if (session.authenticated) {
         let logoutConfirmation = document.getElementById("logout");

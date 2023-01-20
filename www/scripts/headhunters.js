@@ -9,15 +9,20 @@ let checkAuthentication = function () {
         });
 }
 
+/**
+@function init
+@param {Object} session - session object
+@description Initialize the headhunters table by calling buildNavBar, buildLogoutEvent and buildHeadhuntersTable functions
+@property {Object} session - session object
+@property {string} url - The url of the headhunters api
+*/
 let init = function (session) {
-    console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
 
     const url = `http://${window.location.host}/api/users/headhunters`;
     axios.get(url)
         .then(response => {
-            console.log(response.data.headhunters);
             buildHeadhuntersTable(response.data.headhunters, session)
         })
         .catch(error => {
@@ -25,6 +30,12 @@ let init = function (session) {
         });
 }
 
+/**
+@function buildHeadhuntersTable
+@param {Array} headhunters - An array of headhunters to be displayed
+@param {Object} session - The user session object
+@description Builds a table of headhunters on the page. Allows for viewing a headhunters details and deletion by admin.
+*/
 var buildHeadhuntersTable = function (headhunters, session) {
 
     var buildRow = function (headhunter) {
@@ -90,7 +101,6 @@ var buildHeadhuntersTable = function (headhunters, session) {
             deleteButton.onclick = function () {
                 deleteConfirmation.onclick = function () {
                     const url = `http://${window.location.host}/api/users/headhunter/${headhunter.key}`;
-                    console.log(url)
                     axios.delete(url)
                         .then(response => {
                             window.location.reload();
@@ -154,8 +164,6 @@ var buildHeadhuntersTable = function (headhunters, session) {
 }
 
 var buildNavBar = function (session) {
-
-    console.log("USER: " + JSON.stringify(session.user));
 
     var buildSignInButton = function () {
         let a = document.createElement("a");

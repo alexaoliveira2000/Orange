@@ -1,8 +1,3 @@
-/**
-checkAuthentication is a function that verifies the user's authentication status.
-It makes a GET request to the server to check if the user is authenticated.
-If the request is successful, it will execute the init function passing the response data as a parameter.
-*/
 let checkAuthentication = function () {
     const url = `http://${window.location.host}/api/check-authentication`
     axios.get(url)
@@ -15,16 +10,14 @@ let checkAuthentication = function () {
 }
 
 /**
-Initializes the profile page by fetching user data from the server and building the DOM.
-@function
+@function init
+@description Initializes the profile page by fetching user data from the server and building the DOM.
 @param {Object} session - current session object
 */
 let init = function(session) {
     let pathname = window.location.pathname,
         pathnameArray = pathname.split("/"),
         value = pathnameArray[pathnameArray.length - 1];
-    
-        console.log(value);
 
     if(value) {
         const url = `http://${window.location.host}/api/profile/${value}`
@@ -34,20 +27,19 @@ let init = function(session) {
             buildNavBar(session);
         })
         .catch(error => {
-            console.log(error);
         });
     }
 
 }
 
 /**
-Builds the navigation bar for the website based on the user's session.
+@function buildNavBar
+@description Builds the navigation bar for the website based on the user's session.
 If the user is not authenticated, a "Sign in" button will be displayed.
 If the user is authenticated, a dropdown button with their name will be displayed,
 with options for "Profile", "Friends", and "Sign out". Additionally, if the user is a job seeker,
 the "Job Offers" button will be displayed, if the user is a headhunter, the "Resumes" button
 will be displayed, and if the user is an admin, both buttons will be displayed.
-@function
 @param {Object} session - The current user's session.
 @param {boolean} session.authenticated - Whether the user is authenticated or not.
 @param {Object} session.user - The user's data.
@@ -127,8 +119,6 @@ let buildNavBar = function (session) {
     let jobOffersButton = document.getElementById("job-offers");
     let resumesButton = document.getElementById("resumes");
 
-    console.log("USER: " + JSON.stringify(session.user));
-
     if (!session.authenticated) {
         actionDiv.appendChild(buildSignInButton());
     } else if (session.user.type === "job_seeker") {
@@ -145,9 +135,10 @@ let buildNavBar = function (session) {
 }
 
 /**
-@function
+@function buildLogoutEvent
+@description This function is used to handle the logout event. It makes a POST request to the logout endpoint. If the request is successful, it redirects the user to the login page with a query parameter "userLogout". 
+If there is an error, it redirects the user to the homepage.
 @param {Object} session - The session object.
-This function is used to handle the logout event. It makes a POST request to the logout endpoint. If the request is successful, it redirects the user to the login page with a query parameter "userLogout". If there is an error, it redirects the user to the homepage.
 */
 var buildLogoutEvent = function (session) {
     if (session.authenticated) {
@@ -163,10 +154,12 @@ var buildLogoutEvent = function (session) {
 }
 
 /**
-@function
+@function buildDOM
+@description This function is used to build the DOM elements with the provided data. It sets the user's information, such as name, description, birthdate, gender, location and email. It also adds an "edit" button for the current user's profile. 
+Additionally, it adds two "add" buttons for the current user's profile, one for adding a course and one for adding a workplace. If the current user is the profile owner, it will display the add and edit buttons. 
+Lastly, it calls the buildLists function to build the courses and workplaces lists.
 @param {Object} data - The data used to build the DOM.
 @param {Object} session - The session object.
-This function is used to build the DOM elements with the provided data. It sets the user's information, such as name, description, birthdate, gender, location and email. It also adds an "edit" button for the current user's profile. Additionally, it adds two "add" buttons for the current user's profile, one for adding a course and one for adding a workplace. If the current user is the profile owner, it will display the add and edit buttons. Lastly, it calls the buildLists function to build the courses and workplaces lists.
 */
 let buildDOM = function(data, session) {
 
@@ -202,10 +195,11 @@ let buildDOM = function(data, session) {
 }
 
 /**
-@function
+@function enumStringToArray
+@description This function takes in a string representation of an ENUM type and returns an array of the options. It removes the "enum(" and ")" from the string and splits the options by ",". 
+After that, it uses the formatCourseTypeValue function to format the options.
 @param {String} enumString - A string representation of an ENUM type.
 @returns {Array} An array of the ENUM options.
-This function takes in a string representation of an ENUM type and returns an array of the options. It removes the "enum(" and ")" from the string and splits the options by ",". After that, it uses the formatCourseTypeValue function to format the options.
 */
 let enumStringToArray = function(enumString) {
 
@@ -222,10 +216,11 @@ let enumStringToArray = function(enumString) {
 }
 
 /**
-@function
+@function formatCourseTypeValue
+@description This function is used to format the value of course type. If isReverse is true, it will convert the value to lowercase, replace spaces with underscores. If isReverse is false, 
+it will replace underscores with spaces and capitalize the first letter of each word.
 @param {String} value - The value to format.
 @param {Boolean} isReverse - A flag to determine whether the format should be reversed or not.
-This function is used to format the value of course type. If isReverse is true, it will convert the value to lowercase, replace spaces with underscores. If isReverse is false, it will replace underscores with spaces and capitalize the first letter of each word.
 */
 let formatCourseTypeValue = function(value, isReverse) {
 
@@ -245,12 +240,15 @@ let formatCourseTypeValue = function(value, isReverse) {
 }
 
 /**
-@function
+@function buildLists
+@description This function is used to build and update a list of data, either "courses" or "workplaces" based on the value of "isCourse", in the provided "list" element. If "data" is empty, 
+it will append a message to the list indicating that the user has no associated courses or workplaces, depending on the value of "isCourse". Otherwise, it will iterate through the "data" and create elements for each item, 
+such as a "title", "subtitle", and "description". The elements will be appended to the "list" element. If the current user is the profile owner, 
+the function will also add an edit icon to each element that when clicked will open a modal form to edit the item.
 @param {HTMLElement} list - The list element to build the data in.
 @param {Object} data - The data that will be used to build the list.
 @param {Boolean} isCourse - A flag to determine whether the data is for courses or workplaces.
 @param {Object} session - The session object.
-This function is used to build and update a list of data, either "courses" or "workplaces" based on the value of "isCourse", in the provided "list" element. If "data" is empty, it will append a message to the list indicating that the user has no associated courses or workplaces, depending on the value of "isCourse". Otherwise, it will iterate through the "data" and create elements for each item, such as a "title", "subtitle", and "description". The elements will be appended to the "list" element. If the current user is the profile owner, the function will also add an edit icon to each element that when clicked will open a modal form to edit the item.
 */
 let buildLists = function(list, data, isCourse, session) {
 
@@ -762,11 +760,9 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
                     const url = `http://${window.location.host}/api/${typeRecord.toLowerCase()}/delete/${idToDelete}`
                     axios.post(url)
                     .then(response => {
-                        console.log(response);
                         checkAuthentication();
                     })
                     .catch(error => {
-                        console.log(error);
                     });
                 }
 
@@ -827,8 +823,6 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
             axios.put(`http://${window.location.host}/api/${typeRecord.toLowerCase()}/edit`, body)
                 .then(response => {
-
-                    console.log(typeRecord + " edit");
                     checkAuthentication();
                     firstButton.removeAttribute("data-bs-toggle");
                     firstButton.removeAttribute("data-bs-target");
@@ -875,8 +869,6 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
             axios.post(`http://${window.location.host}/api/${typeRecord.toLowerCase()}/create`, body)
                 .then(response => {
-
-                    console.log(typeRecord + " created");
                     checkAuthentication();
                     document.getElementById("firstButtonModal").click();
 
