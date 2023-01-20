@@ -27,7 +27,6 @@ router.post("/auth", function (req, res) {
         res.sendStatus(401);
     }
     User.verifyUser(email, pass, function (err, user) {
-        console.log(user)
         if (err) {
             res.sendStatus(500);
         } else if (!user) {

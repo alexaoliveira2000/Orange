@@ -20,12 +20,14 @@ class Course {
     }
 
     /**
-    * Executes a query on the database
-    *
-    * @function
+    * @function queryDb
     * @param {string} sql - The sql query
     * @param {Array} params - The query parameters
     * @param {Function} callBack - The callback function to be called with the query result or error
+    * @throws Will throw an error if the provided sql or params is not valid.
+    * @returns {void}
+    * @description Executes a query on the database
+    * @memberof Course
     *
     */
     static queryDb(sql, params, callBack) {
@@ -41,11 +43,12 @@ class Course {
     }
 
     /**
-    * Retrieves all courses from the database
-    *
-    * @function
-    * @param {Function} callBack - The callback function to be called with the query result or error
-    *
+    @function getCourses
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of all courses in the table.
+    @throws {Error} If there is an error with the query or no data found in table.
+    @description Retrieves all courses from the table.
+    @memberof Course
     */
     static getCourses(callBack) {
         const sql = "SELECT * FROM courses";
@@ -61,12 +64,13 @@ class Course {
     }
 
     /**
-    * Retrieves a specific course from the database based on its id
-    *
-    * @function
-    * @param {number} id - The id of the course to be retrieved
-    * @param {Function} callBack - The callback function to be called with the query result or error
-    *
+    @function getCourse
+    @param {Number} id - The id of the course to retrieve
+    @param {function} callBack - The callback function to handle the query result
+    @returns {Course} The course with the matching id
+    @throws {Error} if there is an error with the query
+    @description Retrieves a specific course by id.
+    @memberof Course
     */
     static getCourse(id, callBack) {
         const params = [id];
@@ -82,10 +86,11 @@ class Course {
     }
 
     /**
-    @function
+    @function getCoursesUser
     @param {number} id - The id of the user.
     @param {function} callBack - The function to call after the query.
     @description Get all the courses associated to a user with a specific id.
+    @memberof Course
     */
     static getCoursesUser(id, callBack) {
         const params = [id];
@@ -103,9 +108,13 @@ class Course {
     }
 
     /**
-    @function getCourseTypeOptions
-    @param {function} callBack - The callback function that returns the result of the query.
-    @description Gets the possible options for the course type field in the courses table.
+    @function getCoursesUser
+    @param {Number} id - The id of the user associated with the courses
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of all courses associated with the user with the provided id.
+    @throws {Error} If there is an error with the query or no courses associated to the user.
+    @description Retrieves all courses associated with a specific user by id.
+    @memberof Course
     */
     static getCourseTypeOptions(callBack) {
         const sql = "SHOW COLUMNS FROM courses WHERE Field = 'course_type'";
@@ -120,9 +129,18 @@ class Course {
     }
 
     /**
-    This function creates a new course in the database
-    @param {Object} data - An object containing the course data, with properties: name, schoolName, type, averageGrade, jobSeekerId
-    @param {function} callBack - A callback function that is called after the query is executed, it takes two parameters: error and result
+    @function Course.createCourse
+    @param {Object} data - The data to create the course
+    @param {String} data.name - The name of the course.
+    @param {String} data.schoolName - The school name where the course was taken.
+    @param {String} data.type - The type of the course.
+    @param {Number} data.averageGrade - The average grade of the course.
+    @param {Number} data.jobSeekerId - The id of the job seeker associated with the course.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description Creates a new course by inserting the provided data into the courses table.
+    @memberof Course
     */
     static createCourse(data, callBack) {
         //const courseData = JSON.parse(jsonData);
@@ -133,11 +151,19 @@ class Course {
     }
 
     /**
-    This function is used to edit a course in the database. It takes in the course object and a callback function as arguments.
-    The course object should contain the following properties: name, schoolName, type, averageGrade, jobSeekerId and id.
-    The callback function is used to handle the result of the query, it will take in two arguments, an error and a success object.
-    @param {Object} course - The course object to be updated in the database
-    @param {Function} callBack - The callback function to handle the result of the query
+    @function editCourse
+    @param {Object} course - The data of the course to be edited.
+    @param {String} course.name - The name of the course.
+    @param {String} course.schoolName - The school name where the course was taken.
+    @param {String} course.type - The type of the course.
+    @param {Number} course.averageGrade - The average grade of the course.
+    @param {Number} course.jobSeekerId - The id of the job seeker associated with the course.
+    @param {Number} course.id - The id of the course.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description Edits an existing course in the database by updating the data associated with the course.
+    @memberof Course
     */
     static editCourse(course, callBack) {
         const params = [
@@ -152,10 +178,13 @@ class Course {
     }
 
     /**
-    This function is used to delete a course from the database based on its id.
-    @function
-    @param {number} id - The id of the course that is going to be deleted.
-    @param {function} callBack - A callback function that will be called after the deletion. It takes 2 parameters: an error and a success object.
+    @function deleteCourse
+    @param {Number} id - The id of the course to be deleted.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description Deletes an existing course in the database by the course_id.
+    @memberof Course
     */
     static deleteCourse(id, callBack) {
         const params = [id];

@@ -9,8 +9,13 @@ let checkAuthentication = function () {
         });
 }
 
+/**
+@function init
+@param {Object} session - session object containing user information
+@description Initializes the page by building the navigation bar, adding logout event,
+and fetching and displaying friend information.
+*/
 let init = function (session) {
-    console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
     friendRequestSubmit();
@@ -21,7 +26,6 @@ let init = function (session) {
     const url = `http://${window.location.host}/api/friends/${value}`;
     axios.get(url)
         .then(response => {
-            console.log(response.data.friends);
             let friends = response.data.friends.filter(friend => !friend.pending);
             let pendingRequests = response.data.friends.filter(friend => friend.pending);
             buildFriendsTable(friends);
@@ -33,6 +37,16 @@ let init = function (session) {
         });
 }
 
+/**
+@function friendRequestSubmit
+@description submit friend request and handle the response.
+@property {function} resetErrors - A function that reset error message from previous request
+@property {function} showError - A function that displays error message
+@property {function} showSuccess - A function that displays success message
+@property {string} requestButton - The request button element
+@property {string} requestInput - The request input element
+@property {string} url - The url to submit the friend request
+*/
 var friendRequestSubmit = function () {
     var resetErrors = function (element) {
         let elemErrorText = document.getElementById(element.id + "_info");
@@ -74,6 +88,13 @@ var friendRequestSubmit = function () {
 
 }
 
+/**
+@function buildModalRequests
+@description Builds the modals for friend requests.
+@param {Array} pendingRequests - An array of pending friend requests.
+@property {string} addFriendButton - The add friend button element.
+@property {string} friendRequestsButton - The friend requests button element.
+*/
 var buildModalRequests = function (pendingRequests) {
     let addFriendButton = document.getElementById("add-friends");
     addFriendButton.dataset.bsToggle = "modal";
@@ -88,6 +109,23 @@ var buildModalRequests = function (pendingRequests) {
     }
 }
 
+/**
+@function buildFriendsTable
+@description Builds the friends table.
+@param {Array} friends - An array of friends.
+@property {string} friendsTable - The friends table element.
+@property {string} div - The div element.
+@property {string} table - The table element.
+@property {string} thead - The table head element.
+@property {string} tr - The table row element.
+@property {string} friendName - The friend name element.
+@property {string} friendEmail - The friend email element.
+@property {string} friendLocation - The friend location element.
+@property {string} friendGender - The friend gender element.
+@property {string} friendAction - The friend action element.
+@property {string} removeButton - The remove friend button element.
+@property {string} removeConfirmation - The remove friend confirmation element.
+*/
 var buildFriendsTable = function (friends) {
     var buildRow = function (friend) {
         let tr = document.createElement("tr");
@@ -99,12 +137,9 @@ var buildFriendsTable = function (friends) {
         let friendAction = document.createElement("td");
         let removeButton = document.createElement("button");
 
-        //friendName.textContent = friend.name;
         friendProfile.href = `../profile/${friend.key}`;
         friendProfile.textContent = friend.name;
         friendProfile.style.color = "black";
-        //friendProfile.style.textDecoration = "none";
-        //friendProfile.style.fontWeight = "bold";
         friendEmail.textContent = friend.email;
         friendLocation.textContent = friend.location;
         friendGender.textContent = friend.gender;
@@ -129,16 +164,6 @@ var buildFriendsTable = function (friends) {
                     });
             }
         }
-        /* removeConfirmation.addEventListener("click", function () {
-            const url = `http://${window.location.host}/api/friends/remove-friend`;
-            axios.post(url, { friendKey: friend.key })
-                .then(response => {
-                    window.location.reload();
-                })
-                .catch(error => {
-
-                });
-        }); */
 
         friendAction.appendChild(removeButton);
         friendName.appendChild(friendProfile);
@@ -181,9 +206,7 @@ var buildFriendsTable = function (friends) {
         thead.appendChild(tr);
         table.appendChild(thead);
 
-        //friends.forEach(friend => table.appendChild(buildRow(friend)));
         friends.forEach(function (friend) {
-            console.log(friend)
             if (!friend.pending) {
                 table.appendChild(buildRow(friend));
             }
@@ -202,6 +225,15 @@ var buildFriendsTable = function (friends) {
 
 }
 
+/**
+@function buildPendingRequestsTable
+@param {Array} friends - An array of objects representing the user's friends.
+@property {String} friends[].key - The friend's unique key.
+@property {String} friends[].name - The friend's name.
+@property {String} friends[].email - The friend's email.
+@property {Boolean} friends[].pending - Indicates if the friend request is pending.
+@description Builds a table of pending friend requests, allowing the user to accept or reject them.
+*/
 var buildPendingRequestsTable = function (friends) {
     var buildRow = function (friend) {
         let tr = document.createElement("tr");
@@ -211,12 +243,9 @@ var buildPendingRequestsTable = function (friends) {
         let acceptButton = document.createElement("button");
         let rejectButton = document.createElement("button");
 
-        //friendName.textContent = friend.name;
         friendProfile.href = `../profile/${friend.key}`;
         friendProfile.textContent = friend.name;
         friendProfile.style.color = "black";
-        //friendProfile.style.textDecoration = "none";
-        //friendProfile.style.fontWeight = "bold";
         friendAction.className = "text-end";
         acceptButton.className = "btn btn-primary";
         acceptButton.textContent = "Accept";
@@ -277,7 +306,6 @@ var buildPendingRequestsTable = function (friends) {
     table.appendChild(thead);
 
     friends.forEach(function (friend) {
-        console.log(friend)
         if (friend.pending) {
             table.appendChild(buildRow(friend));
         }
@@ -389,6 +417,12 @@ var buildLogoutEvent = function (session) {
     }
 }
 
+/**
+@function clearElementChildren
+@param {string} elementId - The id of the DOM element to clear the children of.
+@param {string} elementType - The type of elements to remove, defaults to any element type if not provided.
+@description Removes all children of a DOM element specified by the provided id. Optionally only removes children of a specific element type.
+*/
 var clearElementChildren = function (elementId, elementType) {
     let element = document.getElementById(elementId);
     let node = element.firstChild;

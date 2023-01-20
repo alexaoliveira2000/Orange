@@ -4,10 +4,10 @@ const Course = require("../models/coursesModel");
 const { body, validationResult } = require('express-validator');
 
 /**
-* Handles a DELETE request to delete a course by ID
 *
 * @function
 * @route {DELETE} /delete/:id
+* @description Handles a DELETE request to delete a course by ID
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {string} req.params.id - The ID of the course to be deleted
@@ -26,7 +26,6 @@ router.post("/delete/:id", function (req, res) {
     
     if (courseId) {
         Course.deleteCourse(courseId, (err, suc) => {
-            console.log("Teste: " + suc);
             if(suc) {
                 res.sendStatus(204);
             } else if(err) {
@@ -39,10 +38,10 @@ router.post("/delete/:id", function (req, res) {
 });
 
 /**
-* Handles a PUT request to edit a course
 *
 * @function
 * @route {PUT} /edit
+* @description Handles a PUT request to edit a course
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {string} req.body.name - The name of the course
@@ -89,10 +88,10 @@ router.put("/edit", body("name").trim().isLength({ max: 255 }).not().isEmpty(),
 });
 
 /**
-* Handles a POST request to create a new course
 *
 * @function
 * @route {POST} /create
+* @description Handles a POST request to create a new course
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {string} req.body.name - The name of the course

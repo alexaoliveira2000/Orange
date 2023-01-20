@@ -4,10 +4,10 @@ const router = express.Router();
 const { query, validationResult } = require('express-validator');
 
 /**
-* Handles a GET request to retrieve resumes
 *
 * @function
 * @route {GET} /
+* @description Handles a GET request to retrieve resumes
 * @param {Object} req - Express request object
 * @param {Object} res - Express response object
 * @property {string} req.query.minAge - The minimum age of the job seeker

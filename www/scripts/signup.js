@@ -83,7 +83,12 @@ var formSubmitValidation = function () {
     });
 }
 
+/**
+@function changeFormType
+@description this function is used to toggle between two forms based on the user's selection of job seeker or head hunter.
+*/
 var changeFormType = function () {
+
     let jobSeekerCheckbox = document.getElementById("job_seeker");
     let headhunterCheckbox = document.getElementById("headhunter");
     let jobSeekerForm = document.getElementById("job_seeker_form");

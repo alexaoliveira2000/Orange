@@ -15,13 +15,14 @@ class JobSeeker extends User {
     }
 
     /**
-    * Executes a query on the database
-    *
-    * @function
+    * @function queryDb
     * @param {string} sql - The sql query
     * @param {Array} params - The query parameters
     * @param {Function} callBack - The callback function to be called with the query result or error
-    *
+    * @throws Will throw an error if the provided sql or params is not valid.
+    * @returns {void}
+    * @description Executes a query on the database
+    * @memberof JobSeeker
     */
     static queryDb(sql, params, callBack) {
         const mysqlCon = connection();
@@ -36,9 +37,12 @@ class JobSeeker extends User {
     }
 
     /**
-    This function retrieve all job seekers from the database
-    @function
-    @param {function} callBack - The callback function which will be called after the query execution
+    @function getJobSeekers
+    @param {function} callBack - The callback function which will be called after the query execution.
+    @returns {Array} Array of job seekers.
+    @throws {Error} if there is an error with the query.
+    @description This function retrieve all job seekers from the database.
+    @memberof JobSeeker
     */
     static getJobSeekers(callBack) {
         const sql = "select users.*, job_seekers.* from job_seekers left join users on users.user_id = job_seekers.job_seeker_id;";
@@ -53,7 +57,18 @@ class JobSeeker extends User {
         });
     }
 
-    // devolver todos os resumes (com as contagens dos workplaces e courses)
+    /**
+    @function getResumes
+    @param {Object} filters - The filters to apply on the query.
+    @param {Number} filters.minAge - The minimum age of job seekers.
+    @param {Number} filters.maxAge - The maximum age of job seekers.
+    @param {String|Array} filters.location - The location of job seekers.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of job seekers matching the filters.
+    @throws {Error} if there is an error with the query.
+    @description Retrieves all resumes of job seekers matching the filters provided.
+    @memberof JobSeeker
+    */
     static getResumes(filters, callBack) {
         let buildWhereClause = function (filters) {
             if (Object.keys(filters).length === 0) {
@@ -75,9 +90,7 @@ class JobSeeker extends User {
                 conditions += isFirst ? " (" : "";
                 if (Array.isArray(filters.location)) {
                     let isFirstLocation = true;
-                    console.log(filters.location)
                     filters.location.forEach(location => {
-                        console.log(location)
                         if (isFirstLocation) isFirstLocation = false;
                         else conditions += " OR";
                         conditions += ` job_seekers.location = '${location.replaceAll("%20", " ")}'`;
@@ -116,10 +129,13 @@ class JobSeeker extends User {
     }
 
     /**
-    @function
-    @param {number} id - The id of the JobSeeker
-    @param {function} callBack - The function to be called after execution
-    This function retrieves a single job seeker by their id and maps the results to a JobSeeker object.
+    @function getJobSeeker
+    @param {Number} id - The id of the job seeker to retrieve.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {JobSeeker} The job seeker matching the provided id.
+    @throws {Error} if there is an error with the query.
+    @description Retrieves a specific job seeker by id.
+    @memberof JobSeeker
     */
     static getJobSeeker(id, callBack) {
         const params = [id];
@@ -137,14 +153,18 @@ class JobSeeker extends User {
     }
 
     /**
-    This function creates a new job seeker in the database.
-    @function
-    @param {number} userId - The user id of the job seeker.
-    @param {Object} data - The data of the job seeker.
-    @param {string} data.gender - The gender of the job seeker.
-    @param {date} data.birth_date - The birth date of the job seeker.
-    @param {string} data.location - The location of the job seeker.
-    @param {string} data.visible - The visibility of the job seeker to companies.
+    @function createJobSeeker
+    @param {Number} userId - The id of the user associated with the job seeker.
+    @param {Object} data - The data to create the job seeker.
+    @param {String} data.gender - The gender of the job seeker.
+    @param {String} data.birth_date - The birth date of the job seeker in the format 'yyyy-mm-dd'.
+    @param {String} data.location - The location of the job seeker.
+    @param {String} data.visible - A string representation of a boolean indicating whether the job seeker is visible to companies.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description Creates a new job seeker by inserting the provided data into the job_seekers table.
+    @memberof JobSeeker
     */
     static createJobSeeker(userId, data, callBack) {
         const params = [
@@ -159,8 +179,7 @@ class JobSeeker extends User {
     }
 
     /**
-    This function updates the information of a specific job seeker in the database.
-    @static
+    @function editJobSeeker
     @param {Object} data - The data of the job seeker to be updated
     @param {string} data.gender - The gender of the job seeker
     @param {string} data.birthDate - The birth date of the job seeker
@@ -168,6 +187,10 @@ class JobSeeker extends User {
     @param {boolean} data.isVisibleToCompanies - Whether the job seeker's information is visible to companies
     @param {number} data.jobSeekerId - The id of the job seeker to update
     @param {Function} callBack - The function to be executed after the job seeker has been updated
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description This function updates the information of a specific job seeker in the database.
+    @memberof JobSeeker
     */
     static editJobSeeker(data, callBack) {
         const params = [
@@ -182,9 +205,13 @@ class JobSeeker extends User {
     }
 
     /**
-    This function is used to delete a Job Seeker from the database.
+    @function deleteJobSeeker
     @param {number} id - The id of the Job Seeker to be deleted.
     @param {function} callBack - The function that is called after the query is executed.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description This function is used to delete a Job Seeker from the database.
+    @memberof JobSeeker
     */
     static deleteJobSeeker(id, callBack) {
         const params = [id];

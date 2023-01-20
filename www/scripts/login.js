@@ -8,12 +8,20 @@ var checkAuthentication = function () {
 
         });
 }
-
+/**
+@function init
+@param {Object} session
+@description This function initiates the login page by calling the checkUserCreated and formSubmitValidation functions
+*/
 var init = function (session) {
     checkUserCreated();
     formSubmitValidation();
 }
 
+/**
+@function checkUserCreated
+@description This function checks the query string in the current URL and displays a message based on the query string parameter.
+*/
 var checkUserCreated = function () {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
@@ -36,8 +44,19 @@ var checkUserCreated = function () {
     }
 }
 
+/**
+
+/**
+@function formSubmitValidation
+@description Form submit validation function that handles the login form submission and validation.
+*/
 var formSubmitValidation = function () {
     
+    /**
+    @function resetErrors
+    @param {NodeElements} nodeElements - Node elements object
+    @description Resets errors in the form elements
+    */
     var resetErrors = function (nodeElements) {
         var elements = [...nodeElements];
         elements.forEach(function (element) {
@@ -48,6 +67,12 @@ var formSubmitValidation = function () {
         });
     }
 
+    /**
+    @function showError
+    @param {string} elementId - Id of the element to show the error
+    @param {string} message - Error message
+    @description shows an error message for a specific element
+    */
     var showError = function (elementId, message) {
         let errorText = document.getElementById(elementId);
         errorText.textContent = message;

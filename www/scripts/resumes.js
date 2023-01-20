@@ -9,11 +9,27 @@ let checkAuthentication = function () {
         });
 }
 
+/**
+@function init
+@param {Object} session - The current session of the user
+@description Initializes the page by building the navbar, logout event, and filters
+*/
 let init = function (session) {
     
-    // FILTERS (MAIN & COLLAPSED)
+    /**
+     * @function createCheckboxFilter
+     * @param {Object} filter - The filter to create
+     * @param {string} filterId - The id of the filter container
+     * @param {Array} resumes - An array of resumes
+     * @description Creates a checkbox filter for the given filter and filter container id, using the given resumes
+     */
     var createCheckboxFilter = function (filter, filterId, resumes) {
-    
+        
+        /**
+         * @function onFilterChange
+         * @param {Object} filterInput - The filter input that was changed
+         * @description Handles the event when a filter input changes, by updating the paired filter input
+         */
         var onFilterChange = function (filterInput) {
             let pairedFilterId = filterId === "main-filters" ? "collapsed-filters" : "main-filters";
             let pairedFilter = document.getElementById(filterInput.id.replace(filterId, pairedFilterId));
@@ -53,15 +69,12 @@ let init = function (session) {
         });
     }
 
-    console.log(session.authenticated)
     buildNavBar(session);
     buildLogoutEvent(session);
-    console.log(window.location.search);
     
     let url = `http://${window.location.host}/api/resumes`;
     axios.get(url)
         .then(response => {
-            console.log(response.data)
             let resumes = response.data.resumes;
             createApplyButton("main-filters");
             createAgeFilter("main-filters");
@@ -86,8 +99,19 @@ let init = function (session) {
         });
 }
 
+/**
+@function createApplyButton
+@param {string} filterId - The id of the filter container element where the apply button will be appended
+@description Creates an "Apply" button and appends it to the filter container element. The button when clicked will
+build and send a GET request to the server with the selected filter options as query parameters.
+*/
 var createApplyButton = function (filterId) {
 
+    /**
+    @function buildQueryString
+    @description This function creates a query string from selected filters on the page. It selects the checked checkboxes from the "main-filters-location" filter, 
+    the minimum age from "min-age-main-filters" and the maximum age from "max-age-main-filters". It then adds these values to the query string and returns it.
+    */
     var buildQueryString = function () {
         let mainLocationFilter = document.getElementById("main-filters-location");
         let mainLocationFilters = Array.from(mainLocationFilter.querySelectorAll('div input'));
@@ -132,7 +156,6 @@ var createApplyButton = function (filterId) {
 
     button.addEventListener("click", function () {
         let queryString = buildQueryString();
-        console.log(queryString)
         window.history.replaceState('', '', queryString);
         const url = `http://${window.location.host}/api/resumes${queryString}`
         axios.get(url)
@@ -147,6 +170,13 @@ var createApplyButton = function (filterId) {
 
 }
 
+/**
+@function createAgeFilter
+@param {string} filterId - The id of the div containing the age filter.
+@description This function creates the age filter, including the min and max input fields and the label.
+It also adds event listeners to the min and max input fields to update the paired filters and the apply button.
+The age filter is added to the div with the id passed in the filterId parameter.
+*/
 var createAgeFilter = function (filterId) {
     
     var onFilterChange = function (filterId) {
@@ -210,6 +240,11 @@ var createAgeFilter = function (filterId) {
     filtersDiv.appendChild(filterItemDiv);
 }
 
+/**
+@function onChangeApplyButton
+@description This function is used to enable/disable the apply button on the main and collapsed filters. The function will check if there is any selected location filter, if the minAge is greater than maxAge, 
+or if minAge or maxAge is less than 18 or greater than 65. If any of these conditions are met, the apply button will be disabled.
+*/
 var onChangeApplyButton = function () {
 
     let applyButtonMain = document.getElementById("apply-button-main-filters");
@@ -236,7 +271,19 @@ var onChangeApplyButton = function () {
 
 }
 
+/**
+@function buildResumeCards
+@param {Array} resumes - array of resumes to be displayed
+@description Builds the resume cards for each resume in the resumes array by creating the necessary HTML elements and appending them to the DOM.
+*/
 var buildResumeCards = function (resumes) {
+
+    /**
+    @function calculateAge
+    @param {Date} birthdate - the birthdate of the person
+    @description Calculates the age of a person based on the birthdate provided
+    @returns {number} age
+    */
     var calculateAge = function (birthdate) {
 
         var currentDate = new Date();
@@ -255,6 +302,19 @@ var buildResumeCards = function (resumes) {
         }
         return age;
     }
+
+    /**
+    @function buildResumeCard
+    @param {Object} resume - The resume object that contains all the information that will be used to create the card
+    @property {string} resume.key - The unique identifier of the resume
+    @property {string} resume.name - The name of the resume owner
+    @property {string} resume.email - The email address of the resume owner
+    @property {string} resume.birthDate - The birth date of the resume owner
+    @property {string} resume.location - The location of the resume owner
+    @property {number} resume.workplacesCount - The number of workplaces of the resume owner
+    @property {number} resume.coursesCount - The number of courses of the resume owner
+    @description Creates a card element that will represent a resume object.
+    */
     var buildResumeCard = function (resume) {
         let div = document.createElement("div");
         let cardDiv = document.createElement("div");
@@ -354,8 +414,6 @@ var buildResumeCards = function (resumes) {
 }
 
 var buildNavBar = function (session) {
-
-    console.log("USER: " + JSON.stringify(session.user));
 
     var buildSignInButton = function () {
         let a = document.createElement("a");
