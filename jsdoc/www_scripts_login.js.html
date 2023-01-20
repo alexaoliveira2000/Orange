@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: www/scripts/login.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: www/scripts/login.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var checkAuthentication = function () {
+    const url = `http://${window.location.host}/api/check-authentication`
+    axios.get(url)
+        .then(response => {
+            init(response.data);
+        })
+        .catch(error => {
+
+        });
+}
+/**
+@function init
+@param {Object} session
+@description This function initiates the login page by calling the checkUserCreated and formSubmitValidation functions
+*/
+var init = function (session) {
+    checkUserCreated();
+    formSubmitValidation();
+}
+
+/**
+@function checkUserCreated
+@description This function checks the query string in the current URL and displays a message based on the query string parameter.
+*/
+var checkUserCreated = function () {
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    if (urlParams.has("userCreated")) {
+        let loginMessage = document.getElementById("login_message");
+        loginMessage.style.display = "block";
+        loginMessage.textContent = "Your account has been created!";
+    } else if (urlParams.has("headhunterCreated")) {
+        let loginMessage = document.getElementById("login_message");
+        loginMessage.style.display = "block";
+        loginMessage.textContent = "Your account has been created, wait for an approval!";
+    } else if (urlParams.has("userLogout")) {
+        let loginMessage = document.getElementById("login_message");
+        loginMessage.style.display = "block";
+        loginMessage.textContent = "You signed out!";
+    } else if (urlParams.has("waitingValidation")) {
+        let loginMessage = document.getElementById("login_message");
+        loginMessage.style.display = "block";
+        loginMessage.textContent = "Headhunter is not yet accepted!";
+    }
+}
+
+/**
+
+/**
+@function formSubmitValidation
+@description Form submit validation function that handles the login form submission and validation.
+*/
+var formSubmitValidation = function () {
+    
+    /**
+    @function resetErrors
+    @param {NodeElements} nodeElements - Node elements object
+    @description Resets errors in the form elements
+    */
+    var resetErrors = function (nodeElements) {
+        var elements = [...nodeElements];
+        elements.forEach(function (element) {
+            let elemErrorText = document.getElementById(element.id + "_error");
+            if (elemErrorText) {
+                elemErrorText.style.display = "none";
+            }
+        });
+    }
+
+    /**
+    @function showError
+    @param {string} elementId - Id of the element to show the error
+    @param {string} message - Error message
+    @description shows an error message for a specific element
+    */
+    var showError = function (elementId, message) {
+        let errorText = document.getElementById(elementId);
+        errorText.textContent = message;
+        errorText.style.display = "block";
+    }
+
+    let loginForm = document.forms.loginForm;
+    let elements = loginForm.elements;
+
+    loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        resetErrors(elements);
+        let body = {
+            "email": elements.email.value,
+            "password": elements.password.value,
+        }
+        axios.post(`http://${window.location.host}/api/auth/`, body)
+            .then(response => {
+                window.location.href = `http://${window.location.host}/`
+            })
+            .catch(error => {
+                if (error.response.status === 401) {
+                    showError("email_error", "Invalid email or password");
+                    showError("password_error", "Invalid email or password");
+                } else if (error.response.status === 412) {
+                    window.location.href = `http://${window.location.host}/login?waitingValidation`
+                }
+            });
+    });
+}
+
+window.onload = checkAuthentication;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Course.html">Course</a></li><li><a href="FriendList.html">FriendList</a></li><li><a href="Headhunter.html">Headhunter</a></li><li><a href="JobSeeker.html">JobSeeker</a></li><li><a href="User.html">User</a></li><li><a href="Workplace.html">Workplace</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildDOM">buildDOM</a></li><li><a href="global.html#buildFriendsTable">buildFriendsTable</a></li><li><a href="global.html#buildHeadhuntersTable">buildHeadhuntersTable</a></li><li><a href="global.html#buildLists">buildLists</a></li><li><a href="global.html#buildLogoutEvent">buildLogoutEvent</a></li><li><a href="global.html#buildModalRequests">buildModalRequests</a></li><li><a href="global.html#buildNavBar">buildNavBar</a></li><li><a href="global.html#buildPendingHeadhuntersTable">buildPendingHeadhuntersTable</a></li><li><a href="global.html#buildPendingRequestsTable">buildPendingRequestsTable</a></li><li><a href="global.html#buildQueryString">buildQueryString</a></li><li><a href="global.html#buildResumeCard">buildResumeCard</a></li><li><a href="global.html#buildResumeCards">buildResumeCards</a></li><li><a href="global.html#calculateAge">calculateAge</a></li><li><a href="global.html#changeFormType">changeFormType</a></li><li><a href="global.html#checkAuthentication">checkAuthentication</a></li><li><a href="global.html#checkUserCreated">checkUserCreated</a></li><li><a href="global.html#clearElementChildren">clearElementChildren</a></li><li><a href="global.html#createAgeFilter">createAgeFilter</a></li><li><a href="global.html#createApplyButton">createApplyButton</a></li><li><a href="global.html#createCheckboxFilter">createCheckboxFilter</a></li><li><a href="global.html#enumStringToArray">enumStringToArray</a></li><li><a href="global.html#formSubmitValidation">formSubmitValidation</a></li><li><a href="global.html#formatCourseTypeValue">formatCourseTypeValue</a></li><li><a href="global.html#friendRequestSubmit">friendRequestSubmit</a></li><li><a href="global.html#hasPermission">hasPermission</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#onChangeApplyButton">onChangeApplyButton</a></li><li><a href="global.html#onFilterChange">onFilterChange</a></li><li><a href="global.html#resetErrors">resetErrors</a></li><li><a href="global.html#showError">showError</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 19:53:50 GMT+0000 (Western European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

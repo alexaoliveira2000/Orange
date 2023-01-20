@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: www/scripts/signup.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: www/scripts/signup.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var checkAuthentication = function () {
+    const url = `http://${window.location.host}/api/check-authentication`
+    axios.get(url)
+        .then(response => {
+            init(response.data);
+        })
+        .catch(error => {
+
+        });
+}
+
+var init = function (session) {
+    formSubmitValidation();
+    changeFormType();
+}
+
+var formSubmitValidation = function () {
+
+    var resetErrors = function (nodeElements) {
+        var elements = [...nodeElements];
+        elements.forEach(function (element) {
+            let elemErrorText = document.getElementById(element.id + "_error");
+            if (elemErrorText) {
+                elemErrorText.style.display = "none";
+            }
+        });
+    }
+
+    var showError = function (elementId, message) {
+        let errorText = document.getElementById(elementId);
+        errorText.textContent = message;
+        errorText.style.display = "block";
+    }
+
+    let registerForm = document.forms.signupForm;
+    let elements = registerForm.elements;
+
+    registerForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        resetErrors(elements);
+
+        let type = elements.user_type.value;
+
+        let visibleCheckbox = elements.visible;
+        visibleCheckbox.value = visibleCheckbox.checked;
+
+        // validar passwords iguais
+        if (elements.password.value !== elements.confirm_password.value) {
+            showError("confirm_password_error", "Password is different");
+            return;
+        }
+        let body = {
+            "user_type": elements.user_type.value,
+            "email": elements.email.value,
+            "password": elements.password.value,
+            "description": elements.description.value,
+            "seeker_name": elements.seeker_name.value,
+            "birth_date": elements.birth_date.value,
+            "gender": elements.gender.value,
+            "location": elements.location.value,
+            "visible": elements.visible.value,
+            "headhunter_name": elements.headhunter_name.value,
+            "logo": elements.logo.value,
+            "website": elements.website.value
+        }
+        axios.post(`http://${window.location.host}/api/users/${type}`, body)
+            .then(response => {
+                if (type === "headhunter") {
+                    window.location.href = `http://${window.location.host}/login?headhunterCreated`
+                } else {
+                    window.location.href = `http://${window.location.host}/login?userCreated`
+                }
+                
+            })
+            .catch(error => {
+                if (error.response.status === 400) {
+                    error.response.data.errors.forEach(function (err) {
+                        showError(err.param + "_error", err.msg);
+                    });
+                }
+            });
+    });
+}
+
+/**
+@function changeFormType
+@description this function is used to toggle between two forms based on the user's selection of job seeker or head hunter.
+*/
+var changeFormType = function () {
+
+    let jobSeekerCheckbox = document.getElementById("job_seeker");
+    let headhunterCheckbox = document.getElementById("headhunter");
+    let jobSeekerForm = document.getElementById("job_seeker_form");
+    let headHunterForm = document.getElementById("headhunter_form");
+
+    let seekerNameInput = document.getElementById("seeker_name");
+    let birthDateInput = document.getElementById("birth_date");
+    let genderInput = document.getElementById("gender");
+    let locationInput = document.getElementById("location");
+
+    let headHunterNameInput = document.getElementById("headhunter_name");
+    let websiteInput = document.getElementById("website");
+    let logoInput = document.getElementById("logo");
+
+    jobSeekerCheckbox.addEventListener("click", function () {
+        jobSeekerForm.style.display = "block";
+        headHunterForm.style.display = "none";
+
+        seekerNameInput.required = true;
+        birthDateInput.required = true;
+        genderInput.required = true;
+        locationInput.required = true;
+
+        headHunterNameInput.required = false;
+        websiteInput.required = false;
+        logoInput.required = false;
+    });
+    headhunterCheckbox.addEventListener("click", function () {
+        headHunterForm.style.display = "block";
+        jobSeekerForm.style.display = "none";
+
+        seekerNameInput.required = false;
+        birthDateInput.required = false;
+        genderInput.required = false;
+        locationInput.required = false;
+
+        headHunterNameInput.required = true;
+        websiteInput.required = true;
+        logoInput.required = true;
+    });
+}
+
+window.onload = checkAuthentication;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Course.html">Course</a></li><li><a href="FriendList.html">FriendList</a></li><li><a href="Headhunter.html">Headhunter</a></li><li><a href="JobSeeker.html">JobSeeker</a></li><li><a href="User.html">User</a></li><li><a href="Workplace.html">Workplace</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildDOM">buildDOM</a></li><li><a href="global.html#buildFriendsTable">buildFriendsTable</a></li><li><a href="global.html#buildHeadhuntersTable">buildHeadhuntersTable</a></li><li><a href="global.html#buildLists">buildLists</a></li><li><a href="global.html#buildLogoutEvent">buildLogoutEvent</a></li><li><a href="global.html#buildModalRequests">buildModalRequests</a></li><li><a href="global.html#buildNavBar">buildNavBar</a></li><li><a href="global.html#buildPendingHeadhuntersTable">buildPendingHeadhuntersTable</a></li><li><a href="global.html#buildPendingRequestsTable">buildPendingRequestsTable</a></li><li><a href="global.html#buildQueryString">buildQueryString</a></li><li><a href="global.html#buildResumeCard">buildResumeCard</a></li><li><a href="global.html#buildResumeCards">buildResumeCards</a></li><li><a href="global.html#calculateAge">calculateAge</a></li><li><a href="global.html#changeFormType">changeFormType</a></li><li><a href="global.html#checkAuthentication">checkAuthentication</a></li><li><a href="global.html#checkUserCreated">checkUserCreated</a></li><li><a href="global.html#clearElementChildren">clearElementChildren</a></li><li><a href="global.html#createAgeFilter">createAgeFilter</a></li><li><a href="global.html#createApplyButton">createApplyButton</a></li><li><a href="global.html#createCheckboxFilter">createCheckboxFilter</a></li><li><a href="global.html#enumStringToArray">enumStringToArray</a></li><li><a href="global.html#formSubmitValidation">formSubmitValidation</a></li><li><a href="global.html#formatCourseTypeValue">formatCourseTypeValue</a></li><li><a href="global.html#friendRequestSubmit">friendRequestSubmit</a></li><li><a href="global.html#hasPermission">hasPermission</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#onChangeApplyButton">onChangeApplyButton</a></li><li><a href="global.html#onFilterChange">onFilterChange</a></li><li><a href="global.html#resetErrors">resetErrors</a></li><li><a href="global.html#showError">showError</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 19:53:50 GMT+0000 (Western European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

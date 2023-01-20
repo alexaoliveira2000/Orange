@@ -1,4 +1,32 @@
-let checkAuthentication = function () {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: www/scripts/profile.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: www/scripts/profile.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>let checkAuthentication = function () {
     const url = `http://${window.location.host}/api/check-authentication`
     axios.get(url)
         .then(response => {
@@ -208,7 +236,7 @@ let enumStringToArray = function(enumString) {
 
     let enumOptions = enumString.split(",");
 
-    for(let i = 0; i < enumOptions.length; i++) {
+    for(let i = 0; i &lt; enumOptions.length; i++) {
 
         enumOptions[i] = formatCourseTypeValue(enumOptions[i], false);
     }
@@ -284,7 +312,7 @@ let buildLists = function(list, data, isCourse, session) {
 
     } else {
 
-        for(let i = 0; i < data.length; i++) {
+        for(let i = 0; i &lt; data.length; i++) {
 
             let mainDiv = document.createElement("div"),
                 bodyDiv = document.createElement("div"),
@@ -452,7 +480,7 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
         if(typeRecord === "Course") {
 
-            for(let i = 0; i < coursesOptions.length; i++) {
+            for(let i = 0; i &lt; coursesOptions.length; i++) {
 
                 let option = document.createElement("option");
     
@@ -724,8 +752,8 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
         secondButton = document.getElementById("secondButtonModal");
 
     document.getElementById("modalContent").style = (typeRecord === "Course") ? "width: 470px;" : "width: 540px;";
-    firstButton.textContent = (data && typeRecord !== "Users") ? "Delete" : "Close";
-    firstButton.style = (data && typeRecord !== "Users") ? "background: #b10b00;border-color: #b10b00;color: rgb(255,255,255)" : "background: rgb(255,255,255);border-color: rgb(255,130,3);color: rgb(255,130,3)";
+    firstButton.textContent = (data &amp;&amp; typeRecord !== "Users") ? "Delete" : "Close";
+    firstButton.style = (data &amp;&amp; typeRecord !== "Users") ? "background: #b10b00;border-color: #b10b00;color: rgb(255,255,255)" : "background: rgb(255,255,255);border-color: rgb(255,130,3);color: rgb(255,130,3)";
     secondButton.textContent = (data) ? "Save Changes" : "Submit";
     secondButton.style = "background: rgb(255,130,3);border-color: rgb(255,130,3);";
     document.getElementById("titleModal").textContent = (data) ? ("Edit " + typeRecord) : ("Add " + typeRecord);
@@ -888,4 +916,26 @@ let buildModalForm = function(typeRecord, data, coursesOptions, session) {
 
 }
 
-window.onload = checkAuthentication;
+window.onload = checkAuthentication;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Course.html">Course</a></li><li><a href="FriendList.html">FriendList</a></li><li><a href="Headhunter.html">Headhunter</a></li><li><a href="JobSeeker.html">JobSeeker</a></li><li><a href="User.html">User</a></li><li><a href="Workplace.html">Workplace</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildDOM">buildDOM</a></li><li><a href="global.html#buildFriendsTable">buildFriendsTable</a></li><li><a href="global.html#buildHeadhuntersTable">buildHeadhuntersTable</a></li><li><a href="global.html#buildLists">buildLists</a></li><li><a href="global.html#buildLogoutEvent">buildLogoutEvent</a></li><li><a href="global.html#buildModalRequests">buildModalRequests</a></li><li><a href="global.html#buildNavBar">buildNavBar</a></li><li><a href="global.html#buildPendingHeadhuntersTable">buildPendingHeadhuntersTable</a></li><li><a href="global.html#buildPendingRequestsTable">buildPendingRequestsTable</a></li><li><a href="global.html#buildQueryString">buildQueryString</a></li><li><a href="global.html#buildResumeCard">buildResumeCard</a></li><li><a href="global.html#buildResumeCards">buildResumeCards</a></li><li><a href="global.html#calculateAge">calculateAge</a></li><li><a href="global.html#changeFormType">changeFormType</a></li><li><a href="global.html#checkAuthentication">checkAuthentication</a></li><li><a href="global.html#checkUserCreated">checkUserCreated</a></li><li><a href="global.html#clearElementChildren">clearElementChildren</a></li><li><a href="global.html#createAgeFilter">createAgeFilter</a></li><li><a href="global.html#createApplyButton">createApplyButton</a></li><li><a href="global.html#createCheckboxFilter">createCheckboxFilter</a></li><li><a href="global.html#enumStringToArray">enumStringToArray</a></li><li><a href="global.html#formSubmitValidation">formSubmitValidation</a></li><li><a href="global.html#formatCourseTypeValue">formatCourseTypeValue</a></li><li><a href="global.html#friendRequestSubmit">friendRequestSubmit</a></li><li><a href="global.html#hasPermission">hasPermission</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#onChangeApplyButton">onChangeApplyButton</a></li><li><a href="global.html#onFilterChange">onFilterChange</a></li><li><a href="global.html#resetErrors">resetErrors</a></li><li><a href="global.html#showError">showError</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 19:53:50 GMT+0000 (Western European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

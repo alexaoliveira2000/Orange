@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/workplacesModel.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/workplacesModel.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const connection = require("../config/connection")
+const { body, validationResult } = require('express-validator');
+
+/**
+ * 
+ */
+class Workplace {
+
+    constructor(obj) {
+        this.id = obj.workplace_id;
+        this.jobSeekerId = obj.job_seeker_id;
+        this.name = obj.workplace_name;
+        this.logoUrl = obj.logo_url;
+        this.startDate = obj.start_date;
+        this.endDate = obj.end_date;
+        this.functionDescription = obj.function_description;
+    }
+
+    convertObject(obj) {
+        this.workplace_id = obj.id;
+        this.workplace_name = obj.name;
+        this.logo_url = obj.logoUrl;
+        this.start_date = obj.startDate;
+        this.end_date = obj.endDate;
+        this.function_description = obj.functionDescription;
+    }
+
+    /**
+    * @function queryDb
+    * @param {string} sql - The sql query
+    * @param {Array} params - The query parameters
+    * @param {Function} callBack - The callback function to be called with the query result or error
+    * @throws Will throw an error if the provided sql or params is not valid.
+    * @returns {void}
+    * @description Executes a query on the database
+    * @memberof Workplace
+    *
+    */
+    static queryDb(sql, params, callBack) {
+        const mysqlCon = connection();
+        mysqlCon.query(sql, params, function (err, result) {
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, result);
+            }
+        });
+        mysqlCon.end();
+    }
+
+    /**
+    @function getWorkplaces
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of all workplaces in the table.
+    @throws {Error} If there is an error with the query or no data found in table.
+    @description Retrieves all workplaces from the table.
+    @memberof Workplace
+    */
+    static getWorkplaces(callBack) {
+        const sql = "SELECT * FROM workplaces";
+        this.queryDb(sql, [], function(err, result) {
+            if (err) {
+                callBack(err, null);
+            } else if (result.length === 0) {
+                callBack(new Error(`No data found on table "workplaces"`), null);
+            } else {
+                callBack(null, result.map(workplace => new Workplace(workplace)));
+            }
+        });
+    }
+
+    /**
+    @function getWorkplace
+    @param {number} id - The id of the workplace.
+    @param {function} callBack - The callback function that will be called after the query to the database is finished.
+    @returns {Workplace} - An instance of the Workplace class.
+    @throws {Error} - If there's an error with the query or no data is found.
+    @memberof Workplace
+    @description This function makes a query to the database to get a specific workplace by its id.
+    */
+    static getWorkplace(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM workplaces WHERE workplace_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            let workplace = result[0] || null;
+            if (err) {
+                callBack(err, null);
+            } else {
+                callBack(null, workplace ? new Workplace(workplace) : null);
+            }
+        });
+    }
+
+    /**
+    @function getWorkplacesUser
+    @param {Number} id - The id of the user associated with the workplaces
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {Array} Array of all workplaces associated with the user with the provided id.
+    @throws {Error} If there is an error with the query or no workplaces associated to the user.
+    @description Retrieves all workplaces associated with a specific user by id.
+    @memberof Workplace
+    */
+    static getWorkplacesUser(id, callBack) {
+        const params = [id];
+        const sql = "SELECT * FROM workplaces where job_seeker_id = ?";
+        this.queryDb(sql, params, function(err, result) {
+            if (err) {
+                callBack(err, null);
+            } else if (result.length === 0) {
+                //callBack(new Error(`The user has no Workplaces associated to him`), null);
+                callBack(null, []);
+            } else {
+                callBack(null, result.map(workplace => new Workplace(workplace)));
+            }
+        });
+    }
+
+    /**
+    @function createWorkplace
+    @param {Object} data - The data of the workplace to be created.
+    @param {String} data.name - The name of the workplace.
+    @param {String} data.logoUrl - The logo URL of the workplace.
+    @param {String} data.startDate - The start date of the workplace.
+    @param {String} data.endDate - The end date of the workplace.
+    @param {String} data.functionDescription - The function description of the workplace.
+    @param {Number} data.jobSeekerId - The id of the job seeker associated with the workplace.
+    @param {function} callBack - The callback function to handle the query result.
+    @returns {void}
+    @throws {Error} if there is an error with the query.
+    @description Creates a new workplace in the database with the provided data.
+    @memberof Workplace
+*/
+    static createWorkplace(data, callBack) {
+        //const workplaceData = JSON.parse(jsonData);
+        const params = [data.name, data.logoUrl, data.startDate, 
+            data.endDate, data.functionDescription, data.jobSeekerId];
+        const sql = "insert into workplaces (workplace_name, logo_url, start_date, end_date, function_description, job_seeker_id) values (?, ?, ?, ?, ?, ?)";
+        this.queryDb(sql, params, callBack);
+    }
+
+    /**
+    * @function editWorkplace
+    * @param {Object} workplace - An object containing the workplace information
+    * @property {string} workplace.name - The name of the workplace
+    * @property {string} workplace.logoUrl - The URL of the workplace's logo
+    * @property {string} workplace.startDate - The start date of the workplace
+    * @property {string} workplace.endDate - The end date of the workplace
+    * @property {string} workplace.functionDescription - The function description of the workplace
+    * @property {number} workplace.jobSeekerId - The ID of the job seeker
+    * @property {number} workplace.id - The ID of the workplace
+    * @param {function} callBack - The callback function that will be called after the query is executed
+    * @returns {void}
+    * @throws {Error} if there is an error with the query.
+    * @memberof Workplace
+    * @description Updates an existing workplace in the database
+    * 
+*/
+    static editWorkplace(workplace, callBack) {
+        const params = [
+            workplace.name,
+            workplace.logoUrl,
+            workplace.startDate,
+            workplace.endDate,
+            workplace.functionDescription,
+            workplace.jobSeekerId,
+            workplace.id];
+        const sql = "UPDATE workplaces SET workplace_name = ?, logo_url = ?, start_date = ?, end_date = ?, function_description = ?, job_seeker_id = ? WHERE workplace_id = ?";
+        this.queryDb(sql, params, callBack);
+    }
+
+    /**
+    * @function deleteWorkplace
+    * @param {number} id - The ID of the workplace to be deleted
+    * @param {function} callBack - The callback function that will be called after the query is executed
+    * @returns {void}
+    * @throws {Error} if there is an error with the query.
+    * @memberof Workplace
+    * @description Deletes an existing workplace from the database
+    * 
+    */
+    static deleteWorkplace(id, callBack) {
+        const params = [id];
+        const sql = "delete from workplaces where workplace_id = ? limit 1;";
+        this.queryDb(sql, params, callBack);
+    }
+}
+
+module.exports = Workplace;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Course.html">Course</a></li><li><a href="FriendList.html">FriendList</a></li><li><a href="Headhunter.html">Headhunter</a></li><li><a href="JobSeeker.html">JobSeeker</a></li><li><a href="User.html">User</a></li><li><a href="Workplace.html">Workplace</a></li></ul><h3>Global</h3><ul><li><a href="global.html#buildDOM">buildDOM</a></li><li><a href="global.html#buildFriendsTable">buildFriendsTable</a></li><li><a href="global.html#buildHeadhuntersTable">buildHeadhuntersTable</a></li><li><a href="global.html#buildLists">buildLists</a></li><li><a href="global.html#buildLogoutEvent">buildLogoutEvent</a></li><li><a href="global.html#buildModalRequests">buildModalRequests</a></li><li><a href="global.html#buildNavBar">buildNavBar</a></li><li><a href="global.html#buildPendingHeadhuntersTable">buildPendingHeadhuntersTable</a></li><li><a href="global.html#buildPendingRequestsTable">buildPendingRequestsTable</a></li><li><a href="global.html#buildQueryString">buildQueryString</a></li><li><a href="global.html#buildResumeCard">buildResumeCard</a></li><li><a href="global.html#buildResumeCards">buildResumeCards</a></li><li><a href="global.html#calculateAge">calculateAge</a></li><li><a href="global.html#changeFormType">changeFormType</a></li><li><a href="global.html#checkAuthentication">checkAuthentication</a></li><li><a href="global.html#checkUserCreated">checkUserCreated</a></li><li><a href="global.html#clearElementChildren">clearElementChildren</a></li><li><a href="global.html#createAgeFilter">createAgeFilter</a></li><li><a href="global.html#createApplyButton">createApplyButton</a></li><li><a href="global.html#createCheckboxFilter">createCheckboxFilter</a></li><li><a href="global.html#enumStringToArray">enumStringToArray</a></li><li><a href="global.html#formSubmitValidation">formSubmitValidation</a></li><li><a href="global.html#formatCourseTypeValue">formatCourseTypeValue</a></li><li><a href="global.html#friendRequestSubmit">friendRequestSubmit</a></li><li><a href="global.html#hasPermission">hasPermission</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#onChangeApplyButton">onChangeApplyButton</a></li><li><a href="global.html#onFilterChange">onFilterChange</a></li><li><a href="global.html#resetErrors">resetErrors</a></li><li><a href="global.html#showError">showError</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 19:53:50 GMT+0000 (Western European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
