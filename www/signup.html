@@ -30,18 +30,15 @@
     </nav>
 
     <main class="page registration-page">
-        <section class="clean-block clean-form dark" style="background: url(&quot;images/Moon.svg&quot;);">
+        <section id="moon-background" class="clean-block clean-form dark">
             <div class="container">
-                <div class="d-flex justify-content-center block-heading"
-                    style="margin-bottom: 0px;height: 170px;padding: 0;padding-top: 30px;"><img
+                <div id="orange-logo" class="d-flex justify-content-center block-heading"><img
                         src="images/orange_logo.png" width="112" height="133"></div>
                 <div class="block-heading" style="padding-top: 30px;">
-                    <h2 class="text-info d-flex justify-content-center"
-                        style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;">Sign Up</h2>
+                    <h2 id="text-info" class="text-info d-flex justify-content-center">Sign Up</h2>
                 </div>
 
-                <form id="signupForm" name="signupForm" action="/register" method="POST"
-                    style="border-color: rgb(255,130,3);">
+                <form id="signupForm" name="signupForm" action="/register" method="POST">
 
                     <div class="d-xl-flex justify-content-xl-center" style="margin-bottom: 10px;">
                         <div style="margin-right: 30px;">
@@ -58,31 +55,31 @@
 
                     <div class="mb-3"><label class="form-label" for="email">Email</label>
                         <input class="form-control item" type="email" id="email" name="email" required>
-                        <small id="email_error" style="color: var(--bs-red); display: none;"></small>
+                        <small id="email_error"></small>
                     </div>
                     <div class="mb-3"><label class="form-label" for="password">Password</label><input
                             class="form-control item" type="password" id="password" name="password" autocomplete="new-password" required
-                            minlength="5"><small id="password_error" style="color: var(--bs-red); display: none;"></small></div>
+                            minlength="5"><small id="password_error"></small></div>
                     <div class="mb-3"><label class="form-label" for="confirm_password">Confirm Password</label><input
                             class="form-control item" type="password" id="confirm_password" autocomplete="new-password" required minlength="5">
-                            <small id="confirm_password_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="confirm_password_error"></small>
                     </div>
 
                     <div class="mb-3"><label class="form-label" for="name">Description</label>
                         <textarea class="form-control item" type="text" id="description" name="description" maxlength="255"></textarea>
-                        <small id="description_error" style="color: var(--bs-red); display: none;"></small>
+                        <small id="description_error"></small>
                     </div>
 
-                    <hr style="margin-bottom: 15px; margin-top: 20px;"/>
+                    <hr id="divider"/>
 
                     <div id="job_seeker_form" style="margin-bottom: 10px;">
                         <div class="mb-3"><label class="form-label" for="seeker_name">Full Name</label>
                             <input class="form-control item" type="text" id="seeker_name" name="seeker_name" required>
-                            <small id="seeker_name_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="seeker_name_error"></small>
                         </div>
                         <div class="mb-3"><label class="form-label" for="birth_date">Birth Date</label>
                             <input class="form-control item" type="date" id="birth_date" name="birth_date" required>
-                            <small id="birth_date_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="birth_date_error"></small>
                         </div>
                         <div class="mb-3"><label class="form-label" for="gender">Gender</label>
                             <select id="gender" name="gender" class="form-select" required>
@@ -92,25 +89,25 @@
                         </div>
                         <div class="mb-3"><label class="form-label" for="location">Location</label>
                             <input class="form-control item" type="text" id="location" name="location" required>
-                            <small id="location_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="location_error"></small>
                         </div>
                         <div class="form-check"><input id="visible" name="visible" class="form-check-input"
                                 type="checkbox" value="true" checked /><label class="form-check-label"
                                 for="formCheck-1">I want companies to see me</label></div>
                     </div>
 
-                    <div id="headhunter_form" style="margin-bottom: 10px; display:none;">
+                    <div id="headhunter_form">
                         <div class="mb-3"><label class="form-label" for="headhunter_name">Company Name</label>
                             <input class="form-control item" type="text" id="headhunter_name" name="headhunter_name">
-                            <small id="headhunter_name_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="headhunter_name_error"></small>
                         </div>
                         <div class="mb-3"><label class="form-label" for="name">Company Logo (URL)</label>
                             <input class="form-control item" type="url" id="logo" name="logo">
-                            <small id="logo_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="logo_error"></small>
                         </div>
                         <div class="mb-3"><label class="form-label" for="name">Company Website (URL)</label>
                             <input class="form-control item" type="url" id="website" name="website">
-                            <small id="website_error" style="color: var(--bs-red); display: none;"></small>
+                            <small id="website_error"></small>
                         </div>
                     </div>
 

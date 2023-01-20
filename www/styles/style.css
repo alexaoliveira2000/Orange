@@ -137,3 +137,257 @@ input[type='radio']{
     color: rgb(255, 255, 255);
     background: rgb(255, 130, 3);
   }
+
+#index-background,
+#login-background {
+    color: rgba(255,130,3,0.4);
+    background-image: url("/images/oranges.jpg");
+    border-color: rgba(255,130,3,0.9);
+}
+
+#index-title {
+    --bs-info: black;
+    --bs-info-rgb: 0,0,0;
+    font-weight: bold;
+}
+
+#index-subtitle {
+    font-weight: bold;
+}
+
+#modal-no {
+    border-color: rgb(255,130,3);
+    background: var(--bs-modal-bg);
+    color: rgb(255,130,3);
+}
+
+#logout,
+#remove,
+#reject {
+    background: rgb(255,130,3);
+    border-color: rgb(255,130,3);
+}
+
+#modal-title,
+#headhunter_title,
+#titleModal {
+    color: rgb(255,130,3);
+}
+
+#page-info {
+    margin-left: 20px;
+}
+
+#text-info {
+    --bs-info: rgb(255,130,3);
+    --bs-info-rgb: 255,130,3;
+}
+
+#requests-table,
+#friends,
+#headhunters-table,
+#pending-table {
+    padding: 10px;
+}
+
+#resumeCards {
+    padding-right: 10px;
+}
+
+#friend-requests {
+    background-color: #72bb53;
+    border: none;
+}
+
+#friends-buttons {
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+
+#login_message {
+    color: #72bb53;
+    display: none;
+}
+
+#email_error {
+    color: var(--bs-red);
+    display: none;
+}
+
+#password_error {
+    color: var(--bs-red);
+    display: none;
+}
+
+#sign-up {
+    color: #72bb53;
+}
+
+#moon-background {
+    background: url("/images/Moon.svg");
+}
+
+#loginForm,
+#signupForm,
+#modalForm {
+    border-color: rgb(255,130,3);
+}
+
+#website_error,
+#logo_error,
+#headhunter_name_error,
+#location_error,
+#birth_date_error,
+#seeker_name_error,
+#description_error,
+#confirm_password_error,
+#password_error,
+#email_error {
+    color: var(--bs-red);
+    display: none;
+}
+
+#headhunter_form {
+    margin-bottom: 10px;
+    display:none;
+}
+
+#divider {
+    margin-bottom: 15px;
+    margin-top: 20px;
+}
+
+#orange-logo {
+    margin-bottom: 0px;
+    height: 170px;
+    padding: 0;
+    padding-top: 30px;
+}
+
+#coursesList,
+#workplacesList {
+    background:var(--bs-body-bg);
+    width:900px;
+    padding:20px;
+    border-color:rgba(0,0,0,0);
+    border-top-left-radius:100px;
+    border-top-right-radius:100px;
+    border-bottom-right-radius:100px;
+    border-bottom-left-radius:100px;
+    display:flex;
+    margin-top:2%;
+    margin-bottom:2%;
+}
+
+#userEmail,
+#userLocation,
+#userGender,
+#userBirthDay {
+    color: rgb(0,0,0);
+    font-family: Montserrat, sans-serif;
+    text-align: center;
+    margin: 0px;
+    margin-left: 8px;
+    padding-top: 3px;
+}
+
+#userDescription {
+    color:rgb(0,0,0);
+    font-family:Montserrat, sans-serif;
+    width:100%;
+}
+
+#userEdit {
+    width: 50%;
+    height: 30px;
+    font-size: 24px;
+    color: rgb(143,143,143);
+    display: none;
+}
+
+#username {
+    font-size: 30px;
+    color: rgb(255,130,3);
+    border-color: rgb(0,0,0);
+    text-align: center;
+}
+
+#profile-logo {
+    margin-left: 15px;
+    font-size: 22px;
+    color: #8f8f8f;
+}
+
+#profile-info {
+    background:rgb(246, 246, 246);
+    height: 100%;
+}
+
+#profile-container {
+    padding: 1%;
+    color: var(--bs-black);
+}
+
+#profile-row {
+    margin: 5%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+
+#profile-border {
+    background: #ffffff;
+    padding: 6px;
+    width: 900px;
+}
+
+#profile-column {
+    background: #ffffff00;
+    padding: 3%;
+}
+
+#courses-row,
+#workplaces-row {
+    margin:5%;
+    margin-top:0%;
+    margin-bottom:0%;
+}
+
+#courses-section,
+#workplaces-section {
+    height:40px;
+    width:100%;
+    margin-bottom:1%;
+}
+
+#courses-text,
+#workplaces-text {
+    color: rgb(255,130,3);
+    font-size: 27px;
+    height: 100%;
+    width: 50%;
+    margin: 0px;
+}
+
+#addCourse,
+#addWorkplace {
+    width:50%;
+    font-size:27px;
+    color:rgb(143,143,143);
+    text-align:center;
+    height:100%;
+    display: none;
+}
+
+#error-text {
+    --bs-info: rgb(255,130,3);
+    --bs-info-rgb: 255,130,3;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#error-block {
+    margin-bottom: 0px;
+    height: 170px;
+    padding: 0;
+    padding-top: 30px;
+}

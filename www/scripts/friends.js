@@ -290,8 +290,6 @@ var buildPendingRequestsTable = function (friends) {
 
 var buildNavBar = function (session) {
 
-    console.log("USER: " + JSON.stringify(session.user));
-
     var buildSignInButton = function () {
         let a = document.createElement("a");
         a.id = "orange-button";
@@ -327,10 +325,10 @@ var buildNavBar = function (session) {
         dropdownDiv.className = "dropdown-menu shadow dropdown-menu-end animated--grow-in";
         profileItem.id = "profileButton";
         profileItem.className = "dropdown-item";
-        profileItem.href = "profile";
+        profileItem.href = "../profile";
         profileItem.textContent = "Profile";
         friendsItem.className = "dropdown-item";
-        friendsItem.href = "friends";
+        friendsItem.href = "../friends";
         friendsItem.textContent = "Friends";
         pendingHeadhuntersItem.className = "dropdown-item";
         pendingHeadhuntersItem.href = "pending-headhunters";

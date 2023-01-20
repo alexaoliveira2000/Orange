@@ -30,30 +30,28 @@
     </nav>
 
     <main class="page login-page">
-        <section class="clean-block clean-form dark" style="background: url(&quot;images/Moon.svg&quot;);">
+        <section id="moon-background" class="clean-block clean-form dark">
             <div class="container">
                 <div class="d-flex justify-content-center block-heading"
                     style="margin-bottom: 0px;height: 170px;padding: 0;padding-top: 30px;"><img
                         src="images/orange_logo.png" width="112" height="133"></div>
                 <div class="block-heading" style="padding-top: 30px;">
-                    <h2 class="text-info d-flex justify-content-center"
-                        style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;">Good to see you again</h2>
+                    <h2 id="text-info" class="text-info d-flex justify-content-center">Good to see you again</h2>
                 </div>
 
-                <form id="loginForm" name="loginForm" action="/auth" method="POST"
-                    style="border-color: rgb(255,130,3);">
-                    <h6 id="login_message" class="text-center" style="color: #72bb53; display: none"></h6>
+                <form id="loginForm" name="loginForm" action="/auth" method="POST">
+                    <h6 id="login_message" class="text-center"></h6>
                     <div class="mb-3"><label class="form-label" for="email">Email</label>
                         <input class="form-control item" type="email" id="email" name="email" required>
-                        <small id="email_error" style="color: var(--bs-red); display: none;"></small>
+                        <small id="email_error"></small>
                     </div>
                     <div class="mb-3"><label class="form-label" for="password">Password</label>
                         <input class="form-control" type="password" id="password" name="password" required>
-                        <small id="password_error" style="color: var(--bs-red); display: none;"></small>
+                        <small id="password_error"></small>
                     </div>
                     <button id="login-button" class="btn btn-primary" type="submit">Log In</button>
                     <div class="justify-content-start">
-                        <a class="d-flex float-end justify-content-end" href="signup" style="color: #72bb53;">Sign
+                        <a id="sign-up" class="d-flex float-end justify-content-end" href="signup">Sign
                             Up</a>
                     </div>
                 </form>

@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "start-dev": "nodemon app.js"
+    "start-dev": "nodemon app.js",
+    "jsdoc": "jsdoc -c jsdoc.json"
   },
   "nodemonConfig": {
     "ignore": [
@@ -25,5 +26,10 @@
     "random-string": "^0.2.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
+  },
+  "devDependencies": {
+    "docdash": "^2.0.1",
+    "jsdoc": "^4.0.0",
+    "jsdoc-to-markdown": "^8.0.0"
   }
 }

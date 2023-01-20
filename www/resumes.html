@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="styles/bootstrap.min.css">
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="fonts/fontawesome-all.min.css">
-    <!-- <link rel="stylesheet" href="styles/resumesStyles.css"> -->
     <script src="scripts/bootstrap.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="scripts/resumes.js"></script>
@@ -30,35 +29,10 @@
                     <li id="about-us" class="nav-item"><a class="nav-link" href="about-us">About us</a></li>
                 </ul>
                 <div id="actionDiv">
-                    <!-- <button id="orange-button" class="btn btn-primary" role="button" href="login.html">Sign in</button> -->
-                    <!-- <ul class="navbar-nav flex-nowrap ms-auto">
-                        <li class="nav-item dropdown no-arrow">
-                            <div class="nav-item dropdown no-arrow">
-                                <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
-                                <span class="d-none d-lg-inline me-2 text-gray-600 small">Valerie Luna</span>
-                                </a>
-                                <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
-                                    <a class="dropdown-item" href="/profile">Profile</a>
-                                    <a class="dropdown-item" href="/friends">Friends</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="/signout">Logout</a>
-                                </div>
-                            </div>
-                        </li>
-                    </ul> -->
                 </div>
             </div>
         </div>
     </nav>
-    <!-- <div class="text-center d-flex justify-content-center align-items-center"
-        style="margin-bottom: 30px;margin-top: 30px;">
-        <img class="img-fluid d-flex justify-content-center align-items-start" src="images/construction.png"
-            width="257" height="286">
-    </div>
-    <div class="text-center d-flex justify-content-center align-items-center">
-        <h2 class="text-info" style="--bs-info: rgb(255,130,3);--bs-info-rgb: 255,130,3;font-weight: bold;">Very sadly,
-            we are under construction</h2>
-    </div> -->
 
     <main class="page catalog-page">
         <section class="clean-block clean-catalog dark">
@@ -75,57 +49,15 @@
                                     href="#filters" role="button">Filters<i
                                         class="icon-arrow-down filter-caret"></i></a>
                                 <div id="filters" class="collapse">
-                                    <!-- <input class="form-range" type="range" min="18" max="65" step="1" value="40" /> -->
-                                    <!-- <div class="filter-item">
-                                        <h3>Age</h3>
-                                        <div class="d-flex">
-                                            <input type="number" style="width: 50px;" />
-                                            <strong class="d-xl-flex align-items-xl-center"> - </strong>
-                                            <input type="number" style="width: 50px;" />
-                                        </div>
-                                    </div> -->
                                     <div id="collapsed-filters" class="filters">
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-md-9 col-xl-9">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div id="resumeCards" style="padding-right: 10px" class="row">
-
-                                        <!-- <div class="col-lg-4 col-xlg-3 col-md-5" style="margin-bottom: 20px">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <h4 class="text-center card-title m-t-10"><a
-                                                                style="color: rgb(255, 130, 3)" href="#">John Doe</a>
-                                                        </h4>
-                                                        <div class="row text-center justify-content-md-center"
-                                                            style="margin-top: 20px">
-                                                            <div class="col-4">
-                                                                <i class="fas fa-briefcase"></i>
-                                                                <small class="font-medium">254</small>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <i class="fas fa-medal"></i>
-                                                                <small class="font-medium">54</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <small class="text-muted">Email address</small>
-                                                        <h6>boiaobotelho@gmail.com</h6>
-                                                        <small class="text-muted p-t-30 db">Age</small>
-                                                        <h6>24</h6>
-                                                        <small class="text-muted p-t-30 db">Location</small>
-                                                        <h6>Lisboa</h6>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-
-
+                                    <div id="resumeCards" class="row">
                                     </div>
                                 </div>
                             </div>
@@ -134,22 +66,22 @@
                 </div>
             </div>
         </section>
+
         <div id="modal-1" class="modal fade" role="dialog" tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to sign out?</h4>
+                        <h4 id="modal-title" class="modal-title">Are you sure you want to sign out?</h4>
                         <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                            style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
-                        <button id="logout" class="btn btn-primary" type="button"
-                            style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                        <button id="modal-no" class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+                        <button id="logout" class="btn btn-primary" type="button">Yes</button>
                     </div>
                 </div>
             </div>
         </div>
+
     </main>
 </body>
 

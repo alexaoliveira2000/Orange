@@ -39,14 +39,13 @@
         <main class="page catalog-page">
             <section class="clean-block clean-catalog dark">
                 <div class="container">
-                    <div style="margin-bottom: 10px; padding-top: 10px;">
-                        <button id="friend-requests" class="btn btn-primary"
-                            style="background-color: #72bb53; border: none" type="button" disabled>Friend Requests</button>
+                    <div id="friends-buttons">
+                        <button id="friend-requests" class="btn btn-primary" type="button" disabled>Friend Requests</button>
                         <div class="d-inline-flex float-end">
                             <button id="add-friends" class="btn btn-primary" type="button">Add Friends</button>
                         </div>
                     </div>
-                    <div id="friends" class="block-content" style="padding: 10px;"></div>
+                    <div id="friends" class="block-content"></div>
                 </div>
             </section>
 
@@ -54,7 +53,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" style="color: rgb(255,130,3);">Add a friend</h4>
+                            <h4 id="modal-title" class="modal-title">Add a friend</h4>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-left">
@@ -73,15 +72,13 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to remove this
+                            <h4 id="modal-title" class="modal-title">Are you sure you want to remove this
                                 friend?</h4>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                                style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
-                            <button id="remove" class="btn btn-primary" type="button"
-                                style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                            <button id="modal-no" class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+                            <button id="remove" class="btn btn-primary" type="button">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -91,11 +88,11 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" style="color: rgb(255,130,3);">Friend Requests</h4>
+                            <h4 id="modal-title" class="modal-title">Friend Requests</h4>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-left">
-                            <div id="requests-table" class="block-content" style="padding: 10px;"></div>
+                            <div id="requests-table" class="block-content"></div>
                         </div>
                     </div>
                 </div>
@@ -105,15 +102,12 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" style="color: rgb(255,130,3);">Are you sure you want to sign out?
-                            </h4>
+                            <h4 id="modal-title" class="modal-title">Are you sure you want to sign out?</h4>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-light" type="button" data-bs-dismiss="modal"
-                                style="border-color: rgb(255,130,3);background: var(--bs-modal-bg);color: rgb(255,130,3);">No</button>
-                            <button id="logout" class="btn btn-primary" type="button"
-                                style="background: rgb(255,130,3);border-color: rgb(255,130,3);">Yes</button>
+                            <button id="modal-no" class="btn btn-light" type="button" data-bs-dismiss="modal">No</button>
+                            <button id="logout" class="btn btn-primary" type="button">Yes</button>
                         </div>
                     </div>
                 </div>
